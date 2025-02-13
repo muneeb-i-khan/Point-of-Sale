@@ -16,16 +16,18 @@ public class ClientDao {
     private static final String select_all = "select p from ClientPojo p";
     @PersistenceContext
     EntityManager em;
+
     public void add(ClientPojo p) {
         em.persist(p);
     }
-    public void delete(int id) {
+
+    public void delete(Long id) {
         Query query = em.createQuery(delete_id);
         query.setParameter("id", id);
         query.executeUpdate();
     }
 
-    public ClientPojo select(int id) {
+    public ClientPojo select(Long id) {
         TypedQuery<ClientPojo> query = getQuery(select_id);
         query.setParameter("id", id);
         return query.getSingleResult();

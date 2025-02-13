@@ -26,13 +26,13 @@ public class ClientController {
     }
     @ApiOperation(value = "Delete a client")
     @RequestMapping(path="/api/client/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable int id) throws ApiException  {
+    public void delete(@PathVariable Long id) throws ApiException  {
         clientService.getCheck(id);
         clientService.deleteClient(id);
     }
     @ApiOperation(value = "Get a client based on it's Id")
     @RequestMapping(path = "/api/client/{id}", method = RequestMethod.GET)
-    public ClientData get(@PathVariable int id) throws ApiException {
+    public ClientData get(@PathVariable Long id) throws ApiException {
         clientService.getCheck(id);
         ClientPojo p = clientService.getClient(id);
         return convert(p);
@@ -51,11 +51,12 @@ public class ClientController {
 
     @ApiOperation(value = "Update an existing client")
     @RequestMapping(path = "/api/client/{id}", method = RequestMethod.PUT)
-    public void get(@PathVariable int id, @RequestBody ClientForm ClientForm) throws ApiException{
+    public void get(@PathVariable Long id, @RequestBody ClientForm ClientForm) throws ApiException{
         ClientPojo p = convert(ClientForm);
         clientService.getCheck(id);
         clientService.updateClient(id,p);
     }
+
     public static ClientData convert(ClientPojo p) {
         ClientData cd = new ClientData();
         cd.setName(p.getName());

@@ -22,12 +22,12 @@ public class ClientService {
     }
 
     @Transactional
-    public void deleteClient(int id) {
+    public void deleteClient(Long id) {
         dao.delete(id);
     }
 
     @Transactional(rollbackOn = ApiException.class)
-    public ClientPojo getClient(int id) throws ApiException {
+    public ClientPojo getClient(Long id) throws ApiException {
         return getCheck(id);
     }
 
@@ -37,7 +37,7 @@ public class ClientService {
     }
 
     @Transactional(rollbackOn  = ApiException.class)
-    public void updateClient(int id, ClientPojo p) throws ApiException {
+    public void updateClient(Long id, ClientPojo p) throws ApiException {
         ClientPojo ex = getCheck(id);
         ex.setDescription(p.getDescription());
         ex.setName(p.getName());
@@ -45,7 +45,7 @@ public class ClientService {
     }
 
     @Transactional
-    public ClientPojo getCheck(int id) throws ApiException {
+    public ClientPojo getCheck(Long id) throws ApiException {
         ClientPojo p = dao.select(id);
         if (p == null) {
             throw new ApiException("pos with given ID does not exit, id: " + id);

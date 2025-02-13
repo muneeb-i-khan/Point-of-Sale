@@ -3,14 +3,14 @@ package com.increff.pos.db.pojo;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "client")
+@Table(name = "clients")
 public class ClientPojo {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    int id;
+    private Long id;
     @Column(nullable = false)
-    String name;
-    String description;
+    private String name;
+    private String description;
 
     public String getDescription() {
         return description;
@@ -28,11 +28,11 @@ public class ClientPojo {
         this.name = name;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
