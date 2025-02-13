@@ -10,7 +10,7 @@ public class ProductPojo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String barcode;
     @ManyToOne
     @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "product_client_id_fk"))

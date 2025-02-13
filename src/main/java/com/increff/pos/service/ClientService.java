@@ -44,6 +44,16 @@ public class ClientService {
         dao.update(p);
     }
 
+    @Transactional(rollbackOn = ApiException.class)
+    public ClientPojo getClientByName(String name) throws ApiException {
+        ClientPojo client = dao.selectByName(name);
+        if (client == null) {
+            throw new ApiException("Client with the given name does not exist: " + name);
+        }
+        return client;
+    }
+
+
     @Transactional
     public ClientPojo getCheck(Long id) throws ApiException {
         ClientPojo p = dao.select(id);

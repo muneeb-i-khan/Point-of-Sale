@@ -3,8 +3,7 @@ package com.increff.pos.model;
 public class ProductForm {
     String name;
     String barcode;
-    Long client_id;
-
+    String clientName;
     public String getName() {
         return name;
     }
@@ -21,11 +20,12 @@ public class ProductForm {
         this.barcode = barcode;
     }
 
-    public Long getClient_id() {
-        return client_id;
+    public String getClientName() {
+        return clientName;
     }
 
-    public void setClient_id(Long client_id) {
-        this.client_id = client_id;
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
+
 }

@@ -1,6 +1,6 @@
 package com.increff.pos.controller;
 
-import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.model.ProductData;
 import com.increff.pos.model.ProductForm;
@@ -68,6 +68,7 @@ public class ProductController {
         pd.setName(p.getName());
         pd.setBarcode(p.getBarcode());
         pd.setId(p.getId());
+        pd.setClientName(p.getClientPojo().getName());
         pd.setClient_id(p.getClientPojo().getId());
         return pd;
     }
@@ -75,7 +76,8 @@ public class ProductController {
         ProductPojo p = new ProductPojo();
         p.setName(productForm.getName());
         p.setBarcode(productForm.getBarcode());
-        p.setClientPojo(clientService.getClient(productForm.getClient_id()));
+        ClientPojo cp = clientService.getClientByName(productForm.getClientName());
+        p.setClientPojo(clientService.getClient(cp.getId()));
         return p;
     }
 
