@@ -1,6 +1,5 @@
 package com.increff.pos.db.dao;
 
-import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +14,7 @@ public class ProductDao {
     private static final String delete_id = "delete from ProductPojo p where id=:id";
     private static final String select_id = "select p from ProductPojo p where id=:id";
     private static final String select_all = "select p from ProductPojo p";
+    private static final String select_by_barcode = "select p from ProductPojo p where barcode=:barcode";
 
     @PersistenceContext
     EntityManager em;
@@ -40,6 +40,12 @@ public class ProductDao {
         Query query = em.createQuery(delete_id);
         query.setParameter("id", id);
         query.executeUpdate();
+    }
+
+    public ProductPojo selectByBarcode(String barcode) {
+        Query query = em.createQuery(select_by_barcode, ProductPojo.class);
+        query.setParameter("barcode", barcode);
+        return (ProductPojo) query.getSingleResult();
     }
 
     TypedQuery<ProductPojo> getQuery(String jpql) {

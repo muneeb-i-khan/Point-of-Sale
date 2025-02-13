@@ -1,6 +1,5 @@
 package com.increff.pos.service;
 
-import com.increff.pos.db.dao.ClientDao;
 import com.increff.pos.db.dao.ProductDao;
 import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
@@ -51,6 +50,15 @@ public class ProductService {
     @Transactional
     public void deleteProduct(Long id) {
         dao.delete(id);
+    }
+
+    @Transactional(rollbackOn = ApiException.class)
+    public ProductPojo getProductByBarcode(String barcode) throws ApiException {
+        ProductPojo product = dao.selectByBarcode(barcode);
+        if (product == null) {
+            throw new ApiException("Product with the given barcode does not exist: " + barcode);
+        }
+        return product;
     }
 
 }
