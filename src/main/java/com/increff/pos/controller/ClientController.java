@@ -3,6 +3,7 @@ package com.increff.pos.controller;
 import com.increff.pos.model.ClientData;
 import com.increff.pos.model.ClientForm;
 import com.increff.pos.db.pojo.ClientPojo;
+import com.increff.pos.service.ApiException;
 import com.increff.pos.service.ClientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,12 +26,14 @@ public class ClientController {
     }
     @ApiOperation(value = "Delete a client")
     @RequestMapping(path="/api/client/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable int id)  {
+    public void delete(@PathVariable int id) throws ApiException  {
+        clientService.getCheck(id);
         clientService.deleteClient(id);
     }
     @ApiOperation(value = "Get a client based on it's Id")
     @RequestMapping(path = "/api/client/{id}", method = RequestMethod.GET)
-    public ClientData get(@PathVariable int id)  {
+    public ClientData get(@PathVariable int id) throws ApiException {
+        clientService.getCheck(id);
         ClientPojo p = clientService.getClient(id);
         return convert(p);
     }
@@ -48,8 +51,9 @@ public class ClientController {
 
     @ApiOperation(value = "Update an existing client")
     @RequestMapping(path = "/api/client/{id}", method = RequestMethod.PUT)
-    public void get(@PathVariable int id, @RequestBody ClientForm ClientForm) {
+    public void get(@PathVariable int id, @RequestBody ClientForm ClientForm) throws ApiException{
         ClientPojo p = convert(ClientForm);
+        clientService.getCheck(id);
         clientService.updateClient(id,p);
     }
     public static ClientData convert(ClientPojo p) {

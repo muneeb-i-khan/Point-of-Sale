@@ -3,6 +3,7 @@ package com.increff.pos.db.pojo;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "client")
 public class ClientPojo {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

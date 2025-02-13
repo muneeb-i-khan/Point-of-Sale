@@ -3,37 +3,43 @@ package com.increff.pos.db.dao;
 import com.increff.pos.db.pojo.ClientPojo;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
 public class ClientDao {
-    private HashMap<Integer, ClientPojo> rows;
-    private int lastId;
-    @PostConstruct
-    public void init() {
-        rows = new HashMap<>();
-    }
+    private static final String delete_id = "delete from ClientPojo p where id=:id";
+    private static final String select_id = "select p from ClientPojo p where id=:id";
+    private static final String select_all = "select p from ClientPojo p";
+    @PersistenceContext
+    EntityManager em;
     public void add(ClientPojo p) {
-        lastId++;
-        p.setId(lastId);
-        rows.put(p.getId(), p);
+        em.persist(p);
     }
     public void delete(int id) {
-        rows.remove(id);
+        Query query = em.createQuery(delete_id);
+        query.setParameter("id", id);
+        query.executeUpdate();
     }
 
     public ClientPojo select(int id) {
-        return rows.get(id);
+        TypedQuery<ClientPojo> query = getQuery(select_id);
+        query.setParameter("id", id);
+        return query.getSingleResult();
     }
 
     public List<ClientPojo> selectAll() {
-        return new ArrayList<>(rows.values());
+        TypedQuery<ClientPojo> query = getQuery(select_all);
+        return query.getResultList();
     }
 
-    public void update(int id, ClientPojo p) {
-        rows.put(id,p);
+    public void update(ClientPojo p) {
+    }
+
+    TypedQuery<ClientPojo> getQuery(String jpql) {
+        return em.createQuery(jpql, ClientPojo.class);
     }
 }

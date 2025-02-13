@@ -1,34 +1,56 @@
 package com.increff.pos.service;
 
-import com.increff.pos.db.dao.ClientDao;
-import com.increff.pos.db.pojo.ClientPojo;
+import java.util.List;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.increff.pos.db.dao.ClientDao;
+import com.increff.pos.db.pojo.ClientPojo;
 
 @Service
 public class ClientService {
+
     @Autowired
-    private final ClientDao clientDao = new ClientDao();
+    private final ClientDao dao = new ClientDao();
 
-    public ClientPojo getClient(int id) {
-        return clientDao.select(id);
-    }
-
-    public List<ClientPojo> getAllClients() {
-        return clientDao.selectAll();
-    }
-
+    @Transactional
     public void addClient(ClientPojo p) {
-        clientDao.add(p);
+        dao.add(p);
     }
 
+    @Transactional
     public void deleteClient(int id) {
-        clientDao.delete(id);
+        dao.delete(id);
     }
 
-    public void updateClient(int id, ClientPojo newP)  {
-        clientDao.update(id,newP);
+    @Transactional(rollbackOn = ApiException.class)
+    public ClientPojo getClient(int id) throws ApiException {
+        return getCheck(id);
     }
+
+    @Transactional
+    public List<ClientPojo> getAllClients() {
+        return dao.selectAll();
+    }
+
+    @Transactional(rollbackOn  = ApiException.class)
+    public void updateClient(int id, ClientPojo p) throws ApiException {
+        ClientPojo ex = getCheck(id);
+        ex.setDescription(p.getDescription());
+        ex.setName(p.getName());
+        dao.update(p);
+    }
+
+    @Transactional
+    public ClientPojo getCheck(int id) throws ApiException {
+        ClientPojo p = dao.select(id);
+        if (p == null) {
+            throw new ApiException("pos with given ID does not exit, id: " + id);
+        }
+        return p;
+    }
+
 }
