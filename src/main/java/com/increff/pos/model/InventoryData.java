@@ -4,6 +4,15 @@ public class InventoryData extends InventoryForm {
     Long id;
     Long prodId;
     String prodName;
+    String clientName;
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
 
     public Long getId() {
         return id;
@@ -12,6 +21,7 @@ public class InventoryData extends InventoryForm {
     public void setId(Long id) {
         this.id = id;
     }
+
     public Long getProdId() {
         return prodId;
     }

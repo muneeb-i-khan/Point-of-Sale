@@ -23,6 +23,7 @@ public class ProductService {
     public ProductPojo getProduct(Long id) throws ApiException {
         return getCheck(id);
     }
+
     @Transactional
     public List<ProductPojo> getAllProducts() {
         return dao.selectAll();
@@ -42,8 +43,7 @@ public class ProductService {
         ProductPojo ex = getCheck(id);
         ex.setBarcode(p.getBarcode());
         ex.setName(p.getName());
-        ClientPojo cp = p.getClientPojo();
-        ex.setClientPojo(cp);
+        ex.setClientPojo(p.getClientPojo());
         dao.update(p);
     }
 

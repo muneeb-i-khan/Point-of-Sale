@@ -51,18 +51,18 @@ public class ClientController {
 
     @ApiOperation(value = "Update an existing client")
     @RequestMapping(path = "/api/client/{id}", method = RequestMethod.PUT)
-    public void get(@PathVariable Long id, @RequestBody ClientForm ClientForm) throws ApiException{
+    public void update(@PathVariable Long id, @RequestBody ClientForm ClientForm) throws ApiException{
         ClientPojo p = convert(ClientForm);
         clientService.getCheck(id);
         clientService.updateClient(id,p);
     }
 
     public static ClientData convert(ClientPojo p) {
-        ClientData cd = new ClientData();
-        cd.setName(p.getName());
-        cd.setDescription(p.getDescription());
-        cd.setId(p.getId());
-        return cd;
+        ClientData clientData = new ClientData();
+        clientData.setName(p.getName());
+        clientData.setDescription(p.getDescription());
+        clientData.setId(p.getId());
+        return clientData;
     }
     public static ClientPojo convert(ClientForm ClientForm) {
         ClientPojo p = new ClientPojo();
