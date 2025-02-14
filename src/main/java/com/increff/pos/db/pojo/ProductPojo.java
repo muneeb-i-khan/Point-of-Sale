@@ -8,13 +8,13 @@ public class ProductPojo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
+    private Long            id;
+    private String          name;
     @Column(unique = true, nullable = false)
-    private String barcode;
+    private String          barcode;
     @ManyToOne
     @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "product_client_id_fk"))
-    private ClientPojo clientPojo;
+    private ClientPojo      clientPojo;
 
     public Long getId() {
         return id;

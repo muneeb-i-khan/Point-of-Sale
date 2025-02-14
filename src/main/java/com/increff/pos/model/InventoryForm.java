@@ -1,9 +1,9 @@
 package com.increff.pos.model;
 
 public class InventoryForm {
-    String barcode;
-    Long quantity;
-    double price;
+    private String      barcode;
+    private Long        quantity;
+    private double      price;
 
     public String getBarcode() {
         return barcode;

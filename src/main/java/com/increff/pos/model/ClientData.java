@@ -1,7 +1,7 @@
 package com.increff.pos.model;
 
 public class ClientData extends ClientForm{
-    Long id;
+    private Long        id;
 
     public Long getId() {
         return id;

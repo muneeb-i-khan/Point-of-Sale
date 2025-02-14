@@ -7,10 +7,10 @@ import javax.persistence.*;
 public class ClientPojo {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    private Long        id;
     @Column(nullable = false, unique = true)
-    private String name;
-    private String description;
+    private String      name;
+    private String      description;
 
     public String getDescription() {
         return description;

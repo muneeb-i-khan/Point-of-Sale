@@ -7,14 +7,14 @@ import javax.persistence.*;
 public class InventoryPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long                id;
     @Column(unique = true, nullable = false)
-    String barcode;
-    Long quantity;
-    double price;
+    private String              barcode;
+    private Long                quantity;
+    double      price;
     @OneToOne
     @JoinColumn(name = "prodId", foreignKey = @ForeignKey(name = "inventory_product_id_fk"))
-    private ProductPojo productPojo;
+    private ProductPojo         productPojo;
 
     public Long getId() {
         return id;

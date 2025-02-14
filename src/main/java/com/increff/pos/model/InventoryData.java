@@ -1,10 +1,10 @@
 package com.increff.pos.model;
 
 public class InventoryData extends InventoryForm {
-    Long id;
-    Long prodId;
-    String prodName;
-    String clientName;
+    private Long        id;
+    private Long        prodId;
+    private String      prodName;
+    private String      clientName;
 
     public String getClientName() {
         return clientName;

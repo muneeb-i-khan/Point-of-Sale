@@ -1,8 +1,8 @@
 package com.increff.pos.model;
 
 public class ProductData extends ProductForm{
-    Long id;
-    Long client_id;
+    private Long        id;
+    private Long        client_id;
 
     public Long getClient_id() {
         return client_id;

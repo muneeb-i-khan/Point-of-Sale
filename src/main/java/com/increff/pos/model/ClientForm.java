@@ -1,8 +1,8 @@
 package com.increff.pos.model;
 
 public class ClientForm {
-    String name;
-    String description;
+    private String      name;
+    private String      description;
 
     public String getName() {
         return name;

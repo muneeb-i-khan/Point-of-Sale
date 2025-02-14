@@ -1,9 +1,9 @@
 package com.increff.pos.model;
 
 public class ProductForm {
-    String name;
-    String barcode;
-    String clientName;
+    private String      name;
+    private String      barcode;
+    private String      clientName;
     public String getName() {
         return name;
     }
