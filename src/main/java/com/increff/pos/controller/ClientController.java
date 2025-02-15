@@ -1,5 +1,6 @@
 package com.increff.pos.controller;
 
+import com.increff.pos.dto.ClientDto;
 import com.increff.pos.model.ClientData;
 import com.increff.pos.model.ClientForm;
 import com.increff.pos.db.pojo.ClientPojo;
@@ -21,7 +22,7 @@ public class ClientController {
     @ApiOperation(value = "Post a client")
     @RequestMapping(path="/api/client/", method = RequestMethod.POST)
     public void addClient(@RequestBody ClientForm ClientForm) {
-        ClientPojo p = convert(ClientForm);
+        ClientPojo p = ClientDto.convert(ClientForm);
         clientService.addClient(p);
     }
     @ApiOperation(value = "Delete a client")
@@ -35,7 +36,7 @@ public class ClientController {
     public ClientData get(@PathVariable Long id) throws ApiException {
         clientService.getCheck(id);
         ClientPojo p = clientService.getClient(id);
-        return convert(p);
+        return ClientDto.convert(p);
     }
 
     @ApiOperation(value = "Get all clients")
@@ -44,7 +45,7 @@ public class ClientController {
         List<ClientPojo> list = clientService.getAllClients();
         List<ClientData> list2 = new ArrayList<ClientData>();
         for(ClientPojo p : list) {
-            list2.add(convert(p));
+            list2.add(ClientDto.convert(p));
         }
         return list2;
     }
@@ -52,22 +53,9 @@ public class ClientController {
     @ApiOperation(value = "Update an existing client")
     @RequestMapping(path = "/api/client/{id}", method = RequestMethod.PUT)
     public void update(@PathVariable Long id, @RequestBody ClientForm ClientForm) throws ApiException{
-        ClientPojo p = convert(ClientForm);
+        ClientPojo p = ClientDto.convert(ClientForm);
         clientService.getCheck(id);
         clientService.updateClient(id,p);
     }
 
-    public static ClientData convert(ClientPojo p) {
-        ClientData clientData = new ClientData();
-        clientData.setName(p.getName());
-        clientData.setDescription(p.getDescription());
-        clientData.setId(p.getId());
-        return clientData;
-    }
-    public static ClientPojo convert(ClientForm ClientForm) {
-        ClientPojo p = new ClientPojo();
-        p.setName(ClientForm.getName());
-        p.setDescription(ClientForm.getDescription());
-        return p;
-    }
 }
