@@ -30,7 +30,6 @@ public class InventoryService {
     @Transactional(rollbackOn  = ApiException.class)
     public void updateInventory(Long id, InventoryPojo p) throws ApiException {
         InventoryPojo ex = getCheck(id);
-        ex.setPrice(p.getPrice());
         ex.setQuantity(p.getQuantity());
         ex.setBarcode(p.getBarcode());
         ex.setProductPojo(p.getProductPojo());
@@ -49,5 +48,14 @@ public class InventoryService {
             throw new ApiException("Inventory with given ID does not exit, id: " + id);
         }
         return inventoryPojo;
+    }
+
+    @Transactional(rollbackOn = ApiException.class)
+    public InventoryPojo getInventoryByBarcode(String barcode) throws ApiException {
+        InventoryPojo inventory = dao.selectByBarcode(barcode);
+        if (inventory == null) {
+            throw new ApiException("Inventory not found for barcode: " + barcode);
+        }
+        return inventory;
     }
 }

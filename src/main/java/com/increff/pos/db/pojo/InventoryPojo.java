@@ -11,7 +11,6 @@ public class InventoryPojo {
     @Column(unique = true, nullable = false)
     private String              barcode;
     private Long                quantity;
-    double      price;
     @OneToOne
     @JoinColumn(name = "prodId", foreignKey = @ForeignKey(name = "inventory_product_id_fk"))
     private ProductPojo         productPojo;
@@ -40,13 +39,6 @@ public class InventoryPojo {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
 
     public ProductPojo getProductPojo() {
         return productPojo;

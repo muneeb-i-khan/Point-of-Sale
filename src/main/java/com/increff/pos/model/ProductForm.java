@@ -3,6 +3,8 @@ package com.increff.pos.model;
 public class ProductForm {
     private String      name;
     private String      barcode;
+    private double         price;
+
     private String      clientName;
     public String getName() {
         return name;
@@ -26,6 +28,14 @@ public class ProductForm {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
 }

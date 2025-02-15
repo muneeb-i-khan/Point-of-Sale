@@ -12,6 +12,7 @@ public class ProductPojo {
     private String          name;
     @Column(unique = true, nullable = false)
     private String          barcode;
+    private double          price;
     @ManyToOne
     @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "product_client_id_fk"))
     private ClientPojo      clientPojo;
@@ -46,6 +47,15 @@ public class ProductPojo {
 
     public void setClientPojo(ClientPojo clientPojo) {
         this.clientPojo = clientPojo;
+    }
+
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
 }

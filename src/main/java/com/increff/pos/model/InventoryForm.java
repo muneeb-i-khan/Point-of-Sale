@@ -3,7 +3,6 @@ package com.increff.pos.model;
 public class InventoryForm {
     private String      barcode;
     private Long        quantity;
-    private double      price;
 
     public String getBarcode() {
         return barcode;
@@ -21,11 +20,4 @@ public class InventoryForm {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
 }
