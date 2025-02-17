@@ -24,47 +24,36 @@ import java.util.List;
 public class OrderController {
 
     @Autowired
-    private OrderFlowService orderFlowService;
-    @Autowired
-    private OrderService orderService;
+    OrderDto orderDto;
 
     @ApiOperation(value = "Create an order with multiple items")
     @PostMapping("/api/order")
-    public void createOrder(@RequestBody SalesForm salesForm) throws ApiException {
-        orderFlowService.createOrderAndUpdateInventory(salesForm);
+    public void addOrder(@RequestBody SalesForm salesForm) throws ApiException {
+        orderDto.addOrder(salesForm);
     }
 
     @ApiOperation(value = "Get all orders")
     @GetMapping("/api/order")
-    public List<OrderData> getOrders() throws ApiException {
-        List<OrderPojo> list = orderService.getAllOrders();
-        List<OrderData> list2 = new ArrayList<OrderData>();
-        for(OrderPojo p : list) {
-            list2.add(convert(p));
-        }
-        return list2;
+    public List<OrderData> getAllOrders() throws ApiException {
+        return orderDto.getAllOrders();
     }
 
     @ApiOperation(value = "Get order by ID")
     @GetMapping("/api/order/{id}")
     public OrderData getOrderById(@PathVariable Long id) throws ApiException {
-        OrderPojo order = orderService.getOrderById(id);
-        return new OrderData(order);
+        return orderDto.getOrder(id);
     }
 
     @ApiOperation(value = "Delete an order")
     @DeleteMapping("/api/order/{id}")
     public void deleteOrder(@PathVariable Long id) throws ApiException {
-        orderService.deleteOrder(id);
+        orderDto.deleteOrder(id);
     }
 
     @ApiOperation(value = "Update an order")
     @PutMapping("/api/order/{id}")
     public void updateOrder(@PathVariable Long id, @RequestBody SalesForm salesForm) throws ApiException {
-        orderService.updateOrder(id, salesForm);
+        orderDto.updateOrder(salesForm, id);
     }
 
-    public static OrderData convert(OrderPojo p) {
-        return new OrderData(p);
-    }
 }
