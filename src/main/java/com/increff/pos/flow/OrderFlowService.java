@@ -23,23 +23,29 @@ public class OrderFlowService {
 
     @Transactional
     public void createOrderAndUpdateInventory(SalesForm salesForm) throws ApiException {
+        validateInventoryAvailability(salesForm.getItems());
         OrderPojo order = orderService.createOrder(salesForm);
         updateInventoryForSales(salesForm.getItems());
     }
 
+    private void validateInventoryAvailability(List<SalesForm.SaleItem> saleItems) throws ApiException {
+        for (SalesForm.SaleItem saleItem : saleItems) {
+            InventoryPojo inventory = inventoryService.getInventoryByBarcode(saleItem.getBarcode());
+
+            if (inventory.getQuantity() < saleItem.getQuantity()) {
+                throw new ApiException("Insufficient inventory for product with barcode: " + saleItem.getBarcode());
+            }
+        }
+    }
+
     private void updateInventoryForSales(List<SalesForm.SaleItem> saleItems) throws ApiException {
         for (SalesForm.SaleItem saleItem : saleItems) {
-            String barcode = saleItem.getBarcode();
-            int quantitySold = saleItem.getQuantity();
-            reduceInventory(barcode, quantitySold);
+            reduceInventory(saleItem.getBarcode(), saleItem.getQuantity());
         }
     }
 
     private void reduceInventory(String barcode, int quantitySold) throws ApiException {
         InventoryPojo inventory = inventoryService.getInventoryByBarcode(barcode);
-        if (inventory.getQuantity() < quantitySold) {
-            throw new ApiException("Not enough inventory for product with barcode: " + barcode);
-        }
         inventory.setQuantity(inventory.getQuantity() - quantitySold);
         inventoryService.updateInventory(inventory.getId(), inventory);
     }
