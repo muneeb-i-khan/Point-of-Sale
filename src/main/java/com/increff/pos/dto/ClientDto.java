@@ -5,6 +5,7 @@ import com.increff.pos.model.ClientData;
 import com.increff.pos.model.ClientForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.ClientService;
+import com.increff.pos.util.Normalize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,20 +16,6 @@ import java.util.List;
 public class ClientDto {
     @Autowired
     ClientService clientService;
-
-    public ClientData convert(ClientPojo p) {
-        ClientData clientData = new ClientData();
-        clientData.setName(p.getName());
-        clientData.setDescription(p.getDescription());
-        clientData.setId(p.getId());
-        return clientData;
-    }
-    public ClientPojo convert(ClientForm ClientForm) {
-        ClientPojo p = new ClientPojo();
-        p.setName(ClientForm.getName());
-        p.setDescription(ClientForm.getDescription());
-        return p;
-    }
 
     public void addClient(ClientForm clientForm) {
         ClientPojo clientPojo = convert(clientForm);
@@ -60,4 +47,20 @@ public class ClientDto {
         clientService.getCheck(id);
         clientService.updateClient(id,p);
     }
+
+
+    public ClientData convert(ClientPojo p) {
+        ClientData clientData = new ClientData();
+        clientData.setName(Normalize.normalizeName(p.getName()));
+        clientData.setDescription(p.getDescription());
+        clientData.setId(p.getId());
+        return clientData;
+    }
+    public ClientPojo convert(ClientForm ClientForm) {
+        ClientPojo p = new ClientPojo();
+        p.setName(Normalize.normalizeName(ClientForm.getName()));
+        p.setDescription(ClientForm.getDescription());
+        return p;
+    }
+
 }

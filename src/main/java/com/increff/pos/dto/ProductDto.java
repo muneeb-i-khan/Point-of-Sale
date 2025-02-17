@@ -7,6 +7,7 @@ import com.increff.pos.model.ProductForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.service.ProductService;
+import com.increff.pos.util.Normalize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -51,19 +52,19 @@ public void updateProduct(Long id, ProductForm productForm) throws ApiException 
     productService.updateProduct(id,p);
 }
 
-    public ProductData convert(ProductPojo p) {
-        ProductData pd = new ProductData();
-        pd.setName(p.getName());
-        pd.setBarcode(p.getBarcode());
-        pd.setId(p.getId());
-        pd.setClientName(p.getClientPojo().getName());
-        pd.setClient_id(p.getClientPojo().getId());
-        pd.setPrice(p.getPrice());
-        return pd;
+    public ProductData convert(ProductPojo productPojo) {
+        ProductData productData = new ProductData();
+        productData.setName(Normalize.normalizeName(productPojo.getName()));
+        productData.setBarcode(productPojo.getBarcode());
+        productData.setId(productPojo.getId());
+        productData.setClientName(productPojo.getClientPojo().getName());
+        productData.setClient_id(productPojo.getClientPojo().getId());
+        productData.setPrice(productPojo.getPrice());
+        return productData;
     }
     public ProductPojo convert(ProductForm productForm) throws ApiException {
         ProductPojo p = new ProductPojo();
-        p.setName(productForm.getName());
+        p.setName(Normalize.normalizeName(productForm.getName()));
         p.setBarcode(productForm.getBarcode());
         p.setPrice(productForm.getPrice());
         ClientPojo cp = clientService.getClientByName(productForm.getClientName());
