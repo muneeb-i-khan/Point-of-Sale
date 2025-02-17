@@ -4,7 +4,6 @@ import com.increff.pos.dto.ClientDto;
 import com.increff.pos.model.ClientData;
 import com.increff.pos.model.ClientForm;
 import com.increff.pos.service.ApiException;
-import com.increff.pos.service.ClientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

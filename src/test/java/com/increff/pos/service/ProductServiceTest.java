@@ -92,11 +92,13 @@ public class ProductServiceTest extends AbstractUnitTest {
         ProductPojo p1 = new ProductPojo();
         p1.setBarcode("SON123");
         p1.setName("PlayStation 5");
+        p1.setPrice(45000);
         p1.setClientPojo(savedClient1);
 
         ProductPojo p2 = new ProductPojo();
         p2.setBarcode("LG456");
         p2.setName("LG OLED TV");
+        p2.setPrice(65000);
         p2.setClientPojo(savedClient2);
 
         productService.addProduct(p1);
@@ -117,6 +119,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         ProductPojo product = new ProductPojo();
         product.setBarcode("OP123");
         product.setName("OnePlus 9");
+        product.setPrice(3200);
         product.setClientPojo(savedClient);
         productService.addProduct(product);
 
@@ -125,6 +128,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         ProductPojo updatedProduct = new ProductPojo();
         updatedProduct.setBarcode("OP999");
         updatedProduct.setName("OnePlus 10");
+        updatedProduct.setPrice(4000);
         updatedProduct.setClientPojo(savedClient);
 
         productService.updateProduct(savedProduct.getId(), updatedProduct);
@@ -132,6 +136,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         ProductPojo result = productService.getProduct(savedProduct.getId());
         assertEquals("OnePlus 10", result.getName());
         assertEquals("OP999", result.getBarcode());
+        assertEquals(4000.0, result.getPrice(), 0.00001);
     }
 
     @Test(expected = ApiException.class)
@@ -139,8 +144,9 @@ public class ProductServiceTest extends AbstractUnitTest {
         ProductPojo updatePojo = new ProductPojo();
         updatePojo.setBarcode("XYZ123");
         updatePojo.setName("NonExistent");
+        updatePojo.setPrice(1000);
 
-        productService.updateProduct(999L, updatePojo); // Non-existent ID
+        productService.updateProduct(999L, updatePojo);
     }
 
     @Test
@@ -154,6 +160,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         ProductPojo product = new ProductPojo();
         product.setBarcode("GOO123");
         product.setName("Pixel 7");
+        product.setPrice(50000);
         product.setClientPojo(savedClient);
 
         productService.addProduct(product);

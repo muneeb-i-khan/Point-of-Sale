@@ -52,6 +52,7 @@ public class ProductService {
         ProductPojo ex = getCheck(id);
         ex.setBarcode(p.getBarcode());
         ex.setName(p.getName());
+        ex.setPrice(p.getPrice());
         ex.setClientPojo(p.getClientPojo());
         dao.update(p);
     }
