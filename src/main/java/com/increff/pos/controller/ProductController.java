@@ -1,5 +1,6 @@
 package com.increff.pos.controller;
 
+import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.dto.ProductDto;
 import com.increff.pos.model.ProductData;
@@ -25,7 +26,7 @@ public class ProductController {
     @ApiOperation(value = "Post a product")
     @RequestMapping(path="/api/product/", method = RequestMethod.POST)
     public void addProduct(@RequestBody ProductForm ProductForm) throws ApiException{
-        ProductPojo p = ProductDto.convert(ProductForm);
+        ProductPojo p = convert(ProductForm);
         productService.addProduct(p);
     }
 
@@ -41,7 +42,7 @@ public class ProductController {
     public ProductData get(@PathVariable Long id) throws ApiException {
         productService.getCheck(id);
         ProductPojo p = productService.getProduct(id);
-        return ProductDto.convert(p);
+        return convert(p);
     }
 
     @ApiOperation(value = "Get all clients")
@@ -50,7 +51,7 @@ public class ProductController {
         List<ProductPojo> list = productService.getAllProducts();
         List<ProductData> list2 = new ArrayList<ProductData>();
         for(ProductPojo p : list) {
-            list2.add(ProductDto.convert(p));
+            list2.add(convert(p));
         }
         return list2;
     }
@@ -58,8 +59,29 @@ public class ProductController {
     @ApiOperation(value = "Update an existing product")
     @RequestMapping(path = "/api/product/{id}", method = RequestMethod.PUT)
     public void update(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException{
-        ProductPojo p = ProductDto.convert(productForm);
+        ProductPojo p = convert(productForm);
         productService.getCheck(id);
         productService.updateProduct(id,p);
     }
+
+    public static ProductData convert(ProductPojo p) {
+        ProductData pd = new ProductData();
+        pd.setName(p.getName());
+        pd.setBarcode(p.getBarcode());
+        pd.setId(p.getId());
+        pd.setClientName(p.getClientPojo().getName());
+        pd.setClient_id(p.getClientPojo().getId());
+        pd.setPrice(p.getPrice());
+        return pd;
+    }
+    public ProductPojo convert(ProductForm productForm) throws ApiException {
+        ProductPojo p = new ProductPojo();
+        p.setName(productForm.getName());
+        p.setBarcode(productForm.getBarcode());
+        p.setPrice(productForm.getPrice());
+        ClientPojo cp = clientService.getClientByName(productForm.getClientName());
+        p.setClientPojo(clientService.getClient(cp.getId()));
+        return p;
+    }
+
 }
