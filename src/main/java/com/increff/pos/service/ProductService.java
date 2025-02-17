@@ -6,6 +6,7 @@ import com.increff.pos.db.pojo.ProductPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -20,22 +21,30 @@ public class ProductService {
     }
 
     @Transactional(rollbackOn = ApiException.class)
+    public ProductPojo getProductByBarcode(String barcode) throws ApiException {
+        try {
+            ProductPojo product = dao.selectByBarcode(barcode);
+            if (product == null) {
+                throw new ApiException("Product with the given barcode does not exist: " + barcode);
+            }
+            return product;
+        } catch (NoResultException e) {
+            throw new ApiException("Product with the given barcode does not exist: " + barcode);
+        }
+    }
+
+    @Transactional(rollbackOn = ApiException.class)
     public ProductPojo getProduct(Long id) throws ApiException {
-        return getCheck(id);
+        try {
+            return getCheck(id);
+        } catch (NoResultException e) {
+            throw new ApiException("Product with given ID does not exist: " + id);
+        }
     }
 
     @Transactional
     public List<ProductPojo> getAllProducts() {
         return dao.selectAll();
-    }
-
-    @Transactional
-    public ProductPojo getCheck(Long id) throws ApiException {
-        ProductPojo p = dao.select(id);
-        if (p == null) {
-            throw new ApiException("Product with given ID does not exit, id: " + id);
-        }
-        return p;
     }
 
     @Transactional(rollbackOn  = ApiException.class)
@@ -49,16 +58,21 @@ public class ProductService {
 
     @Transactional
     public void deleteProduct(Long id) {
+
         dao.delete(id);
     }
 
-    @Transactional(rollbackOn = ApiException.class)
-    public ProductPojo getProductByBarcode(String barcode) throws ApiException {
-        ProductPojo product = dao.selectByBarcode(barcode);
-        if (product == null) {
-            throw new ApiException("Product with the given barcode does not exist: " + barcode);
+    @Transactional
+    public ProductPojo getCheck(Long id) throws ApiException {
+        try {
+            ProductPojo p = dao.select(id);
+            if (p == null) {
+                throw new ApiException("Product with given ID does not exist, id: " + id);
+            }
+            return p;
+        } catch (NoResultException e) {
+            throw new ApiException("Product with given ID does not exist, id: " + id);
         }
-        return product;
     }
 
 }

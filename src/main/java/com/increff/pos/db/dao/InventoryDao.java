@@ -3,10 +3,7 @@ package com.increff.pos.db.dao;
 import com.increff.pos.db.pojo.InventoryPojo;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.util.List;
 
 @Repository
@@ -42,9 +39,13 @@ public class InventoryDao {
     }
 
     public InventoryPojo selectByBarcode(String barcode) {
-        TypedQuery<InventoryPojo> query = getQuery(select_barcode);
-        query.setParameter("barcode",barcode);
-        return query.getSingleResult();
+        try {
+            TypedQuery<InventoryPojo> query = getQuery(select_barcode);
+            query.setParameter("barcode", barcode);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     TypedQuery<InventoryPojo> getQuery(String jpql) {

@@ -3,10 +3,7 @@ package com.increff.pos.db.dao;
 import com.increff.pos.db.pojo.ClientPojo;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.util.List;
 
 @Repository
@@ -23,15 +20,21 @@ public class ClientDao {
     }
 
     public void delete(Long id) {
-        Query query = em.createQuery(delete_id);
-        query.setParameter("id", id);
-        query.executeUpdate();
+        ClientPojo client = em.find(ClientPojo.class, id);
+        if (client != null) {
+            em.remove(client);
+        }
     }
 
+
     public ClientPojo select(Long id) {
-        TypedQuery<ClientPojo> query = getQuery(select_id);
-        query.setParameter("id", id);
-        return query.getSingleResult();
+        try {
+            TypedQuery<ClientPojo> query = getQuery(select_id);
+            query.setParameter("id", id);
+            return query.getSingleResult();
+        } catch(NoResultException e) {
+            return null;
+        }
     }
 
     public List<ClientPojo> selectAll() {

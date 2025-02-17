@@ -38,23 +38,27 @@ public class OrderService {
 
         List<SalesPojo> salesItems = new ArrayList<>();
         for (SaleItem saleItem : salesForm.getItems()) {
-            ProductPojo product = productDao.selectByBarcode(saleItem.getBarcode());
-            if (product == null) {
+            try {
+                ProductPojo product = productDao.selectByBarcode(saleItem.getBarcode());
+                if (product == null) {
+                    throw new ApiException("Product with barcode " + saleItem.getBarcode() + " not found");
+                }
+
+                double unitPrice = product.getPrice();
+                double itemTotalAmount = unitPrice * saleItem.getQuantity();
+                totalOrderAmount += itemTotalAmount;
+
+                SalesPojo salesPojo = new SalesPojo();
+                salesPojo.setProduct(product);
+                salesPojo.setQuantity(saleItem.getQuantity());
+                salesPojo.setUnitPrice(unitPrice);
+                salesPojo.setTotalAmount(itemTotalAmount);
+                salesPojo.setSaleDate(saleItem.getSaleDate());
+                salesPojo.setOrder(order);
+                salesItems.add(salesPojo);
+            } catch (javax.persistence.NoResultException e) {
                 throw new ApiException("Product with barcode " + saleItem.getBarcode() + " not found");
             }
-
-            double unitPrice = product.getPrice();
-            double itemTotalAmount = unitPrice * saleItem.getQuantity();
-            totalOrderAmount += itemTotalAmount;
-
-            SalesPojo salesPojo = new SalesPojo();
-            salesPojo.setProduct(product);
-            salesPojo.setQuantity(saleItem.getQuantity());
-            salesPojo.setUnitPrice(unitPrice);
-            salesPojo.setTotalAmount(itemTotalAmount);
-            salesPojo.setSaleDate(saleItem.getSaleDate());
-            salesPojo.setOrder(order);
-            salesItems.add(salesPojo);
         }
 
         order.setTotalAmount(totalOrderAmount);

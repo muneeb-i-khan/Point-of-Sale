@@ -36,19 +36,25 @@ public class InventoryService {
         dao.update(p);
     }
 
-    @Transactional
-    public void deleteInventory(Long id) {
+    @Transactional(rollbackOn = ApiException.class)
+    public void deleteInventory(Long id) throws ApiException {
+        InventoryPojo inventoryPojo = getCheck(id);
         dao.delete(id);
     }
 
     @Transactional
     public InventoryPojo getCheck(Long id) throws ApiException {
-        InventoryPojo inventoryPojo = dao.select(id);
-        if (inventoryPojo == null) {
-            throw new ApiException("Inventory with given ID does not exit, id: " + id);
+        try {
+            InventoryPojo inventoryPojo = dao.select(id);
+            if (inventoryPojo == null) {
+                throw new ApiException("Inventory with given ID does not exist, id: " + id);
+            }
+            return inventoryPojo;
+        } catch (javax.persistence.NoResultException e) {  // Catch NoResultException
+            throw new ApiException("Inventory with given ID does not exist, id: " + id);
         }
-        return inventoryPojo;
     }
+
 
     @Transactional(rollbackOn = ApiException.class)
     public InventoryPojo getInventoryByBarcode(String barcode) throws ApiException {
@@ -58,4 +64,5 @@ public class InventoryService {
         }
         return inventory;
     }
+
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -30,10 +31,11 @@ public class OrderDao {
     }
 
     public Optional<OrderPojo> selectById(Long id) {
-        TypedQuery<OrderPojo> query = em.createQuery(SELECT_BY_ID, OrderPojo.class);
-        query.setParameter("orderId", id);
-        List<OrderPojo> resultList = query.getResultList();
-        return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
+        try {
+            return Optional.ofNullable(em.find(OrderPojo.class, id));
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Transactional
