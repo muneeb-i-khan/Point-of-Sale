@@ -17,7 +17,7 @@ public class OrderData {
         this.orderDate = order.getOrderDate();
         this.items = order.getSalesItems()
                 .stream()
-                .map(salesPojo -> new SaleItem(salesPojo))
+                .map(SaleItem::new)
                 .collect(Collectors.toList());
     }
 
