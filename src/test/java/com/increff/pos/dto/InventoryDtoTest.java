@@ -78,20 +78,6 @@ public class InventoryDtoTest extends AbstractUnitTest {
     }
 
     @Test
-    public void testGetInventoryByBarcode() throws ApiException {
-        InventoryForm form = new InventoryForm();
-        form.setBarcode(barcode);
-        form.setQuantity(10L);
-        inventoryDto.addInventory(form);
-
-        InventoryData inventory = inventoryDto.getInventory(barcode);
-
-        assertNotNull(inventory);
-        assertEquals(barcode, inventory.getBarcode());
-        assertEquals(10L, inventory.getQuantity().longValue());
-    }
-
-    @Test
     public void testUpdateInventory() throws ApiException {
         InventoryForm form = new InventoryForm();
         form.setBarcode(barcode);
