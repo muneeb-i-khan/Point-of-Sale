@@ -14,9 +14,16 @@ public class InventoryService {
     private final InventoryDao dao = new InventoryDao();
 
     @Transactional
-    public void addInventory(InventoryPojo p) {
-        dao.add(p);
+    public void addInventory(InventoryPojo p) throws ApiException {
+        InventoryPojo existingInventory = dao.selectByBarcode(p.getBarcode());
+        if (existingInventory != null) {
+            existingInventory.setQuantity(existingInventory.getQuantity() + p.getQuantity());
+            dao.update(existingInventory);
+        } else {
+            dao.add(p);
+        }
     }
+
     @Transactional
     public List<InventoryPojo> getAllInventories() {
         return dao.selectAll();
