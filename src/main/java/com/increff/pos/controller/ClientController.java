@@ -17,7 +17,7 @@ public class ClientController {
     ClientDto clientDto;
 
     @ApiOperation(value = "Post a client")
-    @RequestMapping(path="/api/client/", method = RequestMethod.POST)
+    @RequestMapping(path="/api/client", method = RequestMethod.POST)
     public void addClient(@RequestBody ClientForm clientForm) {
         clientDto.addClient(clientForm);
     }
