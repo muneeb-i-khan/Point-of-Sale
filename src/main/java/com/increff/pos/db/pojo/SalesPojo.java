@@ -25,6 +25,16 @@ public class SalesPojo {
 
     private String saleDate;
 
+    private String prodName;
+
+    public String getProdName() {
+        return prodName;
+    }
+
+    public void setProdName(String prodName) {
+        this.prodName = prodName;
+    }
+
     public Long getId() {
         return id;
     }

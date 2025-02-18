@@ -22,13 +22,13 @@ import java.util.Optional;
 public class OrderService {
 
     @Autowired
-    private ProductDao productDao;
-
-    @Autowired
     private SalesDao salesDao;
 
     @Autowired
     private OrderDao orderDao;
+
+    @Autowired
+    private ProductService productService;
 
     @Transactional
     public OrderPojo createOrder(SalesForm salesForm) throws ApiException {
@@ -39,7 +39,7 @@ public class OrderService {
         List<SalesPojo> salesItems = new ArrayList<>();
         for (SaleItem saleItem : salesForm.getItems()) {
             try {
-                ProductPojo product = productDao.selectByBarcode(saleItem.getBarcode());
+                ProductPojo product = productService.getProductByBarcode(saleItem.getBarcode());
                 if (product == null) {
                     throw new ApiException("Product with barcode " + saleItem.getBarcode() + " not found");
                 }
@@ -54,6 +54,7 @@ public class OrderService {
                 salesPojo.setUnitPrice(unitPrice);
                 salesPojo.setTotalAmount(itemTotalAmount);
                 salesPojo.setSaleDate(saleItem.getSaleDate());
+                salesPojo.setProdName(product.getName());
                 salesPojo.setOrder(order);
                 salesItems.add(salesPojo);
             } catch (javax.persistence.NoResultException e) {
@@ -67,6 +68,7 @@ public class OrderService {
 
         return order;
     }
+
 
     @Transactional
     public List<OrderPojo> getAllOrders() {
@@ -95,7 +97,7 @@ public class OrderService {
         List<SalesPojo> salesItems = new ArrayList<>();
 
         for (SaleItem saleItem : salesForm.getItems()) {
-            ProductPojo product = productDao.selectByBarcode(saleItem.getBarcode());
+            ProductPojo product = productService.getProductByBarcode(saleItem.getBarcode());
             if (product == null) {
                 throw new ApiException("Product with barcode " + saleItem.getBarcode() + " not found");
             }
@@ -110,12 +112,16 @@ public class OrderService {
             salesPojo.setUnitPrice(unitPrice);
             salesPojo.setTotalAmount(itemTotalAmount);
             salesPojo.setSaleDate(saleItem.getSaleDate());
+            salesPojo.setProdName(product.getName());
             salesPojo.setOrder(order);
+
             salesItems.add(salesPojo);
         }
 
         order.setTotalAmount(totalOrderAmount);
         order.setSalesItems(salesItems);
+
         orderDao.update(order);
     }
+
 }
