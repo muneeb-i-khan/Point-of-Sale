@@ -18,7 +18,7 @@ public class InventoryController {
     InventoryDto inventoryDto;
 
     @ApiOperation(value = "Post an inventory")
-    @RequestMapping(path="/api/inventory/", method = RequestMethod.POST)
+    @RequestMapping(path="/api/inventory", method = RequestMethod.POST)
     public void addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.addInventory(inventoryForm);
     }

@@ -18,7 +18,7 @@ public class ProductController {
     ProductDto productDto;
 
     @ApiOperation(value = "Post a product")
-    @RequestMapping(path="/api/product/", method = RequestMethod.POST)
+    @RequestMapping(path="/api/product", method = RequestMethod.POST)
     public void addProduct(@RequestBody ProductForm productForm) throws ApiException{
         productDto.addProduct(productForm);
     }
