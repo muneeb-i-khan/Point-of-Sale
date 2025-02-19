@@ -47,15 +47,27 @@ public class ProductService {
         return dao.selectAll();
     }
 
-    @Transactional(rollbackOn  = ApiException.class)
+    @Transactional(rollbackOn = ApiException.class)
     public void updateProduct(Long id, ProductPojo p) throws ApiException {
         ProductPojo ex = getCheck(id);
+
+        try {
+            ProductPojo existingProduct = dao.selectByBarcode(p.getBarcode());
+            if (existingProduct != null && !existingProduct.getId().equals(id)) {
+                throw new ApiException("Barcode already exists for another product.");
+            }
+        } catch (NoResultException e) {
+        }
         ex.setBarcode(p.getBarcode());
         ex.setName(p.getName());
         ex.setPrice(p.getPrice());
         ex.setClientPojo(p.getClientPojo());
+        if (ex.getInventory() != null) {
+            ex.getInventory().setBarcode(p.getBarcode());
+        }
         dao.update(ex);
     }
+
 
     @Transactional
     public void deleteProduct(Long id) {
