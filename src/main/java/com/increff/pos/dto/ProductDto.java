@@ -21,7 +21,7 @@ public class ProductDto {
     @Autowired
     ProductService productService;
 
-    public void addProduct(ProductForm productForm) throws ApiException{
+    public void addProduct(ProductForm productForm) throws ApiException {
         ProductPojo p = convert(productForm);
         productService.addProduct(p);
     }
@@ -39,18 +39,18 @@ public class ProductDto {
 
     public List<ProductData> getAllProducts() {
         List<ProductPojo> list = productService.getAllProducts();
-        List<ProductData> list2 = new ArrayList<ProductData>();
+        List<ProductData> list2 = new ArrayList<>();
         for(ProductPojo p : list) {
             list2.add(convert(p));
         }
         return list2;
     }
 
-public void updateProduct(Long id, ProductForm productForm) throws ApiException {
-    ProductPojo p = convert(productForm);
-    productService.getCheck(id);
-    productService.updateProduct(id,p);
-}
+    public void updateProduct(Long id, ProductForm productForm) throws ApiException {
+        ProductPojo p = convert(productForm);
+        productService.getCheck(id);
+        productService.updateProduct(id, p);
+    }
 
     public ProductData convert(ProductPojo productPojo) {
         ProductData productData = new ProductData();
@@ -62,13 +62,14 @@ public void updateProduct(Long id, ProductForm productForm) throws ApiException 
         productData.setPrice(productPojo.getPrice());
         return productData;
     }
+
     public ProductPojo convert(ProductForm productForm) throws ApiException {
         ProductPojo p = new ProductPojo();
         p.setName(Normalize.normalizeName(productForm.getName()));
         p.setBarcode(productForm.getBarcode());
         p.setPrice(productForm.getPrice());
         ClientPojo cp = clientService.getClientByName(productForm.getClientName());
-        p.setClientPojo(clientService.getClient(cp.getId()));
+        p.setClientPojo(cp);
         return p;
     }
 }

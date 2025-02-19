@@ -8,10 +8,10 @@ import java.util.List;
 
 @Repository
 public class ClientDao {
-    private static final String delete_id = "delete from ClientPojo p where id=:id";
     private static final String select_id = "select p from ClientPojo p where id=:id";
     private static final String select_all = "select p from ClientPojo p";
     private static final String select_by_name = "select p from ClientPojo p where name=:name";
+
     @PersistenceContext
     EntityManager em;
 
@@ -25,7 +25,6 @@ public class ClientDao {
             em.remove(client);
         }
     }
-
 
     public ClientPojo select(Long id) {
         try {
@@ -43,6 +42,7 @@ public class ClientDao {
     }
 
     public void update(ClientPojo p) {
+        em.merge(p);
     }
 
     public ClientPojo selectByName(String name) {
@@ -50,7 +50,6 @@ public class ClientDao {
         query.setParameter("name", name);
         return query.getSingleResult();
     }
-
 
     TypedQuery<ClientPojo> getQuery(String jpql) {
         return em.createQuery(jpql, ClientPojo.class);

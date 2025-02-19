@@ -1,16 +1,24 @@
 package com.increff.pos.db.pojo;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "clients")
 public class ClientPojo {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long        id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(nullable = false, unique = true)
-    private String      name;
-    private String      description;
+    private String name;
+
+    private String description;
+
+    @OneToMany(mappedBy = "clientPojo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductPojo> products = new ArrayList<>();
 
     public String getDescription() {
         return description;
@@ -36,4 +44,11 @@ public class ClientPojo {
         this.id = id;
     }
 
+    public List<ProductPojo> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<ProductPojo> products) {
+        this.products = products;
+    }
 }
