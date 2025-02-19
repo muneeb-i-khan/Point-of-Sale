@@ -54,7 +54,7 @@ public class ProductService {
         ex.setName(p.getName());
         ex.setPrice(p.getPrice());
         ex.setClientPojo(p.getClientPojo());
-        dao.update(p);
+        dao.update(ex);
     }
 
     @Transactional
