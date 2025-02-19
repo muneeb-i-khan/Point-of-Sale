@@ -21,6 +21,17 @@ public class ProductPojo {
     @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "product_client_id_fk"))
     private ClientPojo clientPojo;
 
+    @OneToOne(mappedBy = "productPojo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private InventoryPojo inventory;
+
+    public InventoryPojo getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(InventoryPojo inventory) {
+        this.inventory = inventory;
+    }
+
     public Long getId() {
         return id;
     }
