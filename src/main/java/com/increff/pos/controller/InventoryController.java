@@ -7,7 +7,9 @@ import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -53,4 +55,10 @@ public class InventoryController {
         inventoryDto.deleteInventory(id);
     }
 
+    @ApiOperation(value = "Upload inventory via TSV")
+    @RequestMapping(path = "/api/inventory/upload", method = RequestMethod.POST)
+    public ResponseEntity<String> uploadInventory(@RequestParam("file") MultipartFile file) throws Exception {
+        inventoryDto.uploadInventory(file);
+        return ResponseEntity.ok("Inventory file uploaded successfully.");
+    }
 }

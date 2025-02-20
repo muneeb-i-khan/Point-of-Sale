@@ -1,6 +1,7 @@
 package com.increff.pos.service;
 
 import com.increff.pos.db.pojo.ClientPojo;
+import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.util.Normalize;
 import com.increff.pos.util.TsvParserUtil;
@@ -18,6 +19,9 @@ public class TsvUploadService {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private InventoryService inventoryService;
 
     @Autowired
     private ClientService clientService;
@@ -40,8 +44,33 @@ public class TsvUploadService {
 
                     return p;
                 });
+
         for (ProductPojo product : products) {
             productService.addProduct(product);
         }
     }
+
+    public void uploadInventory(MultipartFile file) throws IOException, ApiException {
+        List<InventoryPojo> inventoryList = TsvParserUtil.parseTSV(file.getInputStream(),
+                new HashSet<>(Arrays.asList("barcode", "quantity")),
+                record -> {
+                    InventoryPojo inventoryPojo = new InventoryPojo();
+                    inventoryPojo.setBarcode(record.get("barcode"));
+                    inventoryPojo.setQuantity(Long.parseLong(record.get("quantity")));
+
+                    try {
+                        ProductPojo productPojo = productService.getProductByBarcode(inventoryPojo.getBarcode());
+                        inventoryPojo.setProductPojo(productPojo);
+                    } catch (ApiException e) {
+                        throw new RuntimeException("Product not found for barcode: " + inventoryPojo.getBarcode());
+                    }
+
+                    return inventoryPojo;
+                });
+
+        for (InventoryPojo inventoryPojo : inventoryList) {
+            inventoryService.addInventory(inventoryPojo);
+        }
+    }
+
 }

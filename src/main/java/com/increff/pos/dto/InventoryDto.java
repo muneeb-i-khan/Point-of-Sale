@@ -7,9 +7,12 @@ import com.increff.pos.model.InventoryForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
+import com.increff.pos.service.TsvUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,9 @@ public class InventoryDto {
 
     @Autowired
     InventoryService inventoryService;
+
+    @Autowired
+    TsvUploadService tsvUploadService;
 
     public void addInventory(InventoryForm inventoryForm) throws ApiException {
         InventoryPojo inventoryPojo = convert(inventoryForm);
@@ -57,6 +63,10 @@ public class InventoryDto {
     public void deleteInventory(Long id) throws ApiException {
         inventoryService.getCheck(id);
         inventoryService.deleteInventory(id);
+    }
+
+    public void uploadInventory(MultipartFile file) throws IOException, ApiException {
+        tsvUploadService.uploadInventory(file);
     }
 
     public InventoryData convert(InventoryPojo inventoryPojo) {
