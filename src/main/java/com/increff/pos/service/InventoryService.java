@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class InventoryService {
     @Autowired
-    private final InventoryDao dao = new InventoryDao();
+    private InventoryDao dao;
 
     @Transactional
     public void addInventory(InventoryPojo p) throws ApiException {

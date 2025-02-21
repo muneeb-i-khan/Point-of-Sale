@@ -2,7 +2,6 @@ package com.increff.pos.service;
 
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,12 @@ import com.increff.pos.db.pojo.ClientPojo;
 @Service
 public class ClientService {
 
+    private final ClientDao dao;
+
     @Autowired
-    private final ClientDao dao = new ClientDao();
+    public ClientService(ClientDao dao) {
+        this.dao = dao;
+    }
 
     @Transactional
     public void addClient(ClientPojo p) {
@@ -25,9 +28,8 @@ public class ClientService {
     @Transactional(rollbackOn = ApiException.class)
     public void deleteClient(Long id) throws ApiException {
         ClientPojo client = getCheck(id);
-        dao.delete(id);
+        dao.delete(client.getId());
     }
-
 
     @Transactional(rollbackOn = ApiException.class)
     public ClientPojo getClient(Long id) throws ApiException {
@@ -49,15 +51,11 @@ public class ClientService {
 
     @Transactional(rollbackOn = ApiException.class)
     public ClientPojo getClientByName(String name) throws ApiException {
-        try {
-            ClientPojo client = dao.selectByName(name);
-            if (client == null) {
-                throw new ApiException("Client with the given name does not exist: " + name);
-            }
-            return client;
-        } catch (NoResultException e) {
+        ClientPojo client = dao.selectByName(name);
+        if (client == null) {
             throw new ApiException("Client with the given name does not exist: " + name);
         }
+        return client;
     }
 
     @Transactional
