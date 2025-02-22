@@ -1,6 +1,8 @@
-package com.increff.pos.model;
+package com.increff.pos.model.data;
 
-public class ProductData extends ProductForm{
+import com.increff.pos.model.forms.ProductForm;
+
+public class ProductData extends ProductForm {
     private Long        id;
     private Long        client_id;
 

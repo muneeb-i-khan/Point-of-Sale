@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import com.increff.pos.service.AbstractUnitTest;
 import com.increff.pos.service.QaConfig;
-import com.increff.pos.model.ClientData;
-import com.increff.pos.model.ClientForm;
+import com.increff.pos.model.data.ClientData;
+import com.increff.pos.model.forms.ClientForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.ClientService;
 import org.junit.Test;

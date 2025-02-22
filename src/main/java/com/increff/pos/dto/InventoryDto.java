@@ -2,8 +2,8 @@ package com.increff.pos.dto;
 
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
-import com.increff.pos.model.InventoryData;
-import com.increff.pos.model.InventoryForm;
+import com.increff.pos.model.data.InventoryData;
+import com.increff.pos.model.forms.InventoryForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;

@@ -1,6 +1,6 @@
 package com.increff.pos.db.pojo;
 
-import com.increff.pos.util.Role;
+import com.increff.pos.model.constants.Role;
 
 import javax.persistence.*;
 

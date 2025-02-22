@@ -2,14 +2,13 @@ package com.increff.pos.dto;
 
 import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
-import com.increff.pos.model.ProductData;
-import com.increff.pos.model.ProductForm;
+import com.increff.pos.model.data.ProductData;
+import com.increff.pos.model.forms.ProductForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.service.TsvUploadService;
 import com.increff.pos.util.Normalize;
-import com.increff.pos.util.TsvParserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

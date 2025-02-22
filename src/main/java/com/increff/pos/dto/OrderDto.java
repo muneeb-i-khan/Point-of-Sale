@@ -2,9 +2,9 @@ package com.increff.pos.dto;
 
 import com.increff.pos.db.pojo.OrderPojo;
 import com.increff.pos.flow.OrderFlowService;
-import com.increff.pos.model.OrderData;
-import com.increff.pos.model.SalesForm;
-import com.increff.pos.model.SalesForm.SaleItem;
+import com.increff.pos.model.data.OrderData;
+import com.increff.pos.model.forms.SalesForm;
+import com.increff.pos.model.forms.SalesForm.SaleItem;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.increff.pos.dto;
 
-import com.increff.pos.util.Role;
+import com.increff.pos.model.constants.Role;
 
 public class UserDto {
     private Long id;

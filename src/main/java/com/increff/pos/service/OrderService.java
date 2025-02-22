@@ -1,22 +1,18 @@
 package com.increff.pos.service;
 
 import com.increff.pos.db.dao.OrderDao;
-import com.increff.pos.db.dao.ProductDao;
 import com.increff.pos.db.dao.SalesDao;
 import com.increff.pos.db.pojo.OrderPojo;
 import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.db.pojo.SalesPojo;
-import com.increff.pos.model.OrderData;
-import com.increff.pos.model.SalesForm;
-import com.increff.pos.model.SalesForm.SaleItem;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.model.forms.SalesForm;
+import com.increff.pos.model.forms.SalesForm.SaleItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderService {

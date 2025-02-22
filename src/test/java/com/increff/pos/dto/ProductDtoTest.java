@@ -1,8 +1,8 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.db.pojo.ClientPojo;
-import com.increff.pos.model.ProductData;
-import com.increff.pos.model.ProductForm;
+import com.increff.pos.model.data.ProductData;
+import com.increff.pos.model.forms.ProductForm;
 import com.increff.pos.service.*;
 import org.junit.Before;
 import org.junit.Test;

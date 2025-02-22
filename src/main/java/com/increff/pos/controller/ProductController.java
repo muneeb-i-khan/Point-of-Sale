@@ -1,8 +1,8 @@
 package com.increff.pos.controller;
 
 import com.increff.pos.dto.ProductDto;
-import com.increff.pos.model.ProductData;
-import com.increff.pos.model.ProductForm;
+import com.increff.pos.model.data.ProductData;
+import com.increff.pos.model.forms.ProductForm;
 import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

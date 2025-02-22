@@ -1,6 +1,8 @@
-package com.increff.pos.model;
+package com.increff.pos.model.data;
 
-public class ClientData extends ClientForm{
+import com.increff.pos.model.forms.ClientForm;
+
+public class ClientData extends ClientForm {
     private Long        id;
 
     public Long getId() {

@@ -1,8 +1,8 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.db.pojo.ClientPojo;
-import com.increff.pos.model.ClientData;
-import com.increff.pos.model.ClientForm;
+import com.increff.pos.model.data.ClientData;
+import com.increff.pos.model.forms.ClientForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.util.Normalize;
