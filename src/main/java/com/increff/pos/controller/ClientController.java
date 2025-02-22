@@ -12,38 +12,38 @@ import java.util.List;
 
 @Api
 @RestController
+@RequestMapping("/api/client")
 public class ClientController {
     @Autowired
     ClientDto clientDto;
 
     @ApiOperation(value = "Post a client")
-    @RequestMapping(path="/api/client", method = RequestMethod.POST)
+    @PostMapping
     public void addClient(@RequestBody ClientForm clientForm) {
         clientDto.addClient(clientForm);
     }
 
     @ApiOperation(value = "Delete a client")
-    @RequestMapping(path="/api/client/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id) throws ApiException  {
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) throws ApiException {
         clientDto.deleteClient(id);
     }
 
-    @ApiOperation(value = "Get a client based on it's Id")
-    @RequestMapping(path = "/api/client/{id}", method = RequestMethod.GET)
+    @ApiOperation(value = "Get a client based on its Id")
+    @GetMapping("/{id}")
     public ClientData get(@PathVariable Long id) throws ApiException {
         return clientDto.getClient(id);
     }
 
     @ApiOperation(value = "Get all clients")
-    @RequestMapping(path = "/api/client", method = RequestMethod.GET)
+    @GetMapping
     public List<ClientData> getAll() {
         return clientDto.getAllClients();
     }
 
     @ApiOperation(value = "Update an existing client")
-    @RequestMapping(path = "/api/client/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException{
+    @PutMapping("/{id}")
+    public void update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
         clientDto.updateClient(clientForm, id);
     }
-
 }

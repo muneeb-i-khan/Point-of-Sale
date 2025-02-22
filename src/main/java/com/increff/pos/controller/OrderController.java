@@ -13,37 +13,38 @@ import java.util.List;
 
 @Api
 @RestController
+@RequestMapping("/api/order")
 public class OrderController {
 
     @Autowired
     OrderDto orderDto;
 
     @ApiOperation(value = "Create an order with multiple items")
-    @PostMapping("/api/order")
+    @PostMapping
     public void addOrder(@RequestBody SalesForm salesForm) throws ApiException {
         orderDto.addOrder(salesForm);
     }
 
     @ApiOperation(value = "Get all orders")
-    @GetMapping("/api/order")
+    @GetMapping
     public List<OrderData> getAllOrders() throws ApiException {
         return orderDto.getAllOrders();
     }
 
     @ApiOperation(value = "Get order by ID")
-    @GetMapping("/api/order/{id}")
+    @GetMapping("/{id}")
     public OrderData getOrderById(@PathVariable Long id) throws ApiException {
         return orderDto.getOrder(id);
     }
 
     @ApiOperation(value = "Delete an order")
-    @DeleteMapping("/api/order/{id}")
+    @DeleteMapping("/{id}")
     public void deleteOrder(@PathVariable Long id) throws ApiException {
         orderDto.deleteOrder(id);
     }
 
     @ApiOperation(value = "Update an order")
-    @PutMapping("/api/order/{id}")
+    @PutMapping("/{id}")
     public void updateOrder(@PathVariable Long id, @RequestBody SalesForm salesForm) throws ApiException {
         orderDto.updateOrder(salesForm, id);
     }

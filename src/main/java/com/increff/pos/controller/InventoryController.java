@@ -15,48 +15,49 @@ import java.util.List;
 
 @Api
 @RestController
+@RequestMapping("/api/inventory")
 public class InventoryController {
     @Autowired
     InventoryDto inventoryDto;
 
     @ApiOperation(value = "Post an inventory")
-    @RequestMapping(path="/api/inventory", method = RequestMethod.POST)
+    @PostMapping
     public void addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.addInventory(inventoryForm);
     }
 
     @ApiOperation(value = "Get all inventories")
-    @RequestMapping(path = "/api/inventory", method = RequestMethod.GET)
+    @GetMapping
     public List<InventoryData> getAll() {
         return inventoryDto.getAllInventories();
     }
 
     @ApiOperation(value = "Get inventory")
-    @RequestMapping(path = "/api/inventory/{id}", method = RequestMethod.GET)
-    public InventoryData get(@PathVariable  Long id) throws ApiException {
+    @GetMapping("/{id}")
+    public InventoryData get(@PathVariable Long id) throws ApiException {
         return inventoryDto.getInventory(id);
     }
 
     @ApiOperation(value = "Get inventory based on barcode")
-    @RequestMapping(path = "/api/inventory/{barcode}", method = RequestMethod.GET)
-    public InventoryData get(@PathVariable  String barcode) throws ApiException {
-       return  inventoryDto.getInventory(barcode);
+    @GetMapping("/barcode/{barcode}")
+    public InventoryData getByBarcode(@PathVariable String barcode) throws ApiException {
+        return inventoryDto.getInventory(barcode);
     }
 
     @ApiOperation(value = "Update an existing inventory")
-    @RequestMapping(path = "/api/inventory/{id}", method = RequestMethod.PUT)
-    public void updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException{
+    @PutMapping("/{id}")
+    public void updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.updateInventory(inventoryForm, id);
     }
 
-    @ApiOperation(value = "Delete a inventory")
-    @RequestMapping(path="/api/inventory/{id}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Delete an inventory")
+    @DeleteMapping("/{id}")
     public void deleteInventory(@PathVariable Long id) throws ApiException {
         inventoryDto.deleteInventory(id);
     }
 
     @ApiOperation(value = "Upload inventory via TSV")
-    @RequestMapping(path = "/api/inventory/upload", method = RequestMethod.POST)
+    @PostMapping("/upload")
     public ResponseEntity<String> uploadInventory(@RequestParam("file") MultipartFile file) throws Exception {
         inventoryDto.uploadInventory(file);
         return ResponseEntity.ok("Inventory file uploaded successfully.");

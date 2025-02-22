@@ -15,42 +15,43 @@ import java.util.List;
 
 @Api
 @RestController
+@RequestMapping("/api/product")
 public class ProductController {
     @Autowired
     ProductDto productDto;
 
     @ApiOperation(value = "Post a product")
-    @RequestMapping(path="/api/product", method = RequestMethod.POST)
-    public void addProduct(@RequestBody ProductForm productForm) throws ApiException{
+    @PostMapping
+    public void addProduct(@RequestBody ProductForm productForm) throws ApiException {
         productDto.addProduct(productForm);
     }
 
     @ApiOperation(value = "Delete a product")
-    @RequestMapping(path="/api/product/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id) throws ApiException {
         productDto.deleteProduct(id);
     }
 
-    @ApiOperation(value = "Get a product based on it's Id")
-    @RequestMapping(path = "/api/product/{id}", method = RequestMethod.GET)
+    @ApiOperation(value = "Get a product based on its Id")
+    @GetMapping("/{id}")
     public ProductData getProduct(@PathVariable Long id) throws ApiException {
         return productDto.getProduct(id);
     }
 
-    @ApiOperation(value = "Get all clients")
-    @RequestMapping(path = "/api/product", method = RequestMethod.GET)
+    @ApiOperation(value = "Get all products")
+    @GetMapping
     public List<ProductData> getAll() {
-            return productDto.getAllProducts();
+        return productDto.getAllProducts();
     }
 
     @ApiOperation(value = "Update an existing product")
-    @RequestMapping(path = "/api/product/{id}", method = RequestMethod.PUT)
-    public void updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException{
+    @PutMapping("/{id}")
+    public void updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
         productDto.updateProduct(id, productForm);
     }
 
     @ApiOperation(value = "Upload products via TSV file")
-    @PostMapping("/api/product/upload")
+    @PostMapping("/upload")
     public void uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
         productDto.uploadProducts(file);
     }
