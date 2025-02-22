@@ -1,23 +1,11 @@
 package com.increff.pos.model.forms;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class InventoryForm {
     private String      barcode;
     private Long        quantity;
-
-    public String getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
-
-    public Long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Long quantity) {
-        this.quantity = quantity;
-    }
-
 }

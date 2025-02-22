@@ -1,10 +1,14 @@
 package com.increff.pos.db.pojo;
 
 import com.increff.pos.model.constants.Role;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "user")
 public class UserPojo {
 
@@ -20,16 +24,4 @@ public class UserPojo {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public Role getRole() { return role; }
-    public void setRole(Role role) { this.role = role; }
 }

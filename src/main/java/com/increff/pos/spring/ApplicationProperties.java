@@ -1,9 +1,13 @@
 package com.increff.pos.spring;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+@Getter
+@Setter
 public class ApplicationProperties {
     @Value("${jdbc.driverClassName}")
     private String jdbcDriver;
@@ -19,60 +23,4 @@ public class ApplicationProperties {
     private String hibernateShowSql;
     @Value("${hibernate.hbm2ddl.auto}")
     private String hibernateHbm2ddl;
-
-    public String getJdbcDriver() {
-        return jdbcDriver;
-    }
-
-    public void setJdbcDriver(String jdbcDriver) {
-        this.jdbcDriver = jdbcDriver;
-    }
-
-    public String getJdbcUrl() {
-        return jdbcUrl;
-    }
-
-    public void setJdbcUrl(String jdbcUrl) {
-        this.jdbcUrl = jdbcUrl;
-    }
-
-    public String getJdbcUsername() {
-        return jdbcUsername;
-    }
-
-    public void setJdbcUsername(String jdbcUsername) {
-        this.jdbcUsername = jdbcUsername;
-    }
-
-    public String getJdbcPassword() {
-        return jdbcPassword;
-    }
-
-    public void setJdbcPassword(String jdbcPassword) {
-        this.jdbcPassword = jdbcPassword;
-    }
-
-    public String getHibernateDialect() {
-        return hibernateDialect;
-    }
-
-    public void setHibernateDialect(String hibernateDialect) {
-        this.hibernateDialect = hibernateDialect;
-    }
-
-    public String getHibernateShowSql() {
-        return hibernateShowSql;
-    }
-
-    public void setHibernateShowSql(String hibernateShowSql) {
-        this.hibernateShowSql = hibernateShowSql;
-    }
-
-    public String getHibernateHbm2ddl() {
-        return hibernateHbm2ddl;
-    }
-
-    public void setHibernateHbm2ddl(String hibernateHbm2ddl) {
-        this.hibernateHbm2ddl = hibernateHbm2ddl;
-    }
 }
