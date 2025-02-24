@@ -1,9 +1,9 @@
 package com.increff.pos.model.data;
 
-import com.increff.pos.db.pojo.OrderPojo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -11,6 +11,6 @@ import java.util.List;
 public class OrderData {
     private Long                id;
     private Double              totalAmount;
-    private String              orderDate;
+    private LocalDate           orderDate;
     private List<OrderItem>     items;
 }

@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -17,7 +16,7 @@ public class OrderPojo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private double totalAmount;
-    private String orderDate;
+    private LocalDate orderDate;
 }
 
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -31,7 +32,7 @@ public class OrderService {
 
     public OrderPojo createOrder(List<OrderItemPojo> orderItemPojoList) throws ApiException {
         OrderPojo order = new OrderPojo();
-        order.setOrderDate("20-Feb-2025");
+        order.setOrderDate(LocalDate.now());
         double totalAmt = 0.0;
         orderDao.add(order);
 
