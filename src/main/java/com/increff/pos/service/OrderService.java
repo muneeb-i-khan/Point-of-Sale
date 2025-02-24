@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional(rollbackOn = ApiException.class)
 public class OrderService {
 
     @Autowired
@@ -26,7 +27,6 @@ public class OrderService {
     @Autowired
     private ProductService productService;
 
-    @Transactional
     public OrderPojo createOrder(SalesForm salesForm) throws ApiException {
         double totalOrderAmount = 0;
         OrderPojo order = new OrderPojo();
@@ -66,25 +66,21 @@ public class OrderService {
     }
 
 
-    @Transactional
     public List<OrderPojo> getAllOrders() {
         return orderDao.selectAll();
     }
 
-    @Transactional
     public OrderPojo getOrderById(Long id) throws ApiException {
         return orderDao.selectById(id)
                 .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
     }
 
-    @Transactional
     public void deleteOrder(Long id) throws ApiException {
         OrderPojo order = orderDao.selectById(id)
                 .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
         orderDao.delete(id);
     }
 
-    @Transactional
     public void updateOrder(Long id, SalesForm salesForm) throws ApiException {
         OrderPojo order = orderDao.selectById(id)
                 .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));

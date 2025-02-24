@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class OrderFlowService {
 
     @Autowired
@@ -21,7 +22,6 @@ public class OrderFlowService {
     @Autowired
     private InventoryService inventoryService;
 
-    @Transactional
     public void createOrderAndUpdateInventory(SalesForm salesForm) throws ApiException {
         validateInventoryAvailability(salesForm.getItems());
         OrderPojo order = orderService.createOrder(salesForm);

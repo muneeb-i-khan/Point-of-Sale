@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class OrderDao {
 
     private static final String SELECT_ALL = "SELECT DISTINCT o FROM OrderPojo o LEFT JOIN FETCH o.salesItems";
@@ -38,7 +39,7 @@ public class OrderDao {
         }
     }
 
-    @Transactional
+
     public void delete(Long id) {
         selectById(id).ifPresent(order -> em.remove(order));
     }

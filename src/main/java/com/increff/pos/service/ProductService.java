@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(rollbackOn = ApiException.class)
 public class ProductService {
 
     private final ProductDao dao;
@@ -18,12 +19,10 @@ public class ProductService {
         this.dao = dao;
     }
 
-    @Transactional
     public void addProduct(ProductPojo p) {
         dao.add(p);
     }
 
-    @Transactional(rollbackOn = ApiException.class)
     public ProductPojo getProductByBarcode(String barcode) throws ApiException {
         ProductPojo product = dao.selectByBarcode(barcode);
         if (product == null) {
@@ -32,17 +31,14 @@ public class ProductService {
         return product;
     }
 
-    @Transactional(rollbackOn = ApiException.class)
     public ProductPojo getProduct(Long id) throws ApiException {
         return getCheck(id);
     }
 
-    @Transactional
     public List<ProductPojo> getAllProducts() {
         return dao.selectAll();
     }
 
-    @Transactional(rollbackOn = ApiException.class)
     public void updateProduct(Long id, ProductPojo p) throws ApiException {
         ProductPojo ex = getCheck(id);
 
@@ -63,13 +59,11 @@ public class ProductService {
         dao.update(ex);
     }
 
-    @Transactional
     public void deleteProduct(Long id) throws ApiException {
         ProductPojo product = getCheck(id);
         dao.delete(product.getId());
     }
 
-    @Transactional
     public ProductPojo getCheck(Long id) throws ApiException {
         ProductPojo p = dao.select(id);
         if (p == null) {

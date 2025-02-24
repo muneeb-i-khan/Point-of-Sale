@@ -24,8 +24,9 @@
 []Checks and validations  HIGH
 [*]Replace @ReqMapping with @GetMapping for eg. everywhere  LOW
 [] Rest Controller Advice -> Diff exceptions  HIGH
-[] Use Transactional at Class level
+[*] Use Transactional at Class level
 [] Study about id's
+[] get inv by barcode has issues
 # Frontend
 [] Pagination for get all HIGH
 [] Reports  HIGH

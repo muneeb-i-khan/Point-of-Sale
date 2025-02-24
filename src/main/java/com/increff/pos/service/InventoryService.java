@@ -9,11 +9,11 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(rollbackOn = ApiException.class)
 public class InventoryService {
     @Autowired
     private InventoryDao dao;
 
-    @Transactional
     public void addInventory(InventoryPojo p) throws ApiException {
         InventoryPojo existingInventory = dao.selectByBarcode(p.getBarcode());
         if (existingInventory != null) {
@@ -24,17 +24,15 @@ public class InventoryService {
         }
     }
 
-    @Transactional
     public List<InventoryPojo> getAllInventories() {
         return dao.selectAll();
     }
 
-    @Transactional(rollbackOn = ApiException.class)
+
     public InventoryPojo getInventory(Long id) throws ApiException {
         return getCheck(id);
     }
 
-    @Transactional(rollbackOn  = ApiException.class)
     public void updateInventory(Long id, InventoryPojo p) throws ApiException {
         InventoryPojo ex = getCheck(id);
         ex.setQuantity(p.getQuantity());
@@ -43,13 +41,11 @@ public class InventoryService {
         dao.update(p);
     }
 
-    @Transactional(rollbackOn = ApiException.class)
     public void deleteInventory(Long id) throws ApiException {
         InventoryPojo inventoryPojo = getCheck(id);
         dao.delete(id);
     }
 
-    @Transactional
     public InventoryPojo getCheck(Long id) throws ApiException {
         try {
             InventoryPojo inventoryPojo = dao.select(id);
@@ -63,7 +59,6 @@ public class InventoryService {
     }
 
 
-    @Transactional(rollbackOn = ApiException.class)
     public InventoryPojo getInventoryByBarcode(String barcode) throws ApiException {
         InventoryPojo inventory = dao.selectByBarcode(barcode);
         if (inventory == null) {
