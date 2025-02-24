@@ -37,24 +37,4 @@ public class OrderController {
         return orderDto.getOrder(id);
     }
 
-
-//
-//    @ApiOperation(value = "Get order by ID")
-//    @GetMapping("/{id}")
-//    public OrderData getOrderById(@PathVariable Long id) throws ApiException {
-//        return orderDto.getOrder(id);
-//    }
-
-//    @ApiOperation(value = "Delete an order")
-//    @DeleteMapping("/{id}")
-//    public void deleteOrder(@PathVariable Long id) throws ApiException {
-//        orderDto.deleteOrder(id);
-//    }
-
-//    @ApiOperation(value = "Update an order")
-//    @PutMapping("/{id}")
-//    public void updateOrder(@PathVariable Long id, @RequestBody SalesForm salesForm) throws ApiException {
-//        orderDto.updateOrder(salesForm, id);
-//    }
-
 }

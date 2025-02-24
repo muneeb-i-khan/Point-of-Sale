@@ -2,6 +2,7 @@ package com.increff.pos.service;
 
 import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
+import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.OrderPojo;
 import com.increff.pos.db.pojo.OrderItemPojo;
 import com.increff.pos.db.pojo.ProductPojo;
@@ -24,6 +25,9 @@ public class OrderService {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private InventoryService inventoryService;
+
 
     public OrderPojo createOrder(List<OrderItemPojo> orderItemPojoList) throws ApiException {
         OrderPojo order = new OrderPojo();
@@ -35,6 +39,8 @@ public class OrderService {
             orderItem.setOrder_id(order.getId());
             orderItemDao.add(orderItem);
             ProductPojo productPojo = productService.getProduct(orderItem.getProd_id());
+            InventoryPojo inventoryPojo = inventoryService.getInventoryByBarcode(productPojo.getBarcode());
+            inventoryPojo.setQuantity(inventoryPojo.getQuantity() - orderItem.getQuantity());
             totalAmt += productPojo.getPrice();
         }
         order.setTotalAmount(totalAmt);
