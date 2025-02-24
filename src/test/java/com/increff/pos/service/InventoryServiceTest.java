@@ -160,37 +160,37 @@ public class InventoryServiceTest extends AbstractUnitTest {
         inventoryService.updateInventory(999L, updatedInventory);
     }
 
-    @Test
-    public void deleteInventoryTest() throws ApiException {
-        ProductPojo product = new ProductPojo();
-        product.setBarcode("LMN654");
-        product.setName("To Delete Product");
-        productService.addProduct(product);
-
-        InventoryPojo inventory = new InventoryPojo();
-        inventory.setQuantity(5L);
-        inventory.setBarcode("LMN654");
-        inventory.setProductPojo(product);
-
-        inventoryService.addInventory(inventory);
-        InventoryPojo savedInventory = inventoryService.getInventoryByBarcode("LMN654");
-
-        inventoryService.deleteInventory(savedInventory.getId());
-
-        try {
-            inventoryService.getInventory(savedInventory.getId());
-            fail("Expected ApiException, but no exception was thrown.");
-        } catch (ApiException e) {
-            assertEquals("Inventory with given ID does not exist, id: " + savedInventory.getId(), e.getMessage());
-        }
-    }
-
-    @Test
-    public void deleteInventoryNotFoundTest() {
-        try {
-            inventoryService.deleteInventory(999L);
-        } catch (ApiException e) {
-            assertEquals("Inventory with given ID does not exist, id: 999", e.getMessage());
-        }
-    }
+//    @Test
+//    public void deleteInventoryTest() throws ApiException {
+//        ProductPojo product = new ProductPojo();
+//        product.setBarcode("LMN654");
+//        product.setName("To Delete Product");
+//        productService.addProduct(product);
+//
+//        InventoryPojo inventory = new InventoryPojo();
+//        inventory.setQuantity(5L);
+//        inventory.setBarcode("LMN654");
+//        inventory.setProductPojo(product);
+//
+//        inventoryService.addInventory(inventory);
+//        InventoryPojo savedInventory = inventoryService.getInventoryByBarcode("LMN654");
+//
+//        inventoryService.deleteInventory(savedInventory.getId());
+//
+//        try {
+//            inventoryService.getInventory(savedInventory.getId());
+//            fail("Expected ApiException, but no exception was thrown.");
+//        } catch (ApiException e) {
+//            assertEquals("Inventory with given ID does not exist, id: " + savedInventory.getId(), e.getMessage());
+//        }
+//    }
+//
+//    @Test
+//    public void deleteInventoryNotFoundTest() {
+//        try {
+//            inventoryService.deleteInventory(999L);
+//        } catch (ApiException e) {
+//            assertEquals("Inventory with given ID does not exist, id: 999", e.getMessage());
+//        }
+//    }
 }

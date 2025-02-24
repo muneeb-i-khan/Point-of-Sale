@@ -94,24 +94,24 @@ public class ClientDtoTest extends AbstractUnitTest {
         clientDto.updateClient(updateForm, 999L);
     }
 
-    @Test
-    public void deleteClientTest() throws ApiException {
-        ClientForm clientForm = new ClientForm();
-        clientForm.setName("Samsung");
-        clientForm.setDescription("Consumer Electronics");
+//    @Test
+//    public void deleteClientTest() throws ApiException {
+//        ClientForm clientForm = new ClientForm();
+//        clientForm.setName("Samsung");
+//        clientForm.setDescription("Consumer Electronics");
+//
+//        clientDto.addClient(clientForm);
+//        List<ClientData> clients = clientDto.getAllClients();
+//        Long clientId = clients.get(0).getId();
+//
+//        clientDto.deleteClient(clientId);
+//
+//        List<ClientData> updatedClients = clientDto.getAllClients();
+//        assertEquals(0, updatedClients.size());
+//    }
 
-        clientDto.addClient(clientForm);
-        List<ClientData> clients = clientDto.getAllClients();
-        Long clientId = clients.get(0).getId();
-
-        clientDto.deleteClient(clientId);
-
-        List<ClientData> updatedClients = clientDto.getAllClients();
-        assertEquals(0, updatedClients.size());
-    }
-
-    @Test(expected = ApiException.class)
-    public void deleteClientNotFoundTest() throws ApiException {
-        clientDto.deleteClient(999L);
-    }
+//    @Test(expected = ApiException.class)
+//    public void deleteClientNotFoundTest() throws ApiException {
+//        clientDto.deleteClient(999L);
+//    }
 }

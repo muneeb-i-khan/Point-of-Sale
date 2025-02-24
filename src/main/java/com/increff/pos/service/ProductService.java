@@ -59,10 +59,10 @@ public class ProductService {
         dao.update(ex);
     }
 
-    public void deleteProduct(Long id) throws ApiException {
-        ProductPojo product = getCheck(id);
-        dao.delete(product.getId());
-    }
+//    public void deleteProduct(Long id) throws ApiException {
+//        ProductPojo product = getCheck(id);
+//        dao.delete(product.getId());
+//    }
 
     public ProductPojo getCheck(Long id) throws ApiException {
         ProductPojo p = dao.select(id);

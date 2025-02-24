@@ -37,11 +37,11 @@ public class OrderController {
         return orderDto.getOrder(id);
     }
 
-    @ApiOperation(value = "Delete an order")
-    @DeleteMapping("/{id}")
-    public void deleteOrder(@PathVariable Long id) throws ApiException {
-        orderDto.deleteOrder(id);
-    }
+//    @ApiOperation(value = "Delete an order")
+//    @DeleteMapping("/{id}")
+//    public void deleteOrder(@PathVariable Long id) throws ApiException {
+//        orderDto.deleteOrder(id);
+//    }
 
     @ApiOperation(value = "Update an order")
     @PutMapping("/{id}")

@@ -50,11 +50,11 @@ public class InventoryController {
         inventoryDto.updateInventory(inventoryForm, id);
     }
 
-    @ApiOperation(value = "Delete an inventory")
-    @DeleteMapping("/{id}")
-    public void deleteInventory(@PathVariable Long id) throws ApiException {
-        inventoryDto.deleteInventory(id);
-    }
+//    @ApiOperation(value = "Delete an inventory")
+//    @DeleteMapping("/{id}")
+//    public void deleteInventory(@PathVariable Long id) throws ApiException {
+//        inventoryDto.deleteInventory(id);
+//    }
 
     @ApiOperation(value = "Upload inventory via TSV")
     @PostMapping("/upload")

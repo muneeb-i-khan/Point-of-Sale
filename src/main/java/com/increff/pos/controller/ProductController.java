@@ -26,11 +26,11 @@ public class ProductController {
         productDto.addProduct(productForm);
     }
 
-    @ApiOperation(value = "Delete a product")
-    @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) throws ApiException {
-        productDto.deleteProduct(id);
-    }
+//    @ApiOperation(value = "Delete a product")
+//    @DeleteMapping("/{id}")
+//    public void deleteProduct(@PathVariable Long id) throws ApiException {
+//        productDto.deleteProduct(id);
+//    }
 
     @ApiOperation(value = "Get a product based on its Id")
     @GetMapping("/{id}")

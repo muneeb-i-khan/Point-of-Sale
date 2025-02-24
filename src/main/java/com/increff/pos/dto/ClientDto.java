@@ -22,10 +22,10 @@ public class ClientDto {
         clientService.addClient(clientPojo);
     }
 
-    public void deleteClient(Long id) throws ApiException {
-        clientService.getCheck(id);
-        clientService.deleteClient(id);
-    }
+//    public void deleteClient(Long id) throws ApiException {
+//        clientService.getCheck(id);
+//        clientService.deleteClient(id);
+//    }
 
     public ClientData getClient(Long id) throws ApiException {
         clientService.getCheck(id);

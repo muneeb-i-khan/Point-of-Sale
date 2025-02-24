@@ -60,10 +60,10 @@ public class InventoryDto {
         inventoryService.updateInventory(id,inventoryPojo);
     }
 
-    public void deleteInventory(Long id) throws ApiException {
-        inventoryService.getCheck(id);
-        inventoryService.deleteInventory(id);
-    }
+//    public void deleteInventory(Long id) throws ApiException {
+//        inventoryService.getCheck(id);
+//        inventoryService.deleteInventory(id);
+//    }
 
     public void uploadInventory(MultipartFile file) throws IOException, ApiException {
         tsvUploadService.uploadInventory(file);

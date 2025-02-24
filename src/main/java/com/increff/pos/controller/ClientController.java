@@ -23,11 +23,11 @@ public class ClientController {
         clientDto.addClient(clientForm);
     }
 
-    @ApiOperation(value = "Delete a client")
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) throws ApiException {
-        clientDto.deleteClient(id);
-    }
+//    @ApiOperation(value = "Delete a client")
+//    @DeleteMapping("/{id}")
+//    public void delete(@PathVariable Long id) throws ApiException {
+//        clientDto.deleteClient(id);
+//    }
 
     @ApiOperation(value = "Get a client based on its Id")
     @GetMapping("/{id}")

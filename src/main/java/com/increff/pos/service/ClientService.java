@@ -26,10 +26,10 @@ public class ClientService {
     }
 
 
-    public void deleteClient(Long id) throws ApiException {
-        ClientPojo client = getCheck(id);
-        dao.delete(client.getId());
-    }
+//    public void deleteClient(Long id) throws ApiException {
+//        ClientPojo client = getCheck(id);
+//        dao.delete(client.getId());
+//    }
 
     public ClientPojo getClient(Long id) throws ApiException {
         return getCheck(id);

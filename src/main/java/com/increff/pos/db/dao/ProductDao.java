@@ -36,12 +36,12 @@ public class ProductDao {
         em.merge(p);
     }
 
-    public void delete(Long id) {
-        ProductPojo product = em.find(ProductPojo.class, id);
-        if (product != null) {
-            em.remove(product);
-        }
-    }
+//    public void delete(Long id) {
+//        ProductPojo product = em.find(ProductPojo.class, id);
+//        if (product != null) {
+//            em.remove(product);
+//        }
+//    }
 
     public ProductPojo selectByBarcode(String barcode) {
         TypedQuery<ProductPojo> query = em.createQuery(select_by_barcode, ProductPojo.class);

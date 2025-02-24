@@ -75,11 +75,11 @@ public class OrderService {
                 .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
     }
 
-    public void deleteOrder(Long id) throws ApiException {
-        OrderPojo order = orderDao.selectById(id)
-                .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
-        orderDao.delete(id);
-    }
+//    public void deleteOrder(Long id) throws ApiException {
+//        OrderPojo order = orderDao.selectById(id)
+//                .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
+//        orderDao.delete(id);
+//    }
 
     public void updateOrder(Long id, SalesForm salesForm) throws ApiException {
         OrderPojo order = orderDao.selectById(id)

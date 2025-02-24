@@ -40,9 +40,9 @@ public class OrderDao {
     }
 
 
-    public void delete(Long id) {
-        selectById(id).ifPresent(order -> em.remove(order));
-    }
+//    public void delete(Long id) {
+//        selectById(id).ifPresent(order -> em.remove(order));
+//    }
 
     public void update(OrderPojo order) {
         em.merge(order);

@@ -97,22 +97,22 @@ public class ProductDtoTest extends AbstractUnitTest {
         assertEquals(250.0, updatedProduct.getPrice(), 0.01);
     }
 
-    @Test
-    public void testDeleteProduct() throws ApiException {
-        ProductForm form = new ProductForm();
-        form.setName("To Be Deleted");
-        form.setBarcode("999888");
-        form.setPrice(50.0);
-        form.setClientName("Test Client");
-
-        productDto.addProduct(form);
-
-        List<ProductData> products = productDto.getAllProducts();
-        Long productId = products.get(0).getId();
-
-        productDto.deleteProduct(productId);
-
-        List<ProductData> updatedProducts = productDto.getAllProducts();
-        assertEquals(0, updatedProducts.size());
-    }
+//    @Test
+//    public void testDeleteProduct() throws ApiException {
+//        ProductForm form = new ProductForm();
+//        form.setName("To Be Deleted");
+//        form.setBarcode("999888");
+//        form.setPrice(50.0);
+//        form.setClientName("Test Client");
+//
+//        productDto.addProduct(form);
+//
+//        List<ProductData> products = productDto.getAllProducts();
+//        Long productId = products.get(0).getId();
+//
+//        productDto.deleteProduct(productId);
+//
+//        List<ProductData> updatedProducts = productDto.getAllProducts();
+//        assertEquals(0, updatedProducts.size());
+//    }
 }

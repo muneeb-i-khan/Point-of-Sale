@@ -109,21 +109,21 @@ public class OrderServiceTest extends AbstractUnitTest {
         assertEquals(200.0, updatedOrder.getTotalAmount(), 0.01);
     }
 
-    @Test(expected = ApiException.class)
-    public void deleteOrderWithInvalidIdTest() throws ApiException {
-        Long invalidOrderId = 999L;
-        orderService.deleteOrder(invalidOrderId);
-    }
+//    @Test(expected = ApiException.class)
+//    public void deleteOrderWithInvalidIdTest() throws ApiException {
+//        Long invalidOrderId = 999L;
+//        orderService.deleteOrder(invalidOrderId);
+//    }
 
-    @Test
-    public void deleteOrderTest() throws ApiException {
-        OrderPojo order = new OrderPojo();
-        order.setTotalAmount(100.0);
-        order.setOrderDate("10-Feb-2020");
-        orderDao.add(order);
-        assertNotNull(orderDao.selectById(order.getId()));
-        orderService.deleteOrder(order.getId());
-        assertFalse(orderDao.selectById(order.getId()).isPresent());
-    }
+//    @Test
+//    public void deleteOrderTest() throws ApiException {
+//        OrderPojo order = new OrderPojo();
+//        order.setTotalAmount(100.0);
+//        order.setOrderDate("10-Feb-2020");
+//        orderDao.add(order);
+//        assertNotNull(orderDao.selectById(order.getId()));
+//        orderService.deleteOrder(order.getId());
+//        assertFalse(orderDao.selectById(order.getId()).isPresent());
+//    }
 
 }

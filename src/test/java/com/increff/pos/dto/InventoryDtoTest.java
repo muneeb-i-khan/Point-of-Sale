@@ -96,19 +96,19 @@ public class InventoryDtoTest extends AbstractUnitTest {
         assertEquals(60L, updatedInventory.getQuantity().longValue());
     }
 
-    @Test
-    public void testDeleteInventory() throws ApiException {
-        InventoryForm form = new InventoryForm();
-        form.setBarcode(barcode);
-        form.setQuantity(40L);
-        inventoryDto.addInventory(form);
-
-        List<InventoryData> inventories = inventoryDto.getAllInventories();
-        Long inventoryId = inventories.get(0).getId();
-
-        inventoryDto.deleteInventory(inventoryId);
-
-        List<InventoryData> updatedInventories = inventoryDto.getAllInventories();
-        assertEquals(0, updatedInventories.size());
-    }
+//    @Test
+//    public void testDeleteInventory() throws ApiException {
+//        InventoryForm form = new InventoryForm();
+//        form.setBarcode(barcode);
+//        form.setQuantity(40L);
+//        inventoryDto.addInventory(form);
+//
+//        List<InventoryData> inventories = inventoryDto.getAllInventories();
+//        Long inventoryId = inventories.get(0).getId();
+//
+//        inventoryDto.deleteInventory(inventoryId);
+//
+//        List<InventoryData> updatedInventories = inventoryDto.getAllInventories();
+//        assertEquals(0, updatedInventories.size());
+//    }
 }

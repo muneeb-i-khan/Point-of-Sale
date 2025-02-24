@@ -32,11 +32,11 @@ public class InventoryDao {
     public void update(InventoryPojo p) {
     }
 
-    public void delete(Long id) {
-        Query query = em.createQuery(delete_id);
-        query.setParameter("id", id);
-        query.executeUpdate();
-    }
+//    public void delete(Long id) {
+//        Query query = em.createQuery(delete_id);
+//        query.setParameter("id", id);
+//        query.executeUpdate();
+//    }
 
     public InventoryPojo selectByBarcode(String barcode) {
         try {

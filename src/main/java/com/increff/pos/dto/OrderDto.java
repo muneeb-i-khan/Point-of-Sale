@@ -43,9 +43,9 @@ public class OrderDto {
         return new OrderData(order);
     }
 
-    public void deleteOrder(Long id) throws ApiException {
-        orderService.deleteOrder(id);
-    }
+//    public void deleteOrder(Long id) throws ApiException {
+//        orderService.deleteOrder(id);
+//    }
 
     private OrderData convert(OrderPojo p) {
         OrderData data = new OrderData(p);

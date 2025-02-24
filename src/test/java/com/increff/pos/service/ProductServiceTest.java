@@ -149,30 +149,30 @@ public class ProductServiceTest extends AbstractUnitTest {
         productService.updateProduct(999L, updatePojo);
     }
 
-    @Test
-    public void deleteProductTest() throws ApiException {
-        ClientPojo client = new ClientPojo();
-        client.setName("Google");
-        client.setDescription("Tech");
-        clientService.addClient(client);
-        ClientPojo savedClient = clientService.getClientByName("Google");
-
-        ProductPojo product = new ProductPojo();
-        product.setBarcode("GOO123");
-        product.setName("Pixel 7");
-        product.setPrice(50000);
-        product.setClientPojo(savedClient);
-
-        productService.addProduct(product);
-        ProductPojo savedProduct = productService.getProductByBarcode("GOO123");
-
-        productService.deleteProduct(savedProduct.getId());
-
-        try {
-            productService.getProduct(savedProduct.getId());
-            fail("Expected ApiException but none was thrown.");
-        } catch (ApiException e) {
-            assertEquals("Product with given ID does not exist, id: " + savedProduct.getId(), e.getMessage());
-        }
-    }
+//    @Test
+//    public void deleteProductTest() throws ApiException {
+//        ClientPojo client = new ClientPojo();
+//        client.setName("Google");
+//        client.setDescription("Tech");
+//        clientService.addClient(client);
+//        ClientPojo savedClient = clientService.getClientByName("Google");
+//
+//        ProductPojo product = new ProductPojo();
+//        product.setBarcode("GOO123");
+//        product.setName("Pixel 7");
+//        product.setPrice(50000);
+//        product.setClientPojo(savedClient);
+//
+//        productService.addProduct(product);
+//        ProductPojo savedProduct = productService.getProductByBarcode("GOO123");
+//
+//        productService.deleteProduct(savedProduct.getId());
+//
+//        try {
+//            productService.getProduct(savedProduct.getId());
+//            fail("Expected ApiException but none was thrown.");
+//        } catch (ApiException e) {
+//            assertEquals("Product with given ID does not exist, id: " + savedProduct.getId(), e.getMessage());
+//        }
+//    }
 }

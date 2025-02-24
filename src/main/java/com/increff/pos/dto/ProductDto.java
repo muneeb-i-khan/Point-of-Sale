@@ -31,10 +31,10 @@ public class ProductDto {
         productService.addProduct(p);
     }
 
-    public void deleteProduct(Long id) throws ApiException {
-        productService.getCheck(id);
-        productService.deleteProduct(id);
-    }
+//    public void deleteProduct(Long id) throws ApiException {
+//        productService.getCheck(id);
+//        productService.deleteProduct(id);
+//    }
 
     public ProductData getProduct(Long id) throws ApiException {
         productService.getCheck(id);

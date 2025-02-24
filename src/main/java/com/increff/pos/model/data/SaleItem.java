@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SaleItem {
-    private String barcode;
-    private int quantity;
-    private String saleDate;
-    private String prodName;
+    private String      barcode;
+    private int         quantity;
+    private String      saleDate;
+    private String      prodName;
 
 
     public SaleItem(SalesPojo salesPojo) {

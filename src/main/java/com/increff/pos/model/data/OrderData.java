@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class OrderData {
-    private Long id;
-    private Double totalAmount;
-    private String orderDate;
-    private List<SaleItem> items;
+    private Long                id;
+    private Double              totalAmount;
+    private String              orderDate;
+    private List<SaleItem>      items;
 
     public OrderData(OrderPojo order) {
         this.id = order.getId();

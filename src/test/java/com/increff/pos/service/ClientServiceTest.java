@@ -103,24 +103,24 @@ public class ClientServiceTest extends AbstractUnitTest {
         clientService.updateClient(999L, updatePojo);
     }
 
-    @Test
-    public void deleteClientNotFoundTest() {
-        try {
-            clientService.deleteClient(3L);
-        } catch (ApiException e) {
-            assertEquals("Client with given ID does not exist: 3", e.getMessage());
-        }
-    }
+//    @Test
+//    public void deleteClientNotFoundTest() {
+//        try {
+//            clientService.deleteClient(3L);
+//        } catch (ApiException e) {
+//            assertEquals("Client with given ID does not exist: 3", e.getMessage());
+//        }
+//    }
 
-    @Test(expected = ApiException.class)
-    public void deleteClientTest() throws ApiException {
-        ClientPojo p = new ClientPojo();
-        p.setDescription("Appliances");
-        p.setName("LG");
-        clientService.addClient(p);
-        ClientPojo savedClient = clientService.getClientByName("LG");
-        clientService.deleteClient(savedClient.getId());
-        clientService.getClient(savedClient.getId());
-    }
+//    @Test(expected = ApiException.class)
+//    public void deleteClientTest() throws ApiException {
+//        ClientPojo p = new ClientPojo();
+//        p.setDescription("Appliances");
+//        p.setName("LG");
+//        clientService.addClient(p);
+//        ClientPojo savedClient = clientService.getClientByName("LG");
+//        clientService.deleteClient(savedClient.getId());
+//        clientService.getClient(savedClient.getId());
+//    }
 
 }

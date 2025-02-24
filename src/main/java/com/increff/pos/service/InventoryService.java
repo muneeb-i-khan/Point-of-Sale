@@ -41,10 +41,10 @@ public class InventoryService {
         dao.update(p);
     }
 
-    public void deleteInventory(Long id) throws ApiException {
-        InventoryPojo inventoryPojo = getCheck(id);
-        dao.delete(id);
-    }
+//    public void deleteInventory(Long id) throws ApiException {
+//        InventoryPojo inventoryPojo = getCheck(id);
+//        dao.delete(id);
+//    }
 
     public InventoryPojo getCheck(Long id) throws ApiException {
         try {
