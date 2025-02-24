@@ -11,7 +11,9 @@ public class InventoryDao {
     private static final String select_all = "select p from InventoryPojo p";
     private static final String select_id = "select p from InventoryPojo p where id=:id";
     private static final String delete_id = "delete from InventoryPojo p where id=:id";
-    private static final String select_barcode = "select p from InventoryPojo p WHERE barcode=:barcode";
+    private static final String select_by_product_barcode =
+            "SELECT i FROM InventoryPojo i JOIN ProductPojo p ON i.prod_id = p.id WHERE p.barcode = :barcode";
+
     @PersistenceContext
     EntityManager em;
     public void add(InventoryPojo p) {
@@ -40,7 +42,7 @@ public class InventoryDao {
 
     public InventoryPojo selectByBarcode(String barcode) {
         try {
-            TypedQuery<InventoryPojo> query = getQuery(select_barcode);
+            TypedQuery<InventoryPojo> query = em.createQuery(select_by_product_barcode, InventoryPojo.class);
             query.setParameter("barcode", barcode);
             return query.getSingleResult();
         } catch (NoResultException e) {

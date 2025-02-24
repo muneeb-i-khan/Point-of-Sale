@@ -8,5 +8,4 @@ import lombok.Setter;
 @Getter
 public class ProductData extends ProductForm {
     private Long        id;
-    private Long        client_id;
 }

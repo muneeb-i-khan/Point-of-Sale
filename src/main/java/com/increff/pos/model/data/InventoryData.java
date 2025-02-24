@@ -11,5 +11,4 @@ public class InventoryData extends InventoryForm {
     private Long        prodId;
     private String      prodName;
     private String      clientName;
-
 }

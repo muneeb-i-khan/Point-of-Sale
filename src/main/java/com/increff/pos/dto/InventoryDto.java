@@ -1,18 +1,14 @@
 package com.increff.pos.dto;
 
+import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.forms.InventoryForm;
-import com.increff.pos.service.ApiException;
-import com.increff.pos.service.InventoryService;
-import com.increff.pos.service.ProductService;
-import com.increff.pos.service.TsvUploadService;
+import com.increff.pos.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,19 +16,20 @@ import java.util.List;
 public class InventoryDto {
     @Autowired
     ProductService productService;
-
+    @Autowired
+    ClientService clientService;
     @Autowired
     InventoryService inventoryService;
 
-    @Autowired
-    TsvUploadService tsvUploadService;
+//    @Autowired
+//    TsvUploadService tsvUploadService;
 
     public void addInventory(InventoryForm inventoryForm) throws ApiException {
         InventoryPojo inventoryPojo = convert(inventoryForm);
         inventoryService.addInventory(inventoryPojo);
     }
 
-    public List<InventoryData> getAllInventories() {
+    public List<InventoryData> getAllInventories() throws ApiException {
         List<InventoryPojo> list = inventoryService.getAllInventories();
         List<InventoryData> list2 = new ArrayList<InventoryData>();
         for(InventoryPojo p : list) {
@@ -65,27 +62,34 @@ public class InventoryDto {
 //        inventoryService.deleteInventory(id);
 //    }
 
-    public void uploadInventory(MultipartFile file) throws IOException, ApiException {
-        tsvUploadService.uploadInventory(file);
-    }
+//    public void uploadInventory(MultipartFile file) throws IOException, ApiException {
+//        tsvUploadService.uploadInventory(file);
+//    }
 
-    public InventoryData convert(InventoryPojo inventoryPojo) {
+    public InventoryData convert(InventoryPojo inventoryPojo) throws ApiException {
         InventoryData inventoryData = new InventoryData();
         inventoryData.setId(inventoryPojo.getId());
-        inventoryData.setBarcode(inventoryPojo.getBarcode());
+//        inventoryData.setBarcode(inventoryPojo.getBarcode());
+        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProd_id());
+        inventoryData.setBarcode(productPojo.getBarcode());
         inventoryData.setQuantity(inventoryPojo.getQuantity());
-        inventoryData.setProdName(inventoryPojo.getProductPojo().getName());
-        inventoryData.setProdId(inventoryPojo.getProductPojo().getId());
-        inventoryData.setClientName(inventoryPojo.getProductPojo().getClientPojo().getName());
+        inventoryData.setProdName(productPojo.getName());
+        ClientPojo clientPojo = clientService.getClient(productPojo.getClient_id());
+        inventoryData.setClientName(clientPojo.getName());
+//        inventoryData.setProdName(inventoryPojo.getProductPojo().getName());
+//        inventoryData.setProdId(inventoryPojo.getProductPojo().getId());
+//        inventoryData.setClientName(inventoryPojo.getProductPojo().getClientPojo().getName());
         return inventoryData;
     }
 
     public InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
         InventoryPojo inventoryPojo = new InventoryPojo();
-        inventoryPojo.setBarcode(inventoryForm.getBarcode());
-        inventoryPojo.setQuantity(inventoryForm.getQuantity());
+//        inventoryPojo.setBarcode(inventoryForm.getBarcode());
         ProductPojo productPojo = productService.getProductByBarcode(inventoryForm.getBarcode());
-        inventoryPojo.setProductPojo(productPojo);
+        inventoryPojo.setProd_id(productPojo.getId());
+        inventoryPojo.setQuantity(inventoryForm.getQuantity());
+//        ProductPojo productPojo = productService.getProductByBarcode(inventoryForm.getBarcode());
+//        inventoryPojo.setProductPojo(productPojo);
         return inventoryPojo;
     }
 

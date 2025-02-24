@@ -22,6 +22,4 @@ public class ClientPojo {
 
     private String description;
 
-    @OneToMany(mappedBy = "clientPojo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductPojo> products = new ArrayList<>();
 }

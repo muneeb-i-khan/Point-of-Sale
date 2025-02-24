@@ -1,12 +1,15 @@
 package com.increff.pos.dto;
 
+import com.increff.pos.db.dao.OrderItemDao;
+import com.increff.pos.db.pojo.OrderItemPojo;
 import com.increff.pos.db.pojo.OrderPojo;
-import com.increff.pos.flow.OrderFlowService;
+import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.model.data.OrderData;
-import com.increff.pos.model.forms.SalesForm;
-import com.increff.pos.model.forms.SalesForm.SaleItem;
+import com.increff.pos.model.data.OrderItem;
+import com.increff.pos.model.forms.OrderItemForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.OrderService;
+import com.increff.pos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,61 +17,105 @@ import java.util.*;
 
 @Component
 public class OrderDto {
-    @Autowired
-    private OrderFlowService orderFlowService;
+//    @Autowired
+//    private OrderFlowService orderFlowService;
+
     @Autowired
     private OrderService orderService;
 
-    public void addOrder(SalesForm salesForm) throws ApiException {
-        SalesForm mergedSalesForm = mergeDuplicateItems(salesForm);
-        orderFlowService.createOrderAndUpdateInventory(mergedSalesForm);
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private OrderItemDao orderItemDao;
+
+    public void addOrder(List<OrderItemForm> orderItemFormList) throws ApiException {
+//        OrderItemForm mergedSalesForm = mergeDuplicateItems(orderItemForm);
+//        orderFlowService.createOrderAndUpdateInventory(mergedSalesForm);
+        List<OrderItemPojo> orderItemPojoList= convert(orderItemFormList);
+        orderService.createOrder(orderItemPojoList);
     }
 
-    public void updateOrder(SalesForm salesForm, Long id) throws ApiException {
-        SalesForm mergedSalesForm = mergeDuplicateItems(salesForm);
-        orderService.updateOrder(id, mergedSalesForm);
-    }
 
-    public List<OrderData> getAllOrders() {
-        List<OrderPojo> list = orderService.getAllOrders();
+    public List<OrderData> getAllOrders() throws ApiException {
+        List<OrderPojo> orderPojos = orderService.getAllOrders();
         List<OrderData> orderDataList = new ArrayList<>();
-        for (OrderPojo p : list) {
-            orderDataList.add(convert(p));
+
+        for (OrderPojo order : orderPojos) {
+            orderDataList.add(convert(order));
         }
         return orderDataList;
     }
 
     public OrderData getOrder(Long id) throws ApiException {
-        OrderPojo order = orderService.getOrderById(id);
-        return new OrderData(order);
+        OrderPojo orderPojo = orderService.getOrderById(id);
+        return convert(orderPojo);
     }
+
+    private OrderData convert(OrderPojo orderPojo) throws ApiException {
+        OrderData orderData = new OrderData();
+        orderData.setId(orderPojo.getId());
+        orderData.setTotalAmount(orderPojo.getTotalAmount());
+        orderData.setOrderDate(orderPojo.getOrderDate());
+
+        List<OrderItemPojo> orderItemPojos = orderItemDao.getItemsByOrderId(orderPojo.getId());
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        for (OrderItemPojo itemPojo : orderItemPojos) {
+            OrderItem orderItem = new OrderItem();
+            ProductPojo product = productService.getProduct(itemPojo.getProd_id());
+            orderItem.setBarcode(product.getBarcode());
+            orderItem.setQuantity(itemPojo.getQuantity().intValue());
+            orderItem.setProdName(product.getName());
+            orderItem.setPrice(product.getPrice());
+            orderItems.add(orderItem);
+        }
+
+        orderData.setItems(orderItems);
+        return orderData;
+    }
+
 
 //    public void deleteOrder(Long id) throws ApiException {
 //        orderService.deleteOrder(id);
 //    }
 
-    private OrderData convert(OrderPojo p) {
-        OrderData data = new OrderData(p);
-        data.setId(p.getId());
-        data.setTotalAmount(p.getTotalAmount());
-        data.setOrderDate(p.getOrderDate());
-        return data;
-    }
 
-    private SalesForm mergeDuplicateItems(SalesForm salesForm) {
-        Map<String, SaleItem> mergedItems = new HashMap<>();
+private List<OrderItemPojo> convert(List<OrderItemForm> orderItemFormList) throws ApiException {
+    List<OrderItemPojo> orderItemPojoList = new ArrayList<>();
 
-        for (SaleItem item : salesForm.getItems()) {
-            String barcode = item.getBarcode();
-            if (mergedItems.containsKey(barcode)) {
-                mergedItems.get(barcode).setQuantity(mergedItems.get(barcode).getQuantity() + item.getQuantity());
-            } else {
-                mergedItems.put(barcode, item);
-            }
+    for (OrderItemForm form : orderItemFormList) {
+        ProductPojo product = productService.getProductByBarcode(form.getBarcode());
+
+        if (product == null) {
+            throw new ApiException("Product with barcode " + form.getBarcode() + " not found");
         }
 
-        SalesForm mergedForm = new SalesForm();
-        mergedForm.setItems(new ArrayList<>(mergedItems.values()));
-        return mergedForm;
+        OrderItemPojo orderItemPojo = new OrderItemPojo();
+        orderItemPojo.setProd_id(product.getId());
+        orderItemPojo.setQuantity(form.getQuantity());
+
+        orderItemPojoList.add(orderItemPojo);
     }
+
+    return orderItemPojoList;
+}
+
+//
+//    private SalesForm mergeDuplicateItems(SalesForm salesForm) {
+//        Map<String, SaleItem> mergedItems = new HashMap<>();
+//
+//        for (SaleItem item : salesForm.getItems()) {
+//            String barcode = item.getBarcode();
+//            if (mergedItems.containsKey(barcode)) {
+//                mergedItems.get(barcode).setQuantity(mergedItems.get(barcode).getQuantity() + item.getQuantity());
+//            } else {
+//                mergedItems.put(barcode, item);
+//            }
+//        }
+//
+//        SalesForm mergedForm = new SalesForm();
+//        mergedForm.setItems(new ArrayList<>(mergedItems.values()));
+//        return mergedForm;
+//    }
 }

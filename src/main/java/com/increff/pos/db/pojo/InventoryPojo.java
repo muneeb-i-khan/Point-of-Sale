@@ -14,13 +14,6 @@ public class InventoryPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(unique = true, nullable = false)
-    private String barcode;
-
+    private Long prod_id;
     private Long quantity;
-
-    @OneToOne
-    @JoinColumn(name = "prodId", foreignKey = @ForeignKey(name = "inventory_product_id_fk"))
-    private ProductPojo productPojo;
 }

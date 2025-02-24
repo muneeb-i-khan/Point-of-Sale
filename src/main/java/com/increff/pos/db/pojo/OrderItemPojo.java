@@ -8,15 +8,13 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "products")
-public class ProductPojo {
+@Table(name = "orderItem")
+public class OrderItemPojo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    @Column(unique = true, nullable = false)
-    private String barcode;
-    private double price;
-    private Long client_id;
+    private Long prod_id;
+    private Long quantity;
+    private Long order_id;
 }

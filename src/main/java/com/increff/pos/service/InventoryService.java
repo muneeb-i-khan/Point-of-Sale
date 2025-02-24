@@ -2,6 +2,7 @@ package com.increff.pos.service;
 
 import com.increff.pos.db.dao.InventoryDao;
 import com.increff.pos.db.pojo.InventoryPojo;
+import com.increff.pos.db.pojo.ProductPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,18 @@ public class InventoryService {
     @Autowired
     private InventoryDao dao;
 
-    public void addInventory(InventoryPojo p) throws ApiException {
-        InventoryPojo existingInventory = dao.selectByBarcode(p.getBarcode());
+    @Autowired
+    private ProductService productService;
+
+    public void addInventory(InventoryPojo inventoryPojo) throws ApiException {
+
+        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProd_id());
+        InventoryPojo existingInventory = dao.selectByBarcode(productPojo.getBarcode());
         if (existingInventory != null) {
-            existingInventory.setQuantity(existingInventory.getQuantity() + p.getQuantity());
+            existingInventory.setQuantity(existingInventory.getQuantity() + inventoryPojo.getQuantity());
             dao.update(existingInventory);
         } else {
-            dao.add(p);
+            dao.add(inventoryPojo);
         }
     }
 
@@ -36,8 +42,7 @@ public class InventoryService {
     public void updateInventory(Long id, InventoryPojo p) throws ApiException {
         InventoryPojo ex = getCheck(id);
         ex.setQuantity(p.getQuantity());
-        ex.setBarcode(p.getBarcode());
-        ex.setProductPojo(p.getProductPojo());
+        ex.setProd_id(p.getProd_id());
         dao.update(p);
     }
 

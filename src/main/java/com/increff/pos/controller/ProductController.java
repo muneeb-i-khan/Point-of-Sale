@@ -8,9 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @Api
@@ -40,7 +38,7 @@ public class ProductController {
 
     @ApiOperation(value = "Get all products")
     @GetMapping
-    public List<ProductData> getAll() {
+    public List<ProductData> getAll() throws ApiException {
         return productDto.getAllProducts();
     }
 
@@ -50,9 +48,10 @@ public class ProductController {
         productDto.updateProduct(id, productForm);
     }
 
-    @ApiOperation(value = "Upload products via TSV file")
-    @PostMapping("/upload")
-    public void uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
-        productDto.uploadProducts(file);
-    }
+//
+//    @ApiOperation(value = "Upload products via TSV file")
+//    @PostMapping("/upload")
+//    public void uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
+//        productDto.uploadProducts(file);
+//    }
 }

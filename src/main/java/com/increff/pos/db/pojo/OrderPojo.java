@@ -16,12 +16,8 @@ public class OrderPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private double totalAmount;
     private String orderDate;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<SalesPojo> salesItems;
 }
 
 
