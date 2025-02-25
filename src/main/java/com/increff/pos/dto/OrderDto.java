@@ -30,9 +30,8 @@ public class OrderDto {
     private OrderItemDao orderItemDao;
 
     public void addOrder(List<OrderItemForm> orderItemFormList) throws ApiException {
-//        OrderItemForm mergedSalesForm = mergeDuplicateItems(orderItemForm);
-//        orderFlowService.createOrderAndUpdateInventory(mergedSalesForm);
-        List<OrderItemPojo> orderItemPojoList= convert(orderItemFormList);
+        List<OrderItemForm> mergedOrderItems = mergeDuplicateItems(orderItemFormList);
+        List<OrderItemPojo> orderItemPojoList = convert(mergedOrderItems);
         orderService.createOrder(orderItemPojoList);
     }
 
@@ -101,21 +100,21 @@ private List<OrderItemPojo> convert(List<OrderItemForm> orderItemFormList) throw
     return orderItemPojoList;
 }
 
-//
-//    private SalesForm mergeDuplicateItems(SalesForm salesForm) {
-//        Map<String, SaleItem> mergedItems = new HashMap<>();
-//
-//        for (SaleItem item : salesForm.getItems()) {
-//            String barcode = item.getBarcode();
-//            if (mergedItems.containsKey(barcode)) {
-//                mergedItems.get(barcode).setQuantity(mergedItems.get(barcode).getQuantity() + item.getQuantity());
-//            } else {
-//                mergedItems.put(barcode, item);
-//            }
-//        }
-//
-//        SalesForm mergedForm = new SalesForm();
-//        mergedForm.setItems(new ArrayList<>(mergedItems.values()));
-//        return mergedForm;
-//    }
+    private List<OrderItemForm> mergeDuplicateItems(List<OrderItemForm> orderItemForms) {
+        Map<String, OrderItemForm> mergedItems = new HashMap<>();
+
+        for (OrderItemForm item : orderItemForms) {
+            String barcode = item.getBarcode();
+            if (mergedItems.containsKey(barcode)) {
+                OrderItemForm existingItem = mergedItems.get(barcode);
+                existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
+            } else {
+                mergedItems.put(barcode, item);
+            }
+        }
+
+        return new ArrayList<>(mergedItems.values());
+    }
+
 }
+
