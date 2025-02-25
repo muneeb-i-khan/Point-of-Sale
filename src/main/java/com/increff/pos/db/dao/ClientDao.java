@@ -19,12 +19,12 @@ public class ClientDao {
         em.persist(p);
     }
 
-    public void delete(Long id) {
-        ClientPojo client = em.find(ClientPojo.class, id);
-        if (client != null) {
-            em.remove(client);
-        }
-    }
+//    public void delete(Long id) {
+//        ClientPojo client = em.find(ClientPojo.class, id);
+//        if (client != null) {
+//            em.remove(client);
+//        }
+//    }
 
     public ClientPojo select(Long id) {
         try {

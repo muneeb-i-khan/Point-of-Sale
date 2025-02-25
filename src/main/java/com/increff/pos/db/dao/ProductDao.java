@@ -36,18 +36,20 @@ public class ProductDao {
         em.merge(p);
     }
 
-    public void delete(Long id) {
-        ProductPojo product = em.find(ProductPojo.class, id);
-        if (product != null) {
-            em.remove(product);
-        }
-    }
+//    public void delete(Long id) {
+//        ProductPojo product = em.find(ProductPojo.class, id);
+//        if (product != null) {
+//            em.remove(product);
+//        }
+//    }
 
     public ProductPojo selectByBarcode(String barcode) {
         TypedQuery<ProductPojo> query = em.createQuery(select_by_barcode, ProductPojo.class);
         query.setParameter("barcode", barcode);
-        return query.getSingleResult();
+        List<ProductPojo> results = query.getResultList();
+        return results.isEmpty() ? null : results.get(0);
     }
+
 
     TypedQuery<ProductPojo> getQuery(String jpql) {
         return em.createQuery(jpql, ProductPojo.class);

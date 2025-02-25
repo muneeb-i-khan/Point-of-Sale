@@ -1,28 +1,24 @@
 package com.increff.pos.service;
 
 import com.increff.pos.db.dao.OrderDao;
-import com.increff.pos.db.dao.ProductDao;
-import com.increff.pos.db.dao.SalesDao;
+import com.increff.pos.db.dao.OrderItemDao;
+import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.OrderPojo;
+import com.increff.pos.db.pojo.OrderItemPojo;
 import com.increff.pos.db.pojo.ProductPojo;
-import com.increff.pos.db.pojo.SalesPojo;
-import com.increff.pos.model.OrderData;
-import com.increff.pos.model.SalesForm;
-import com.increff.pos.model.SalesForm.SaleItem;
-import com.increff.pos.service.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Transactional(rollbackOn = ApiException.class)
 public class OrderService {
 
     @Autowired
-    private SalesDao salesDao;
+    private OrderItemDao orderItemDao;
 
     @Autowired
     private OrderDao orderDao;
@@ -30,98 +26,35 @@ public class OrderService {
     @Autowired
     private ProductService productService;
 
-    @Transactional
-    public OrderPojo createOrder(SalesForm salesForm) throws ApiException {
-        double totalOrderAmount = 0;
+    @Autowired
+    private InventoryService inventoryService;
+
+
+    public OrderPojo createOrder(List<OrderItemPojo> orderItemPojoList) throws ApiException {
         OrderPojo order = new OrderPojo();
-        order.setOrderDate(salesForm.getItems().get(0).getSaleDate());
-
-        List<SalesPojo> salesItems = new ArrayList<>();
-        for (SaleItem saleItem : salesForm.getItems()) {
-            try {
-                ProductPojo product = productService.getProductByBarcode(saleItem.getBarcode());
-                if (product == null) {
-                    throw new ApiException("Product with barcode " + saleItem.getBarcode() + " not found");
-                }
-
-                double unitPrice = product.getPrice();
-                double itemTotalAmount = unitPrice * saleItem.getQuantity();
-                totalOrderAmount += itemTotalAmount;
-
-                SalesPojo salesPojo = new SalesPojo();
-                salesPojo.setProduct(product);
-                salesPojo.setQuantity(saleItem.getQuantity());
-                salesPojo.setUnitPrice(unitPrice);
-                salesPojo.setTotalAmount(itemTotalAmount);
-                salesPojo.setSaleDate(saleItem.getSaleDate());
-                salesPojo.setProdName(product.getName());
-                salesPojo.setOrder(order);
-                salesItems.add(salesPojo);
-            } catch (javax.persistence.NoResultException e) {
-                throw new ApiException("Product with barcode " + saleItem.getBarcode() + " not found");
-            }
-        }
-
-        order.setTotalAmount(totalOrderAmount);
-        order.setSalesItems(salesItems);
+        order.setOrderDate(LocalDate.now());
+        double totalAmt = 0.0;
         orderDao.add(order);
 
+        for (OrderItemPojo orderItem : orderItemPojoList) {
+            orderItem.setOrder_id(order.getId());
+            orderItemDao.add(orderItem);
+            ProductPojo productPojo = productService.getProduct(orderItem.getProd_id());
+            InventoryPojo inventoryPojo = inventoryService.getInventoryByBarcode(productPojo.getBarcode());
+            inventoryPojo.setQuantity(inventoryPojo.getQuantity() - orderItem.getQuantity());
+            totalAmt += productPojo.getPrice();
+        }
+        order.setTotalAmount(totalAmt);
         return order;
     }
 
-
-    @Transactional
     public List<OrderPojo> getAllOrders() {
         return orderDao.selectAll();
     }
 
-    @Transactional
     public OrderPojo getOrderById(Long id) throws ApiException {
         return orderDao.selectById(id)
                 .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
-    }
-
-    @Transactional
-    public void deleteOrder(Long id) throws ApiException {
-        OrderPojo order = orderDao.selectById(id)
-                .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
-        orderDao.delete(id);
-    }
-
-    @Transactional
-    public void updateOrder(Long id, SalesForm salesForm) throws ApiException {
-        OrderPojo order = orderDao.selectById(id)
-                .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
-
-        double totalOrderAmount = 0;
-        List<SalesPojo> salesItems = new ArrayList<>();
-
-        for (SaleItem saleItem : salesForm.getItems()) {
-            ProductPojo product = productService.getProductByBarcode(saleItem.getBarcode());
-            if (product == null) {
-                throw new ApiException("Product with barcode " + saleItem.getBarcode() + " not found");
-            }
-
-            double unitPrice = product.getPrice();
-            double itemTotalAmount = unitPrice * saleItem.getQuantity();
-            totalOrderAmount += itemTotalAmount;
-
-            SalesPojo salesPojo = new SalesPojo();
-            salesPojo.setProduct(product);
-            salesPojo.setQuantity(saleItem.getQuantity());
-            salesPojo.setUnitPrice(unitPrice);
-            salesPojo.setTotalAmount(itemTotalAmount);
-            salesPojo.setSaleDate(saleItem.getSaleDate());
-            salesPojo.setProdName(product.getName());
-            salesPojo.setOrder(order);
-
-            salesItems.add(salesPojo);
-        }
-
-        order.setTotalAmount(totalOrderAmount);
-        order.setSalesItems(salesItems);
-
-        orderDao.update(order);
     }
 
 }

@@ -1,8 +1,8 @@
 package com.increff.pos.controller;
 
 import com.increff.pos.dto.InventoryDto;
-import com.increff.pos.model.InventoryData;
-import com.increff.pos.model.InventoryForm;
+import com.increff.pos.model.data.InventoryData;
+import com.increff.pos.model.forms.InventoryForm;
 import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,53 +11,55 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Api
 @RestController
+@RequestMapping("/api/inventory")
 public class InventoryController {
+
     @Autowired
-    InventoryDto inventoryDto;
+    private InventoryDto inventoryDto;
 
     @ApiOperation(value = "Post an inventory")
-    @RequestMapping(path="/api/inventory", method = RequestMethod.POST)
-    public void addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
+    @PostMapping
+    public ResponseEntity<String> addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.addInventory(inventoryForm);
+        return ResponseEntity.ok("Inventory added successfully.");
     }
 
     @ApiOperation(value = "Get all inventories")
-    @RequestMapping(path = "/api/inventory", method = RequestMethod.GET)
-    public List<InventoryData> getAll() {
-        return inventoryDto.getAllInventories();
+    @GetMapping
+    public ResponseEntity<List<InventoryData>> getAll() throws ApiException {
+        List<InventoryData> inventories = inventoryDto.getAllInventories();
+        return ResponseEntity.ok(inventories);
     }
 
     @ApiOperation(value = "Get inventory")
-    @RequestMapping(path = "/api/inventory/{id}", method = RequestMethod.GET)
-    public InventoryData get(@PathVariable  Long id) throws ApiException {
-        return inventoryDto.getInventory(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<InventoryData> get(@PathVariable Long id) throws ApiException {
+        InventoryData inventory = inventoryDto.getInventory(id);
+        return ResponseEntity.ok(inventory);
     }
 
     @ApiOperation(value = "Get inventory based on barcode")
-    @RequestMapping(path = "/api/inventory/{barcode}", method = RequestMethod.GET)
-    public InventoryData get(@PathVariable  String barcode) throws ApiException {
-       return  inventoryDto.getInventory(barcode);
+    @GetMapping("/barcode/{barcode}")
+    public ResponseEntity<InventoryData> getByBarcode(@PathVariable String barcode) throws ApiException {
+        InventoryData inventory = inventoryDto.getInventory(barcode);
+        return ResponseEntity.ok(inventory);
     }
 
     @ApiOperation(value = "Update an existing inventory")
-    @RequestMapping(path = "/api/inventory/{id}", method = RequestMethod.PUT)
-    public void updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException{
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.updateInventory(inventoryForm, id);
-    }
-
-    @ApiOperation(value = "Delete a inventory")
-    @RequestMapping(path="/api/inventory/{id}", method = RequestMethod.DELETE)
-    public void deleteInventory(@PathVariable Long id) throws ApiException {
-        inventoryDto.deleteInventory(id);
+        return ResponseEntity.ok("Inventory updated successfully.");
     }
 
     @ApiOperation(value = "Upload inventory via TSV")
-    @RequestMapping(path = "/api/inventory/upload", method = RequestMethod.POST)
-    public ResponseEntity<String> uploadInventory(@RequestParam("file") MultipartFile file) throws Exception {
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadInventory(@RequestParam("file") MultipartFile file) throws IOException, ApiException {
         inventoryDto.uploadInventory(file);
         return ResponseEntity.ok("Inventory file uploaded successfully.");
     }

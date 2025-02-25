@@ -1,12 +1,13 @@
 package com.increff.pos.controller;
 
 import com.increff.pos.dto.ProductDto;
-import com.increff.pos.model.ProductData;
-import com.increff.pos.model.ProductForm;
+import com.increff.pos.model.data.ProductData;
+import com.increff.pos.model.forms.ProductForm;
 import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,43 +16,44 @@ import java.util.List;
 
 @Api
 @RestController
+@RequestMapping("/api/product")
 public class ProductController {
+
     @Autowired
-    ProductDto productDto;
+    private ProductDto productDto;
 
     @ApiOperation(value = "Post a product")
-    @RequestMapping(path="/api/product", method = RequestMethod.POST)
-    public void addProduct(@RequestBody ProductForm productForm) throws ApiException{
+    @PostMapping
+    public ResponseEntity<String> addProduct(@RequestBody ProductForm productForm) throws ApiException {
         productDto.addProduct(productForm);
+        return ResponseEntity.ok("Product added successfully.");
     }
 
-    @ApiOperation(value = "Delete a product")
-    @RequestMapping(path="/api/product/{id}", method = RequestMethod.DELETE)
-    public void deleteProduct(@PathVariable Long id) throws ApiException {
-        productDto.deleteProduct(id);
+    @ApiOperation(value = "Get a product based on its Id")
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductData> getProduct(@PathVariable Long id) throws ApiException {
+        ProductData product = productDto.getProduct(id);
+        return ResponseEntity.ok(product);
     }
 
-    @ApiOperation(value = "Get a product based on it's Id")
-    @RequestMapping(path = "/api/product/{id}", method = RequestMethod.GET)
-    public ProductData getProduct(@PathVariable Long id) throws ApiException {
-        return productDto.getProduct(id);
-    }
-
-    @ApiOperation(value = "Get all clients")
-    @RequestMapping(path = "/api/product", method = RequestMethod.GET)
-    public List<ProductData> getAll() {
-            return productDto.getAllProducts();
+    @ApiOperation(value = "Get all products")
+    @GetMapping
+    public ResponseEntity<List<ProductData>> getAll() throws ApiException {
+        List<ProductData> products = productDto.getAllProducts();
+        return ResponseEntity.ok(products);
     }
 
     @ApiOperation(value = "Update an existing product")
-    @RequestMapping(path = "/api/product/{id}", method = RequestMethod.PUT)
-    public void updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException{
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
         productDto.updateProduct(id, productForm);
+        return ResponseEntity.ok("Product updated successfully.");
     }
 
     @ApiOperation(value = "Upload products via TSV file")
-    @PostMapping("/api/product/upload")
-    public void uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
         productDto.uploadProducts(file);
+        return ResponseEntity.ok("Product file uploaded successfully.");
     }
 }

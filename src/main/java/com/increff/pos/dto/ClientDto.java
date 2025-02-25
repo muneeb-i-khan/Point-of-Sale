@@ -1,8 +1,8 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.db.pojo.ClientPojo;
-import com.increff.pos.model.ClientData;
-import com.increff.pos.model.ClientForm;
+import com.increff.pos.model.data.ClientData;
+import com.increff.pos.model.forms.ClientForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.util.Normalize;
@@ -22,15 +22,14 @@ public class ClientDto {
         clientService.addClient(clientPojo);
     }
 
-    public void deleteClient(Long id) throws ApiException {
-        clientService.getCheck(id);
-        clientService.deleteClient(id);
-    }
+//    public void deleteClient(Long id) throws ApiException {
+//        clientService.getCheck(id);
+//        clientService.deleteClient(id);
+//    }
 
     public ClientData getClient(Long id) throws ApiException {
-        clientService.getCheck(id);
-        ClientPojo p = clientService.getClient(id);
-        return convert(p);
+        ClientPojo clientPojo = clientService.getCheck(id);
+        return convert(clientPojo);
     }
 
     public List<ClientData> getAllClients() {
@@ -42,10 +41,11 @@ public class ClientDto {
         return list2;
     }
 
-    public void updateClient(ClientForm clientForm, Long id) throws  ApiException{
-        ClientPojo p = convert(clientForm);
-        clientService.getCheck(id);
-        clientService.updateClient(id,p);
+    public void updateClient(ClientForm clientForm, Long id) throws ApiException {
+        ClientPojo clientPojo = new ClientPojo();
+        clientPojo.setName(Normalize.normalizeName((clientForm.getName())));
+        clientPojo.setDescription(clientForm.getDescription());
+        clientService.updateClient(id, clientPojo);
     }
 
 
@@ -56,6 +56,7 @@ public class ClientDto {
         clientData.setId(p.getId());
         return clientData;
     }
+
     public ClientPojo convert(ClientForm ClientForm) {
         ClientPojo p = new ClientPojo();
         p.setName(Normalize.normalizeName(ClientForm.getName()));

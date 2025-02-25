@@ -12,11 +12,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class OrderDao {
 
-    private static final String SELECT_ALL = "SELECT DISTINCT o FROM OrderPojo o LEFT JOIN FETCH o.salesItems";
-    private static final String SELECT_BY_ID = "SELECT DISTINCT o FROM OrderPojo o LEFT JOIN FETCH o.salesItems WHERE o.id = :orderId";
     private static final String DELETE_BY_ID = "DELETE FROM OrderPojo o WHERE o.id = :id";
+    private static final String SELECT_ALL = "SELECT o FROM OrderPojo o";
+    private static final String SELECT_BY_ID = "SELECT o FROM OrderPojo o WHERE o.id = :orderId";
 
     @PersistenceContext
     private EntityManager em;
@@ -32,16 +33,17 @@ public class OrderDao {
 
     public Optional<OrderPojo> selectById(Long id) {
         try {
-            return Optional.ofNullable(em.find(OrderPojo.class, id));
+            TypedQuery<OrderPojo> query = em.createQuery(SELECT_BY_ID, OrderPojo.class);
+            query.setParameter("orderId", id);
+            return Optional.ofNullable(query.getSingleResult());
         } catch (NoResultException e) {
             return Optional.empty();
         }
     }
 
-    @Transactional
-    public void delete(Long id) {
-        selectById(id).ifPresent(order -> em.remove(order));
-    }
+//    public void delete(Long id) {
+//        selectById(id).ifPresent(order -> em.remove(order));
+//    }
 
     public void update(OrderPojo order) {
         em.merge(order);

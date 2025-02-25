@@ -1,49 +1,49 @@
 package com.increff.pos.controller;
 
 import com.increff.pos.dto.ClientDto;
-import com.increff.pos.model.ClientData;
-import com.increff.pos.model.ClientForm;
+import com.increff.pos.model.data.ClientData;
+import com.increff.pos.model.forms.ClientForm;
 import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Api
 @RestController
+@RequestMapping("/api/client")
 public class ClientController {
+
     @Autowired
-    ClientDto clientDto;
+    private ClientDto clientDto;
 
     @ApiOperation(value = "Post a client")
-    @RequestMapping(path="/api/client", method = RequestMethod.POST)
-    public void addClient(@RequestBody ClientForm clientForm) {
+    @PostMapping
+    public ResponseEntity<String> addClient(@RequestBody ClientForm clientForm) {
         clientDto.addClient(clientForm);
+        return ResponseEntity.ok("Client added successfully");
     }
 
-    @ApiOperation(value = "Delete a client")
-    @RequestMapping(path="/api/client/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id) throws ApiException  {
-        clientDto.deleteClient(id);
-    }
-
-    @ApiOperation(value = "Get a client based on it's Id")
-    @RequestMapping(path = "/api/client/{id}", method = RequestMethod.GET)
-    public ClientData get(@PathVariable Long id) throws ApiException {
-        return clientDto.getClient(id);
+    @ApiOperation(value = "Get a client based on its Id")
+    @GetMapping("/{id}")
+    public ResponseEntity<ClientData> get(@PathVariable Long id) throws ApiException {
+        ClientData clientData = clientDto.getClient(id);
+        return ResponseEntity.ok(clientData);
     }
 
     @ApiOperation(value = "Get all clients")
-    @RequestMapping(path = "/api/client", method = RequestMethod.GET)
-    public List<ClientData> getAll() {
-        return clientDto.getAllClients();
+    @GetMapping
+    public ResponseEntity<List<ClientData>> getAll() {
+        List<ClientData> clients = clientDto.getAllClients();
+        return ResponseEntity.ok(clients);
     }
 
     @ApiOperation(value = "Update an existing client")
-    @RequestMapping(path = "/api/client/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException{
+    @PutMapping("/{id}")
+    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
         clientDto.updateClient(clientForm, id);
+        return ResponseEntity.ok("Client updated successfully");
     }
-
 }
