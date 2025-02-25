@@ -7,10 +7,13 @@ import com.increff.pos.model.forms.ProductForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.service.ProductService;
+import com.increff.pos.service.TsvUploadService;
 import com.increff.pos.util.Normalize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +23,9 @@ public class ProductDto {
     ClientService clientService;
     @Autowired
     ProductService productService;
-//    @Autowired
-//    TsvUploadService tsvUploadService;
+
+    @Autowired
+    TsvUploadService tsvUploadService;
 
     public void addProduct(ProductForm productForm) throws ApiException {
         ProductPojo p = convert(productForm);
@@ -52,9 +56,9 @@ public class ProductDto {
         productService.updateProduct(id, p);
     }
 
-//    public void uploadProducts(MultipartFile file) throws IOException, ApiException {
-//        tsvUploadService.uploadProducts(file);
-//    }
+    public void uploadProducts(MultipartFile file) throws IOException, ApiException {
+        tsvUploadService.uploadProducts(file);
+    }
 
     public ProductData convert(ProductPojo productPojo) throws ApiException{
         ProductData productData = new ProductData();
