@@ -9,15 +9,11 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "clients")
-public class ClientPojo {
-
+public class ClientPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false, unique = true)
     private String name;
-
     private String description;
-
 }

@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "user")
-public class UserPojo {
+public class UserPojo extends AbstractPojo{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
