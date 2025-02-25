@@ -18,44 +18,44 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/inventory")
 public class InventoryController {
+
     @Autowired
-    InventoryDto inventoryDto;
+    private InventoryDto inventoryDto;
 
     @ApiOperation(value = "Post an inventory")
     @PostMapping
-    public void addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
+    public ResponseEntity<String> addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.addInventory(inventoryForm);
+        return ResponseEntity.ok("Inventory added successfully.");
     }
 
     @ApiOperation(value = "Get all inventories")
     @GetMapping
-    public List<InventoryData> getAll() throws ApiException {
-        return inventoryDto.getAllInventories();
+    public ResponseEntity<List<InventoryData>> getAll() throws ApiException {
+        List<InventoryData> inventories = inventoryDto.getAllInventories();
+        return ResponseEntity.ok(inventories);
     }
 
     @ApiOperation(value = "Get inventory")
     @GetMapping("/{id}")
-    public InventoryData get(@PathVariable Long id) throws ApiException {
-        return inventoryDto.getInventory(id);
+    public ResponseEntity<InventoryData> get(@PathVariable Long id) throws ApiException {
+        InventoryData inventory = inventoryDto.getInventory(id);
+        return ResponseEntity.ok(inventory);
     }
 
     @ApiOperation(value = "Get inventory based on barcode")
     @GetMapping("/barcode/{barcode}")
-    public InventoryData getByBarcode(@PathVariable String barcode) throws ApiException {
-        return inventoryDto.getInventory(barcode);
+    public ResponseEntity<InventoryData> getByBarcode(@PathVariable String barcode) throws ApiException {
+        InventoryData inventory = inventoryDto.getInventory(barcode);
+        return ResponseEntity.ok(inventory);
     }
 
     @ApiOperation(value = "Update an existing inventory")
     @PutMapping("/{id}")
-    public void updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException {
+    public ResponseEntity<String> updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.updateInventory(inventoryForm, id);
+        return ResponseEntity.ok("Inventory updated successfully.");
     }
-
-//    @ApiOperation(value = "Delete an inventory")
-//    @DeleteMapping("/{id}")
-//    public void deleteInventory(@PathVariable Long id) throws ApiException {
-//        inventoryDto.deleteInventory(id);
-//    }
 
     @ApiOperation(value = "Upload inventory via TSV")
     @PostMapping("/upload")

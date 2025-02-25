@@ -7,6 +7,7 @@ import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,24 +18,26 @@ import java.util.List;
 public class OrderController {
 
     @Autowired
-    OrderDto orderDto;
+    private OrderDto orderDto;
 
     @ApiOperation(value = "Create an order with multiple items")
     @PostMapping
-    public void addOrder(@RequestBody List<OrderItemForm> orderItemForm) throws ApiException {
+    public ResponseEntity<String> addOrder(@RequestBody List<OrderItemForm> orderItemForm) throws ApiException {
         orderDto.addOrder(orderItemForm);
+        return ResponseEntity.ok("Order created successfully.");
     }
 
     @ApiOperation(value = "Get all orders")
     @GetMapping
-    public List<OrderData> getAllOrders() throws ApiException {
-        return orderDto.getAllOrders();
+    public ResponseEntity<List<OrderData>> getAllOrders() throws ApiException {
+        List<OrderData> orders = orderDto.getAllOrders();
+        return ResponseEntity.ok(orders);
     }
 
     @ApiOperation(value = "Get order by ID")
     @GetMapping("/{id}")
-    public OrderData getOrderById(@PathVariable Long id) throws ApiException {
-        return orderDto.getOrder(id);
+    public ResponseEntity<OrderData> getOrderById(@PathVariable Long id) throws ApiException {
+        OrderData order = orderDto.getOrder(id);
+        return ResponseEntity.ok(order);
     }
-
 }
