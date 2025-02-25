@@ -29,14 +29,14 @@ public class ProductDto {
 
     public ProductData getProduct(Long id) throws ApiException {
         ProductPojo productPojo = productService.getCheck(id);
-        return convert(productPojo);
+        return productFlow.convert(productPojo);
     }
 
     public List<ProductData> getAllProducts() throws ApiException {
         List<ProductPojo> list = productService.getAllProducts();
         List<ProductData> list2 = new ArrayList<>();
         for(ProductPojo p : list) {
-            list2.add(convert(p));
+            list2.add(productFlow.convert(p));
         }
         return list2;
     }
@@ -50,14 +50,6 @@ public class ProductDto {
         productFlow.uploadProducts(file);
     }
 
-    private ProductData convert(ProductPojo productPojo) {
-        ProductData productData = new ProductData();
-        productData.setName(Normalize.normalizeName(productPojo.getName()));
-        productData.setBarcode(productPojo.getBarcode());
-        productData.setId(productPojo.getId());
-        productData.setPrice(productPojo.getPrice());
-        return productData;
-    }
 
     private ProductPojo convert(ProductForm productForm) {
         ProductPojo p = new ProductPojo();
