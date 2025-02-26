@@ -38,7 +38,7 @@ public class ClientDto {
 
     public void updateClient(ClientForm clientForm, Long id) throws ApiException {
         ClientPojo clientPojo = new ClientPojo();
-        clientPojo.setName(Normalize.normalizeName((clientForm.getName())));
+        clientPojo.setName(Normalize.normalizeName(Normalize.trimString(clientForm.getName())));
         clientPojo.setDescription(clientForm.getDescription());
         clientService.updateClient(id, clientPojo);
     }
@@ -46,7 +46,7 @@ public class ClientDto {
 
     public ClientData convert(ClientPojo p) {
         ClientData clientData = new ClientData();
-        clientData.setName(Normalize.normalizeName(p.getName()));
+        clientData.setName(Normalize.normalizeName(Normalize.trimString(p.getName())));
         clientData.setDescription(p.getDescription());
         clientData.setId(p.getId());
         return clientData;
@@ -54,8 +54,8 @@ public class ClientDto {
 
     public ClientPojo convert(ClientForm ClientForm) {
         ClientPojo p = new ClientPojo();
-        p.setName(Normalize.normalizeName(ClientForm.getName()));
-        p.setDescription(ClientForm.getDescription());
+        p.setName(Normalize.normalizeName(Normalize.trimString(ClientForm.getName())));
+        p.setDescription(Normalize.trimString(ClientForm.getDescription()));
         return p;
     }
 
