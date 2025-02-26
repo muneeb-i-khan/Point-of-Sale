@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +26,7 @@ public class InventoryController {
     private InventoryDto inventoryDto;
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
+    public ResponseEntity<Map<String, String>> addInventory(@Valid @RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.addInventory(inventoryForm);
         return ResponseEntity.ok(Collections.singletonMap("message", "Inventory added successfully"));
     }

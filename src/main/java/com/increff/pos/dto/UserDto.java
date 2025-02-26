@@ -5,12 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
+
 @Component
 @Getter
 @Setter
 public class UserDto {
     private Long id;
+    @Email
     private String email;
+    @Size(min=6, message = "Password should be of length greater than 6")
     private String password;
     private Role role;
 

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +25,7 @@ public class ProductController {
     @Autowired
     private ProductDto productDto;
     @PostMapping
-    public ResponseEntity<Map<String, String>> addProduct(@RequestBody ProductForm productForm) throws ApiException {
+    public ResponseEntity<Map<String, String>> addProduct(@Valid @RequestBody ProductForm productForm) throws ApiException {
         productDto.addProduct(productForm);
         return ResponseEntity.ok(Collections.singletonMap("message", "Product added successfully"));
     }

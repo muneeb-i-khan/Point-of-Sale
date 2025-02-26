@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class ClientController {
     private ClientDto clientDto;
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addClient(@RequestBody ClientForm clientForm) {
+    public ResponseEntity<Map<String, String>> addClient(@Valid @RequestBody ClientForm clientForm) {
         clientDto.addClient(clientForm);
         return ResponseEntity.ok(Collections.singletonMap("message", "Client added successfully"));
     }

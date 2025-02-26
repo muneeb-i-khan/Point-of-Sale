@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class OrderController {
     private OrderDto orderDto;
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addOrder(@RequestBody List<OrderItemForm> orderItemForm) throws ApiException {
+    public ResponseEntity<Map<String, String>> addOrder(@Valid @RequestBody List<OrderItemForm> orderItemForm) throws ApiException {
         orderDto.addOrder(orderItemForm);
         return ResponseEntity.ok(Collections.singletonMap("message", "Order created successfully"));
     }

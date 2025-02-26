@@ -4,10 +4,12 @@ import com.increff.pos.dto.UserDto;
 import com.increff.pos.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +53,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody UserDto signupRequest) {
+    public ResponseEntity<?> signup(@Valid @RequestBody UserDto signupRequest, BindingResult bindingResult) {
         return authService.registerUser(signupRequest.getEmail(), signupRequest.getPassword(),
                 signupRequest.getRole().name());
     }
