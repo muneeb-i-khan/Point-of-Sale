@@ -1,7 +1,13 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.model.constants.Role;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.stereotype.Component;
 
+@Component
+@Getter
+@Setter
 public class UserDto {
     private Long id;
     private String email;
@@ -22,9 +28,4 @@ public class UserDto {
         this.password = password;
         this.role = role;
     }
-
-    public Long getId() { return id; }
-    public String getEmail() { return email; }
-    public String getPassword() { return password; }
-    public Role getRole() { return role; }
 }
