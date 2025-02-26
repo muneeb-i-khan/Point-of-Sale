@@ -41,12 +41,22 @@ public class OrderService {
             orderItemDao.add(orderItem);
             ProductPojo productPojo = productService.getProduct(orderItem.getProd_id());
             InventoryPojo inventoryPojo = inventoryService.getInventoryByBarcode(productPojo.getBarcode());
+
+            if(orderItem.getQuantity() <= 0) {
+                throw new ApiException("Quantity can't be negative");
+            }
+            if (inventoryPojo.getQuantity() < orderItem.getQuantity()) {
+                throw new ApiException("Insufficient stock for product: " + productPojo.getName());
+            }
+
             inventoryPojo.setQuantity(inventoryPojo.getQuantity() - orderItem.getQuantity());
-            totalAmt += productPojo.getPrice();
+            totalAmt += productPojo.getPrice() * orderItem.getQuantity();
         }
+
         order.setTotalAmount(totalAmt);
         return order;
     }
+
 
     public List<OrderPojo> getAllOrders() {
         return orderDao.selectAll();
