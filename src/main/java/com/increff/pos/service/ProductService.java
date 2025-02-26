@@ -42,23 +42,21 @@ public class ProductService {
     public void updateProduct(Long id, ProductPojo p) throws ApiException {
         ProductPojo ex = getCheck(id);
         ProductPojo existingProduct = dao.selectByBarcode(p.getBarcode());
+
         if (existingProduct != null && !existingProduct.getId().equals(id)) {
             throw new ApiException("Barcode already exists for another product.");
         }
+
         ex.setBarcode(p.getBarcode());
         ex.setName(p.getName());
         ex.setPrice(p.getPrice());
-        ex.setClient_id(p.getClient_id());
+        if (p.getClient_id() != null) {
+            ex.setClient_id(p.getClient_id());
+        }
 
         dao.update(ex);
     }
 
-
-
-//    public void deleteProduct(Long id) throws ApiException {
-//        ProductPojo product = getCheck(id);
-//        dao.delete(product.getId());
-//    }
 
     public ProductPojo getCheck(Long id) throws ApiException {
         ProductPojo p = dao.select(id);

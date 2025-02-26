@@ -4,6 +4,7 @@ import com.increff.pos.db.pojo.ProductPojo;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -22,10 +23,15 @@ public class ProductDao {
     }
 
     public ProductPojo select(Long id) {
-        TypedQuery<ProductPojo> query = getQuery(select_id);
-        query.setParameter("id", id);
-        return query.getSingleResult();
+        try {
+            TypedQuery<ProductPojo> query = getQuery(select_id);
+            query.setParameter("id", id);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
+
 
     public List<ProductPojo> selectAll() {
         TypedQuery<ProductPojo> query = getQuery(select_all);
@@ -35,13 +41,6 @@ public class ProductDao {
     public void update(ProductPojo p) {
         em.merge(p);
     }
-
-//    public void delete(Long id) {
-//        ProductPojo product = em.find(ProductPojo.class, id);
-//        if (product != null) {
-//            em.remove(product);
-//        }
-//    }
 
     public ProductPojo selectByBarcode(String barcode) {
         TypedQuery<ProductPojo> query = em.createQuery(select_by_barcode, ProductPojo.class);

@@ -31,8 +31,8 @@ public class ProductFlow {
         p.setName(productForm.getName());
         p.setBarcode(productForm.getBarcode());
         p.setPrice(productForm.getPrice());
-        ClientPojo cp = clientService.getClientByName(productForm.getClientName());
-        p.setClient_id(cp.getId());
+        ClientPojo clientPojo = clientService.getClientByName(productForm.getClientName());
+        p.setClient_id(clientPojo.getId());
         productService.addProduct(p);
     }
 

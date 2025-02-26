@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import com.increff.pos.util.Normalize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,22 +15,13 @@ import com.increff.pos.db.pojo.ClientPojo;
 @Transactional(rollbackOn = ApiException.class)
 public class ClientService {
 
-    private final ClientDao dao;
-
     @Autowired
-    public ClientService(ClientDao dao) {
-        this.dao = dao;
-    }
+    private  ClientDao dao;
 
     public void addClient(ClientPojo p) {
         dao.add(p);
     }
 
-
-//    public void deleteClient(Long id) throws ApiException {
-//        ClientPojo client = getCheck(id);
-//        dao.delete(client.getId());
-//    }
 
     public ClientPojo getClient(Long id) throws ApiException {
         return getCheck(id);
