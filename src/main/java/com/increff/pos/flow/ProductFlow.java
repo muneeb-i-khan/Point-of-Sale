@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.NoResultException;
 import java.io.IOException;
 
 @Component
@@ -31,7 +32,14 @@ public class ProductFlow {
         p.setName(productForm.getName());
         p.setBarcode(productForm.getBarcode());
         p.setPrice(productForm.getPrice());
-        ClientPojo clientPojo = clientService.getClientByName(productForm.getClientName());
+
+        ClientPojo clientPojo;
+        try {
+            clientPojo = clientService.getClientByName(productForm.getClientName());
+        } catch (NoResultException e) {
+            throw new ApiException("Client not found: " + productForm.getClientName());
+        }
+
         p.setClient_id(clientPojo.getId());
         productService.addProduct(p);
     }

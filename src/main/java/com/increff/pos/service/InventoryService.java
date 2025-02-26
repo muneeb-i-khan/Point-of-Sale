@@ -46,10 +46,6 @@ public class InventoryService {
         dao.update(p);
     }
 
-//    public void deleteInventory(Long id) throws ApiException {
-//        InventoryPojo inventoryPojo = getCheck(id);
-//        dao.delete(id);
-//    }
 
     public InventoryPojo getCheck(Long id) throws ApiException {
         try {
@@ -58,11 +54,10 @@ public class InventoryService {
                 throw new ApiException("Inventory with given ID does not exist, id: " + id);
             }
             return inventoryPojo;
-        } catch (javax.persistence.NoResultException e) {  // Catch NoResultException
+        } catch (javax.persistence.NoResultException e) {
             throw new ApiException("Inventory with given ID does not exist, id: " + id);
         }
     }
-
 
     public InventoryPojo getInventoryByBarcode(String barcode) throws ApiException {
         InventoryPojo inventory = dao.selectByBarcode(barcode);

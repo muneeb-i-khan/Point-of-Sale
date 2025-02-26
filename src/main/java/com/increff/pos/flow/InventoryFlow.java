@@ -37,6 +37,10 @@ public class InventoryFlow {
         return convert(inventoryPojo);
     }
 
+    public void uploadInventory(MultipartFile file) throws IOException, ApiException {
+        tsvUploadService.uploadInventory(file);
+    }
+
     public InventoryData convert(InventoryPojo inventoryPojo) throws ApiException {
         InventoryData inventoryData = new InventoryData();
         inventoryData.setId(inventoryPojo.getId());
@@ -55,9 +59,5 @@ public class InventoryFlow {
         inventoryPojo.setProd_id(productPojo.getId());
         inventoryPojo.setQuantity(inventoryForm.getQuantity());
         return inventoryPojo;
-    }
-
-    public void uploadInventory(MultipartFile file) throws IOException, ApiException {
-        tsvUploadService.uploadInventory(file);
     }
 }
