@@ -4,6 +4,7 @@ import com.increff.pos.db.dao.UserDao;
 import com.increff.pos.db.pojo.UserPojo;
 import com.increff.pos.dto.UserDto;
 import com.increff.pos.model.constants.Role;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,12 +18,9 @@ import java.util.Optional;
 
 @Service
 public class AuthService {
-    private final UserDao userDao;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    public AuthService(UserDao userDao) {
-        this.userDao = userDao;
-    }
+    @Autowired
+    private UserDao userDao;
+    final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserDto login(String email, String password, HttpSession session) {
         Optional<UserPojo> userOpt = userDao.findByEmail(email);
