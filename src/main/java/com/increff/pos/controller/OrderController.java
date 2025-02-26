@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Api
 @RestController
@@ -20,11 +22,10 @@ public class OrderController {
     @Autowired
     private OrderDto orderDto;
 
-    @ApiOperation(value = "Create an order with multiple items")
     @PostMapping
-    public ResponseEntity<String> addOrder(@RequestBody List<OrderItemForm> orderItemForm) throws ApiException {
+    public ResponseEntity<Map<String, String>> addOrder(@RequestBody List<OrderItemForm> orderItemForm) throws ApiException {
         orderDto.addOrder(orderItemForm);
-        return ResponseEntity.ok("Order created successfully.");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Order created successfully"));
     }
 
     @ApiOperation(value = "Get all orders")

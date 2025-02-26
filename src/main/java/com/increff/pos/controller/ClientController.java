@@ -9,7 +9,10 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Api
 @RestController
@@ -19,12 +22,12 @@ public class ClientController {
     @Autowired
     private ClientDto clientDto;
 
-    @ApiOperation(value = "Post a client")
     @PostMapping
-    public ResponseEntity<String> addClient(@RequestBody ClientForm clientForm) {
+    public ResponseEntity<Map<String, String>> addClient(@RequestBody ClientForm clientForm) {
         clientDto.addClient(clientForm);
-        return ResponseEntity.ok("Client added successfully");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Client added successfully"));
     }
+
 
     @ApiOperation(value = "Get a client based on its Id")
     @GetMapping("/{id}")
@@ -40,10 +43,9 @@ public class ClientController {
         return ResponseEntity.ok(clients);
     }
 
-    @ApiOperation(value = "Update an existing client")
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
+    public ResponseEntity<Map<String, String>> update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
         clientDto.updateClient(clientForm, id);
-        return ResponseEntity.ok("Client updated successfully");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Client updated successfully"));
     }
 }

@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Api
 @RestController
@@ -22,11 +24,10 @@ public class InventoryController {
     @Autowired
     private InventoryDto inventoryDto;
 
-    @ApiOperation(value = "Post an inventory")
     @PostMapping
-    public ResponseEntity<String> addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
+    public ResponseEntity<Map<String, String>> addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.addInventory(inventoryForm);
-        return ResponseEntity.ok("Inventory added successfully.");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Inventory added successfully"));
     }
 
     @ApiOperation(value = "Get all inventories")
@@ -50,17 +51,15 @@ public class InventoryController {
         return ResponseEntity.ok(inventory);
     }
 
-    @ApiOperation(value = "Update an existing inventory")
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException {
+    public ResponseEntity<Map<String, String>> updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.updateInventory(inventoryForm, id);
-        return ResponseEntity.ok("Inventory updated successfully.");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Inventory updated successfully"));
     }
 
-    @ApiOperation(value = "Upload inventory via TSV")
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadInventory(@RequestParam("file") MultipartFile file) throws IOException, ApiException {
+    public ResponseEntity<Map<String, String>> uploadInventory(@RequestParam("file") MultipartFile file) throws IOException, ApiException {
         inventoryDto.uploadInventory(file);
-        return ResponseEntity.ok("Inventory file uploaded successfully.");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Inventory file uploaded successfully"));
     }
 }

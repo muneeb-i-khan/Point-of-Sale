@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Api
 @RestController
@@ -21,12 +23,10 @@ public class ProductController {
 
     @Autowired
     private ProductDto productDto;
-
-    @ApiOperation(value = "Post a product")
     @PostMapping
-    public ResponseEntity<String> addProduct(@RequestBody ProductForm productForm) throws ApiException {
+    public ResponseEntity<Map<String, String>> addProduct(@RequestBody ProductForm productForm) throws ApiException {
         productDto.addProduct(productForm);
-        return ResponseEntity.ok("Product added successfully.");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Product added successfully"));
     }
 
     @ApiOperation(value = "Get a product based on its Id")
@@ -43,17 +43,15 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @ApiOperation(value = "Update an existing product")
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
+    public ResponseEntity<Map<String, String>> updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
         productDto.updateProduct(id, productForm);
-        return ResponseEntity.ok("Product updated successfully.");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Product updated successfully"));
     }
 
-    @ApiOperation(value = "Upload products via TSV file")
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
+    public ResponseEntity<Map<String, String>> uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
         productDto.uploadProducts(file);
-        return ResponseEntity.ok("Product file uploaded successfully.");
+        return ResponseEntity.ok(Collections.singletonMap("message", "Product file uploaded successfully"));
     }
 }
