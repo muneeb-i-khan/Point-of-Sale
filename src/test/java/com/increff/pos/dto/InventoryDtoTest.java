@@ -8,11 +8,17 @@ import com.increff.pos.service.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.*;
 
 import java.util.List;
 
+@ContextConfiguration(classes = QaConfig.class)
+@Transactional
+@Rollback
 public class InventoryDtoTest extends AbstractUnitTest {
 
     @Autowired

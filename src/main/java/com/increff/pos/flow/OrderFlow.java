@@ -28,10 +28,14 @@ public class OrderFlow {
     private OrderItemDao orderItemDao;
 
     public void addOrder(List<OrderItemForm> orderItemFormList) throws ApiException {
+        if (orderItemFormList == null || orderItemFormList.isEmpty()) {
+            throw new ApiException("Order cannot be empty.");
+        }
         List<OrderItemForm> mergedOrderItems = mergeDuplicateItems(orderItemFormList);
         List<OrderItemPojo> orderItemPojoList = convert(mergedOrderItems);
         orderService.createOrder(orderItemPojoList);
     }
+
 
     public OrderData getOrder(Long id) throws ApiException {
         OrderPojo orderPojo = orderService.getOrderById(id);

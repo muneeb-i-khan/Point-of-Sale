@@ -4,11 +4,9 @@ import static org.junit.Assert.*;
 
 import com.increff.pos.db.pojo.ClientPojo;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -53,7 +51,7 @@ public class ClientServiceTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void getClientByIdNotFoundTest() throws ApiException {
-        clientService.getClient(999L); // ID that doesn't exist
+        clientService.getClient(999L);
     }
 
     @Test
