@@ -53,8 +53,8 @@ public class ProductDto {
 
     private ProductPojo convert(ProductForm productForm) {
         ProductPojo p = new ProductPojo();
-        p.setName(Normalize.normalizeName(Normalize.trimString(productForm.getName())));
-        p.setBarcode(Normalize.trimString(productForm.getBarcode()));
+        p.setName(Normalize.normalizeName(productForm.getName().trim()));
+        p.setBarcode(productForm.getBarcode().trim());
         p.setPrice(productForm.getPrice());
         return p;
     }
