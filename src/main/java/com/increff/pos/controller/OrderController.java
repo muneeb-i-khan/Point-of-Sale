@@ -2,7 +2,7 @@ package com.increff.pos.controller;
 
 import com.increff.pos.dto.OrderDto;
 import com.increff.pos.model.data.OrderData;
-import com.increff.pos.model.forms.OrderItemForm;
+import com.increff.pos.model.forms.OrderForm;
 import com.increff.pos.service.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,10 +24,11 @@ public class OrderController {
     private OrderDto orderDto;
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addOrder(@Valid @RequestBody List<OrderItemForm> orderItemForm) throws ApiException {
-        orderDto.addOrder(orderItemForm);
+    public ResponseEntity<Map<String, String>> addOrder(@Valid @RequestBody OrderForm orderForm) throws ApiException {
+        orderDto.addOrder(orderForm.getOrderItems(), orderForm.getCustomer());
         return ResponseEntity.ok(Collections.singletonMap("message", "Order created successfully"));
     }
+
 
     @ApiOperation(value = "Get all orders")
     @GetMapping

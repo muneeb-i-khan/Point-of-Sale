@@ -13,4 +13,6 @@ public class OrderData {
     private Double              totalAmount;
     private LocalDate           orderDate;
     private List<OrderItem>     items;
+    private String              customerName;
+    private String              customerPhone;
 }

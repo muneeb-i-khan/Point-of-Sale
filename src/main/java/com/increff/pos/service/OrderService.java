@@ -1,11 +1,9 @@
 package com.increff.pos.service;
 
+import com.increff.pos.db.dao.CustomerDao;
 import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
-import com.increff.pos.db.pojo.InventoryPojo;
-import com.increff.pos.db.pojo.OrderPojo;
-import com.increff.pos.db.pojo.OrderItemPojo;
-import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.db.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +27,15 @@ public class OrderService {
     @Autowired
     private InventoryService inventoryService;
 
+    @Autowired
+    private CustomerService customerService;
 
-    public OrderPojo createOrder(List<OrderItemPojo> orderItemPojoList) throws ApiException {
+    public OrderPojo createOrder(List<OrderItemPojo> orderItemPojoList, CustomerPojo customerPojo) throws ApiException {
         OrderPojo order = new OrderPojo();
         order.setOrderDate(LocalDate.now());
         double totalAmt = 0.0;
+        customerService.addCustomer(customerPojo);
+        order.setCustomerId(customerPojo.getId());
         orderDao.add(order);
 
         for (OrderItemPojo orderItem : orderItemPojoList) {

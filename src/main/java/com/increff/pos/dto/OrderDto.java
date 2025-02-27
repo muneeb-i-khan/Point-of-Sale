@@ -2,6 +2,7 @@ package com.increff.pos.dto;
 
 import com.increff.pos.flow.OrderFlow;
 import com.increff.pos.model.data.OrderData;
+import com.increff.pos.model.forms.CustomerForm;
 import com.increff.pos.model.forms.OrderItemForm;
 import com.increff.pos.service.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,8 @@ public class OrderDto {
     @Autowired
     private OrderFlow orderFlow;
 
-    public void addOrder(List<OrderItemForm> orderItemFormList) throws ApiException {
-        orderFlow.addOrder(orderItemFormList);
+    public void addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
+        orderFlow.addOrder(orderItemFormList, customerForm);
     }
 
     public List<OrderData> getAllOrders() throws ApiException {
