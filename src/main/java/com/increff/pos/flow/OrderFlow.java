@@ -1,13 +1,17 @@
 package com.increff.pos.flow;
 
 import com.increff.pos.db.dao.OrderItemDao;
+import com.increff.pos.db.pojo.CustomerPojo;
 import com.increff.pos.db.pojo.OrderItemPojo;
 import com.increff.pos.db.pojo.OrderPojo;
 import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.dto.CustomerDto;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderItem;
+import com.increff.pos.model.forms.CustomerForm;
 import com.increff.pos.model.forms.OrderItemForm;
 import com.increff.pos.service.ApiException;
+import com.increff.pos.service.CustomerService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +31,20 @@ public class OrderFlow {
     @Autowired
     private OrderItemDao orderItemDao;
 
-    public void addOrder(List<OrderItemForm> orderItemFormList) throws ApiException {
+    @Autowired
+    private CustomerDto customerDto;
+
+    @Autowired
+    private CustomerService customerService;
+
+    public void addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
         if (orderItemFormList == null || orderItemFormList.isEmpty()) {
             throw new ApiException("Order cannot be empty.");
         }
         List<OrderItemForm> mergedOrderItems = mergeDuplicateItems(orderItemFormList);
         List<OrderItemPojo> orderItemPojoList = convert(mergedOrderItems);
-        orderService.createOrder(orderItemPojoList);
+        CustomerPojo customerPojo = customerDto.convert(customerForm);
+        orderService.createOrder(orderItemPojoList, customerPojo);
     }
 
 
@@ -57,6 +68,8 @@ public class OrderFlow {
         orderData.setId(orderPojo.getId());
         orderData.setTotalAmount(orderPojo.getTotalAmount());
         orderData.setOrderDate(orderPojo.getOrderDate());
+        orderData.setCustomerName(customerService.getCustomer(orderPojo.getId()).getName());
+        orderData.setCustomerPhone(customerService.getCustomer(orderData.getId()).getPhone());
 
         List<OrderItemPojo> orderItemPojos = orderItemDao.getItemsByOrderId(orderPojo.getId());
         List<OrderItem> orderItems = new ArrayList<>();

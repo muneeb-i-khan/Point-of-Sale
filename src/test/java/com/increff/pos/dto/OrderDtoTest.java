@@ -8,6 +8,7 @@ import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.flow.OrderFlow;
 import com.increff.pos.model.data.OrderData;
+import com.increff.pos.model.forms.CustomerForm;
 import com.increff.pos.model.forms.OrderItemForm;
 import com.increff.pos.service.AbstractUnitTest;
 import com.increff.pos.service.ApiException;
@@ -90,9 +91,13 @@ public class OrderDtoTest extends AbstractUnitTest {
         orderItem2.setBarcode(product2.getBarcode());
         orderItem2.setQuantity(3L);
 
+        CustomerForm customer = new CustomerForm();
+        customer.setName("Customer Test");
+        customer.setPhone("123456789");
+
         List<OrderItemForm> orderItems = Arrays.asList(orderItem1, orderItem2);
 
-        orderDto.addOrder(orderItems);
+        orderDto.addOrder(orderItems,customer);
         List<OrderData> orders = orderDto.getAllOrders();
 
         assertNotNull(orders);
@@ -101,7 +106,11 @@ public class OrderDtoTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testAddOrderEmptyList() throws ApiException {
-        orderDto.addOrder(Collections.emptyList());
+        CustomerForm customer = new CustomerForm();
+        customer.setName("Customer Test");
+        customer.setPhone("123456789");
+
+        orderDto.addOrder(Collections.emptyList(),customer);
     }
 
 
