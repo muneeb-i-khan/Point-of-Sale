@@ -4,6 +4,7 @@ import com.increff.pos.db.dao.UserDao;
 import com.increff.pos.db.pojo.UserPojo;
 import com.increff.pos.dto.UserDto;
 import com.increff.pos.model.constants.Role;
+import com.increff.pos.util.RoleAssigner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +52,7 @@ public class AuthService {
         session.invalidate();
     }
 
-    public ResponseEntity<Map<String, String>> registerUser(String email, String password, String role) {
+    public ResponseEntity<Map<String, String>> registerUser(String email, String password) {
         Map<String, String> response = new HashMap<>();
 
         if (userDao.findByEmail(email).isPresent()) {
@@ -60,11 +61,10 @@ public class AuthService {
         }
 
         try {
-            Role userRole = Role.valueOf(role.toUpperCase());
             UserPojo newUser = new UserPojo();
             newUser.setEmail(email);
             newUser.setPassword(passwordEncoder.encode(password));
-            newUser.setRole(userRole);
+            newUser.setRole(RoleAssigner.assignRole(email));
             userDao.save(newUser);
 
             response.put("message", "User registered successfully");

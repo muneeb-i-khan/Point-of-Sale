@@ -4,6 +4,7 @@ import com.increff.pos.db.dao.UserDao;
 import com.increff.pos.db.pojo.UserPojo;
 import com.increff.pos.dto.UserDto;
 import com.increff.pos.model.constants.Role;
+import com.increff.pos.util.RoleAssigner;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,19 +38,34 @@ public class AuthServiceTest extends AbstractUnitTest{
     }
 
     @Test
-    public void testLoginSuccess() {
-        // Given
+    public void testLoginSuccessSupervisor() {
+        UserPojo user = new UserPojo();
+        user.setEmail("test@increff.com");
+        user.setPassword(authService.passwordEncoder.encode("password123"));
+        user.setRole(RoleAssigner.assignRole("test@increff.com"));
+        userDao.save(user);
+
+        UserDto result = authService.login("test@increff.com", "password123", session);
+
+        assertNotNull(result);
+        assertEquals("test@increff.com", result.getEmail());
+        assertEquals(Role.SUPERVISOR, result.getRole());
+        assertEquals(user.getId(), session.getAttribute("userId"));
+    }
+
+    @Test
+    public void testLoginSuccessOperator() {
         UserPojo user = new UserPojo();
         user.setEmail("test@example.com");
         user.setPassword(authService.passwordEncoder.encode("password123"));
-        user.setRole(Role.SUPERVISOR);
+        user.setRole(RoleAssigner.assignRole("test@example.com"));
         userDao.save(user);
 
         UserDto result = authService.login("test@example.com", "password123", session);
 
         assertNotNull(result);
         assertEquals("test@example.com", result.getEmail());
-        assertEquals(Role.SUPERVISOR, result.getRole());
+        assertEquals(Role.OPERATOR, result.getRole());
         assertEquals(user.getId(), session.getAttribute("userId"));
     }
 
@@ -109,14 +125,15 @@ public class AuthServiceTest extends AbstractUnitTest{
 
     @Test
     public void testRegisterUserSuccess() {
-        ResponseEntity<Map<String, String>> response = authService.registerUser("newuser@example.com", "password123", "SUPERVISOR");
+        ResponseEntity<Map<String, String>> response = authService.registerUser("newuser@example.com", "password123");
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals("User registered successfully", response.getBody().get("message"));
 
         Optional<UserPojo> savedUser = userDao.findByEmail("newuser@example.com");
         assertTrue(savedUser.isPresent());
-        assertTrue(authService.passwordEncoder.matches("password123", savedUser.get().getPassword()));
+        assertTrue(authService.passwordEncoder.matches("password123",
+                savedUser.get().getPassword()));
     }
 
     @Test
@@ -124,19 +141,13 @@ public class AuthServiceTest extends AbstractUnitTest{
         UserPojo user = new UserPojo();
         user.setEmail("existing@example.com");
         user.setPassword(authService.passwordEncoder.encode("password123"));
-        user.setRole(Role.SUPERVISOR);
+        user.setRole(RoleAssigner.assignRole("existing@example.com"));
         userDao.save(user);
 
-        ResponseEntity<Map<String, String>> response = authService.registerUser("existing@example.com", "password123", "SUPERVISOR");
+        ResponseEntity<Map<String, String>> response = authService.registerUser("existing@example.com",
+                "password123");
 
         assertEquals(409, response.getStatusCodeValue());
         assertEquals("Email already exists", response.getBody().get("message"));
-    }
-
-    @Test
-    public void testRegisterUserInvalidRole() {
-        ResponseEntity<Map<String, String>> response = authService.registerUser("invalidrole@example.com", "password123", "INVALID_ROLE");
-        assertEquals(400, response.getStatusCodeValue());
-        assertEquals("Invalid role", response.getBody().get("message"));
     }
 }

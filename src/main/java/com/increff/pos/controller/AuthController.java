@@ -54,7 +54,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody UserDto signupRequest, BindingResult bindingResult) {
-        return authService.registerUser(signupRequest.getEmail(), signupRequest.getPassword(),
-                signupRequest.getRole().name());
+        return authService.registerUser(signupRequest.getEmail(), signupRequest.getPassword());
     }
 }
