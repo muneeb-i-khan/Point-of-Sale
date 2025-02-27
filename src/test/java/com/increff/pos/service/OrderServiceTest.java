@@ -67,7 +67,11 @@ public class OrderServiceTest extends AbstractUnitTest {
         orderItem.setProd_id(product.getId());
         orderItem.setQuantity(2L);
 
-        OrderPojo createdOrder = orderService.createOrder(Collections.singletonList(orderItem));
+        CustomerPojo customerPojo = new CustomerPojo();
+        customerPojo.setName("Customer Test");
+        customerPojo.setPhone("1234567890");
+
+        OrderPojo createdOrder = orderService.createOrder(Collections.singletonList(orderItem),customerPojo);
 
         assertNotNull(createdOrder);
         assertEquals(LocalDate.now(), createdOrder.getOrderDate());
@@ -86,7 +90,12 @@ public class OrderServiceTest extends AbstractUnitTest {
         OrderItemPojo orderItem = new OrderItemPojo();
         orderItem.setProd_id(product.getId());
         orderItem.setQuantity(200L);
-        orderService.createOrder(Collections.singletonList(orderItem));
+
+        CustomerPojo customerPojo = new CustomerPojo();
+        customerPojo.setName("Customer Test");
+        customerPojo.setPhone("1234567890");
+
+        orderService.createOrder(Collections.singletonList(orderItem), customerPojo);
     }
 
     @Test(expected = ApiException.class)
@@ -94,7 +103,12 @@ public class OrderServiceTest extends AbstractUnitTest {
         OrderItemPojo orderItem = new OrderItemPojo();
         orderItem.setProd_id(product.getId());
         orderItem.setQuantity(-1L);
-        orderService.createOrder(Collections.singletonList(orderItem));
+
+        CustomerPojo customerPojo = new CustomerPojo();
+        customerPojo.setName("Customer Test");
+        customerPojo.setPhone("1234567890");
+
+        orderService.createOrder(Collections.singletonList(orderItem), customerPojo);
     }
 
 
@@ -104,7 +118,12 @@ public class OrderServiceTest extends AbstractUnitTest {
         OrderItemPojo orderItem = new OrderItemPojo();
         orderItem.setProd_id(product.getId());
         orderItem.setQuantity(2L);
-        orderService.createOrder(Collections.singletonList(orderItem));
+
+        CustomerPojo customerPojo = new CustomerPojo();
+        customerPojo.setName("Customer Test");
+        customerPojo.setPhone("1234567890");
+
+        orderService.createOrder(Collections.singletonList(orderItem), customerPojo);
 
         List<OrderPojo> orders = orderService.getAllOrders();
 
@@ -117,7 +136,12 @@ public class OrderServiceTest extends AbstractUnitTest {
         OrderItemPojo orderItem = new OrderItemPojo();
         orderItem.setProd_id(product.getId());
         orderItem.setQuantity(1L);
-        OrderPojo createdOrder = orderService.createOrder(Collections.singletonList(orderItem));
+
+        CustomerPojo customerPojo = new CustomerPojo();
+        customerPojo.setName("Customer Test");
+        customerPojo.setPhone("1234567890");
+
+        OrderPojo createdOrder = orderService.createOrder(Collections.singletonList(orderItem), customerPojo);
 
         OrderPojo retrievedOrder = orderService.getOrderById(createdOrder.getId());
 
