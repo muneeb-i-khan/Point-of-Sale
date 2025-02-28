@@ -1,6 +1,5 @@
 package com.increff.pos.service;
 
-import com.increff.pos.db.dao.CustomerDao;
 import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.pojo.*;
@@ -67,6 +66,18 @@ public class OrderService {
     public OrderPojo getOrderById(Long id) throws ApiException {
         return orderDao.selectById(id)
                 .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
+    }
+
+    public int countOrdersByDate(LocalDate date) {
+        return orderDao.countOrdersByDate(date);
+    }
+
+    public int countItemsSoldByDate(LocalDate date) {
+        return orderDao.countItemsSoldByDate(date);
+    }
+
+    public Double calculateRevenueByDate(LocalDate date) {
+        return orderDao.calculateRevenueByDate(date);
     }
 
 }
