@@ -1,10 +1,14 @@
 package com.increff.services;
 
+import com.increff.db.dao.InvoiceDao;
+import com.increff.db.pojo.InvoicePojo;
 import com.increff.models.OrderData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.increff.models.OrderItem;
 import org.apache.fop.apps.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXResult;
@@ -15,6 +19,8 @@ import java.util.Base64;
 
 @Service
 public class InvoiceService {
+    @Autowired
+    private InvoiceDao invoiceDao;
 
     private static final String ORDER_API_URL = "http://localhost:9000/pos/api/order/";
 
@@ -29,6 +35,7 @@ public class InvoiceService {
         }
     }
 
+    @Transactional
     public String generateInvoicePdf(OrderData orderData) {
         try {
             File xmlFile = new File("src/main/resources/invoice.xml");
@@ -36,9 +43,12 @@ public class InvoiceService {
 
             generateXml(orderData, xmlFile);
             Long orderId = orderData.getId();
-            File pdfFile = new File("src/main/resources/output"+orderId+".pdf");
+            File pdfFile = new File("src/main/pdf/output"+orderId+".pdf");
             transformToPdf(xmlFile, xslFile, pdfFile);
-
+            InvoicePojo invoicePojo = new InvoicePojo();
+            invoicePojo.setOrderId(orderId);
+            invoicePojo.setPath("src/main/pdf/output"+orderId+".pdf");
+            invoiceDao.add(invoicePojo);
             return encodePdfToBase64(pdfFile);
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate invoice PDF", e);
