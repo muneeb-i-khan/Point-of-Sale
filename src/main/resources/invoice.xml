@@ -1,0 +1,1 @@
+<invoice><orderId>4</orderId><customerName>Jenny</customerName><customerPhone>09876543</customerPhone><orderDate>2025-02-27</orderDate><totalAmount>6000.0</totalAmount><items><item><barcode>10</barcode><prodName>speedcat</prodName><price>6000.0</price><quantity>1</quantity></item></items></invoice>
