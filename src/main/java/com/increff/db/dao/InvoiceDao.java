@@ -44,4 +44,12 @@ public class InvoiceDao {
         return em.createQuery(jpql, InvoicePojo.class);
     }
 
+    public InvoicePojo getByOrderId(Long orderId) {
+        TypedQuery<InvoicePojo> query = em.createQuery(
+                "SELECT i FROM InvoicePojo i WHERE i.orderId = :orderId", InvoicePojo.class);
+        query.setParameter("orderId", orderId);
+        List<InvoicePojo> result = query.getResultList();
+        return result.isEmpty() ? null : result.get(0);
+    }
+
 }

@@ -38,17 +38,28 @@ public class InvoiceService {
     @Transactional
     public String generateInvoicePdf(OrderData orderData) {
         try {
+            Long orderId = orderData.getId();
+
+            InvoicePojo existingInvoice = invoiceDao.getByOrderId(orderId);
+            if (existingInvoice != null) {
+                File existingPdf = new File(existingInvoice.getPath());
+                if (existingPdf.exists()) {
+                    return encodePdfToBase64(existingPdf);
+                }
+            }
+
             File xmlFile = new File("src/main/resources/invoice.xml");
             File xslFile = new File("src/main/resources/stylesheet.xsl");
-
             generateXml(orderData, xmlFile);
-            Long orderId = orderData.getId();
-            File pdfFile = new File("src/main/pdf/output"+orderId+".pdf");
+
+            File pdfFile = new File("src/main/pdf/output" + orderId + ".pdf");
             transformToPdf(xmlFile, xslFile, pdfFile);
+
             InvoicePojo invoicePojo = new InvoicePojo();
             invoicePojo.setOrderId(orderId);
-            invoicePojo.setPath("src/main/pdf/output"+orderId+".pdf");
+            invoicePojo.setPath(pdfFile.getAbsolutePath());
             invoiceDao.add(invoicePojo);
+
             return encodePdfToBase64(pdfFile);
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate invoice PDF", e);
