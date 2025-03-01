@@ -1,8 +1,9 @@
 package com.increff.pos.service;
 
-import com.increff.pos.db.dao.CustomerDao;
+import com.increff.pos.db.dao.ClientDao;
 import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
+import com.increff.pos.db.dao.SalesReportDao;
 import com.increff.pos.db.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,15 @@ public class OrderService {
     private InventoryService inventoryService;
 
     @Autowired
+    private SalesReportDao salesReportDao;
+
+    @Autowired
+    private ClientDao clientDao;
+
+    @Autowired
     private CustomerService customerService;
 
+    @Transactional(rollbackOn = ApiException.class)
     public OrderPojo createOrder(List<OrderItemPojo> orderItemPojoList, CustomerPojo customerPojo) throws ApiException {
         OrderPojo order = new OrderPojo();
         order.setOrderDate(LocalDate.now());
@@ -44,7 +52,7 @@ public class OrderService {
             ProductPojo productPojo = productService.getProduct(orderItem.getProd_id());
             InventoryPojo inventoryPojo = inventoryService.getInventoryByBarcode(productPojo.getBarcode());
 
-            if(orderItem.getQuantity() <= 0) {
+            if (orderItem.getQuantity() <= 0) {
                 throw new ApiException("Quantity can't be negative");
             }
             if (inventoryPojo.getQuantity() < orderItem.getQuantity()) {
@@ -56,9 +64,31 @@ public class OrderService {
         }
 
         order.setTotalAmount(totalAmt);
+
+        updateSalesReport(order, orderItemPojoList, totalAmt);
+
         return order;
     }
 
+    private void updateSalesReport(OrderPojo order, List<OrderItemPojo> orderItems, double totalAmount) throws ApiException {
+        Long clientId = productService.getProduct(orderItems.get(0).getProd_id()).getClient_id();
+        SalesReportPojo report = salesReportDao.findByClientAndDate(clientId, order.getOrderDate());
+
+        long totalItemsSold = orderItems.stream().mapToLong(OrderItemPojo::getQuantity).sum();
+
+        if (report == null) {
+            report = new SalesReportPojo();
+            report.setClientId(clientId);
+            report.setDate(order.getOrderDate());
+            report.setItemSold(totalItemsSold);
+            report.setRevenue((long) totalAmount);
+            salesReportDao.add(report);
+        } else {
+            report.setItemSold(report.getItemSold() + totalItemsSold);
+            report.setRevenue(report.getRevenue() + (long) totalAmount);
+            salesReportDao.update(report);
+        }
+    }
 
     public List<OrderPojo> getAllOrders() {
         return orderDao.selectAll();
@@ -67,6 +97,18 @@ public class OrderService {
     public OrderPojo getOrderById(Long id) throws ApiException {
         return orderDao.selectById(id)
                 .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
+    }
+
+    public int countOrdersByDate(LocalDate date) {
+        return orderDao.countOrdersByDate(date);
+    }
+
+    public int countItemsSoldByDate(LocalDate date) {
+        return orderDao.countItemsSoldByDate(date);
+    }
+
+    public Double calculateRevenueByDate(LocalDate date) {
+        return orderDao.calculateRevenueByDate(date);
     }
 
 }

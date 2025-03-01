@@ -63,7 +63,6 @@
         <version>${spring.version}</version>
     </dependency>
 
-
     <!-- Using Swagger for REST API documentation -->
     <dependency>
         <groupId>io.springfox</groupId>
