@@ -6,10 +6,13 @@ import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.dao.SalesReportDao;
 import com.increff.pos.db.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -111,4 +114,19 @@ public class OrderService {
         return orderDao.calculateRevenueByDate(date);
     }
 
+    public ResponseEntity<byte[]> downloadPdf(Long id) throws ApiException {
+        String url = "http://localhost:9001/invoice/api/invoice/"+id;
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            String base64Pdf = restTemplate.getForObject(url, String.class);
+            byte[] pdfBytes = Base64.getDecoder().decode(base64Pdf);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=invoice_" + id + ".pdf")
+                    .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                    .body(pdfBytes);
+        } catch (Exception e) {
+            throw new ApiException("Failed to download invoice for order ID: " + id);
+        }
+    }
 }
+

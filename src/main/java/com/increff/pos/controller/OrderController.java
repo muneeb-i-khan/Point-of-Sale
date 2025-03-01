@@ -9,8 +9,10 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -43,4 +45,11 @@ public class OrderController {
         OrderData order = orderDto.getOrder(id);
         return ResponseEntity.ok(order);
     }
+
+    @ApiOperation(value = "Download Invoice PDF")
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> downloadInvoice(@PathVariable Long id) throws ApiException {
+        return orderDto.downloadInvoice(id);
+    }
+
 }
