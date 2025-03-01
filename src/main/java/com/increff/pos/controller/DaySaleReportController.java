@@ -13,10 +13,15 @@ import java.util.List;
 
 @Api
 @RestController
-@RequestMapping("/api/report")
+@RequestMapping("/api/report/day")
 public class DaySaleReportController {
     @Autowired
     private DaySaleReportService daySaleReportService;
+
+    @GetMapping("/sales/all")
+    public ResponseEntity<List<DaySaleReportPojo>> getAllReports(){
+        return ResponseEntity.ok(daySaleReportService.getReport());
+    }
 
     @GetMapping("/sales")
     public ResponseEntity<List<DaySaleReportPojo>> getReport(

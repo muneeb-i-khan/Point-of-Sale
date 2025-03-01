@@ -17,9 +17,14 @@ public class DaySaleReportDao {
         entityManager.persist(sale);
     }
 
+    public List<DaySaleReportPojo> selectAll() {
+        return entityManager.createQuery("SELECT p FROM DaySaleReportPojo p", DaySaleReportPojo.class)
+                .getResultList();
+    }
+
 
     public List<DaySaleReportPojo> findByDateRange(LocalDate startDate, LocalDate endDate) {
-        return entityManager.createQuery("SELECT p FROM ReportPojo p WHERE p.date BETWEEN :start AND :end",
+        return entityManager.createQuery("SELECT p FROM DaySaleReportPojo p WHERE p.date BETWEEN :start AND :end",
                 DaySaleReportPojo.class)
                 .setParameter("start", startDate)
                 .setParameter("end", endDate)
@@ -28,7 +33,7 @@ public class DaySaleReportDao {
 
     public DaySaleReportPojo findByDate(LocalDate date) {
         List<DaySaleReportPojo> result = entityManager.createQuery(
-                        "SELECT p FROM ReportPojo p WHERE p.date = :date", DaySaleReportPojo.class)
+                        "SELECT p FROM DaySaleReportPojo p WHERE p.date = :date", DaySaleReportPojo.class)
                 .setParameter("date", date)
                 .getResultList();
         return result.isEmpty() ? null : result.get(0);

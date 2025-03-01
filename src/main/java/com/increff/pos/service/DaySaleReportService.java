@@ -58,4 +58,8 @@ public class DaySaleReportService {
     public List<DaySaleReportPojo> getReport(LocalDate start, LocalDate end) {
         return daySaleReportDao.findByDateRange(start, end);
     }
+
+    public List<DaySaleReportPojo> getReport() {
+        return daySaleReportDao.selectAll();
+    }
 }
