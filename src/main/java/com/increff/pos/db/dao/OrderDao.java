@@ -1,13 +1,11 @@
 package com.increff.pos.db.dao;
 
 import com.increff.pos.db.pojo.OrderPojo;
+import com.increff.pos.db.pojo.OrderPojo;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +39,18 @@ public class OrderDao {
         }
     }
 
+    public List<OrderPojo> selectAllPaginated(int page, int pageSize) {
+        TypedQuery<OrderPojo> query = em.createQuery(SELECT_ALL, OrderPojo.class);
+        query.setFirstResult(page * pageSize);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
+    }
+
+    public Long countOrders() {
+        Query query = em.createQuery("SELECT COUNT(p) FROM OrderPojo p");
+        return (Long) query.getSingleResult();
+    }
+
     public int countOrdersByDate(LocalDate date) {
         return ((Number) em.createQuery(
                         "SELECT COUNT(o) FROM OrderPojo o WHERE o.orderDate = :date")
@@ -59,7 +69,7 @@ public class OrderDao {
         return (Double) em.createQuery(
                         "SELECT COALESCE(SUM(p.price * oi.quantity), 0) " +
                                 "FROM OrderItemPojo oi " +
-                                "JOIN ProductPojo p ON oi.prod_id = p.id " +
+                                "JOIN OrderPojo p ON oi.prod_id = p.id " +
                                 "JOIN OrderPojo o ON oi.order_id = o.id " +
                                 "WHERE o.orderDate = :date")
                 .setParameter("date", date)

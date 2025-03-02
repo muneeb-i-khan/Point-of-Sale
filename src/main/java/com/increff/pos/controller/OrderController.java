@@ -39,6 +39,16 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+
+    @ApiOperation(value = "Get all orders with pagination")
+    @GetMapping("/paginated")
+    public ResponseEntity<Map<String, Object>> getAllPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
+        Map<String, Object> response = orderDto.getAllOrdersPaginated(page, pageSize);
+        return ResponseEntity.ok(response);
+    }
+
     @ApiOperation(value = "Get order by ID")
     @GetMapping("/{id}")
     public ResponseEntity<OrderData> getOrderById(@PathVariable Long id) throws ApiException {
