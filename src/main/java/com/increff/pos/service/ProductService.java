@@ -1,6 +1,7 @@
 package com.increff.pos.service;
 
 import com.increff.pos.db.dao.ProductDao;
+import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,14 @@ public class ProductService {
         }
 
         dao.update(ex);
+    }
+
+
+    public List<ProductPojo> getAllProductsPaginated(int page, int pageSize) {
+        return dao.selectAllPaginated(page, pageSize);
+    }
+    public Long getProductCount() {
+        return dao.countProducts();
     }
 
 

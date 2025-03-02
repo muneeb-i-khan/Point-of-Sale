@@ -49,6 +49,15 @@ public class ProductController {
         productDto.updateProduct(id, productForm);
         return ResponseEntity.ok(Collections.singletonMap("message", "Product updated successfully"));
     }
+    
+    @ApiOperation(value = "Get all products with pagination")
+    @GetMapping("/paginated")
+    public ResponseEntity<Map<String, Object>> getAllPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
+        Map<String, Object> response = productDto.getAllProductsPaginated(page, pageSize);
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
