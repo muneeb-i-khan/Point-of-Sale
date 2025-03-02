@@ -12,7 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class InventoryDto {
@@ -45,6 +47,23 @@ public class InventoryDto {
     public InventoryData getInventory(String barcode) throws ApiException {
         return inventoryFlow.getInventory(barcode);
     }
+
+
+    public Map<String, Object> getAllInventoriesPaginated(int page, int pageSize) throws ApiException {
+        List<InventoryPojo> inventoryPojos = inventoryService.getAllInventoriesPaginated(page, pageSize);
+        Long totalInventories = inventoryService.getInventoryCount();
+
+        List<InventoryData> inventoryDataList = new ArrayList<>();
+        for (InventoryPojo p : inventoryPojos) {
+            inventoryDataList.add(inventoryFlow.convert(p));
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("inventories", inventoryDataList);
+        response.put("totalInventories", totalInventories);
+        return response;
+    }
+    
 
     public void updateInventory(InventoryForm inventoryForm, Long id) throws ApiException {
         InventoryPojo inventoryPojo = inventoryFlow.convert(inventoryForm);

@@ -62,6 +62,7 @@ public class ProductService {
     public List<ProductPojo> getAllProductsPaginated(int page, int pageSize) {
         return dao.selectAllPaginated(page, pageSize);
     }
+
     public Long getProductCount() {
         return dao.countProducts();
     }

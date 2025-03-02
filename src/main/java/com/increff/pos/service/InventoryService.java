@@ -39,6 +39,14 @@ public class InventoryService {
         return getCheck(id);
     }
 
+    public List<InventoryPojo> getAllInventoriesPaginated(int page, int pageSize) {
+        return dao.selectAllPaginated(page, pageSize);
+    }
+
+    public Long getInventoryCount() {
+        return dao.countInventories();
+    }
+
     public void updateInventory(Long id, InventoryPojo p) throws ApiException {
         InventoryPojo ex = getCheck(id);
         ex.setQuantity(p.getQuantity());
