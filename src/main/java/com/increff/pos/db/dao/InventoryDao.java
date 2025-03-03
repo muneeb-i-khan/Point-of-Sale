@@ -34,12 +34,19 @@ public class InventoryDao {
     public void update(InventoryPojo p) {
     }
 
-//    public void delete(Long id) {
-//        Query query = em.createQuery(delete_id);
-//        query.setParameter("id", id);
-//        query.executeUpdate();
-//    }
 
+    public List<InventoryPojo> selectAllPaginated(int page, int pageSize) {
+        TypedQuery<InventoryPojo> query = em.createQuery(select_all, InventoryPojo.class);
+        query.setFirstResult(page * pageSize);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
+    }
+
+    public Long countInventories() {
+        Query query = em.createQuery("SELECT COUNT(p) FROM InventoryPojo p");
+        return (Long) query.getSingleResult();
+    }
+    
     public InventoryPojo selectByBarcode(String barcode) {
         try {
             TypedQuery<InventoryPojo> query = em.createQuery(select_by_product_barcode, InventoryPojo.class);

@@ -31,12 +31,22 @@ public class ClientService {
         return dao.selectAll();
     }
 
+
     public void updateClient(Long id, ClientPojo p) throws ApiException {
         ClientPojo ex = getCheck(id);
         ex.setDescription(p.getDescription());
         ex.setName(p.getName());
         dao.update(ex);
     }
+
+    public List<ClientPojo> getAllClientsPaginated(int page, int pageSize) {
+        return dao.selectAllPaginated(page, pageSize);
+    }
+
+    public Long getClientCount() {
+        return dao.countClients();
+    }
+
 
     public ClientPojo getClientByName(String name) throws ApiException {
         ClientPojo client = dao.selectByName(name);

@@ -1,10 +1,13 @@
 package com.increff.pos.db.dao;
 
 import com.increff.pos.db.pojo.DaySaleReportPojo;
+import com.increff.pos.db.pojo.InventoryPojo;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,6 +23,18 @@ public class DaySaleReportDao {
     public List<DaySaleReportPojo> selectAll() {
         return entityManager.createQuery("SELECT p FROM DaySaleReportPojo p", DaySaleReportPojo.class)
                 .getResultList();
+    }
+
+    public List<DaySaleReportPojo> selectAllPaginated(int page, int pageSize) {
+        TypedQuery<DaySaleReportPojo> query = entityManager.createQuery("SELECT p FROM DaySaleReportPojo p", DaySaleReportPojo.class);
+        query.setFirstResult(page * pageSize);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
+    }
+
+    public Long countDaySaleReportPojo() {
+        Query query = entityManager.createQuery("SELECT COUNT(p) FROM DaySaleReportPojo p");
+        return (Long) query.getSingleResult();
     }
 
 

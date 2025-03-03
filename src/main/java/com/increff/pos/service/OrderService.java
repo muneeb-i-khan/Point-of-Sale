@@ -114,6 +114,14 @@ public class OrderService {
         return orderDao.calculateRevenueByDate(date);
     }
 
+    public List<OrderPojo> getAllOrdersPaginated(int page, int pageSize) {
+        return orderDao.selectAllPaginated(page, pageSize);
+    }
+
+    public Long getOrderCount() {
+        return orderDao.countOrders();
+    }
+
     public ResponseEntity<byte[]> downloadPdf(Long id) throws ApiException {
         String url = "http://localhost:9001/invoice/api/invoice/"+id;
         RestTemplate restTemplate = new RestTemplate();

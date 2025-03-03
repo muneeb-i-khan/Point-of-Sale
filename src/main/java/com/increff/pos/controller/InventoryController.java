@@ -45,6 +45,15 @@ public class InventoryController {
         return ResponseEntity.ok(inventory);
     }
 
+    @ApiOperation(value = "Get all inventories with pagination")
+    @GetMapping("/paginated")
+    public ResponseEntity<Map<String, Object>> getAllPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
+        Map<String, Object> response = inventoryDto.getAllInventoriesPaginated(page, pageSize);
+        return ResponseEntity.ok(response);
+    }
+
     @ApiOperation(value = "Get inventory based on barcode")
     @GetMapping("/barcode/{barcode}")
     public ResponseEntity<InventoryData> getByBarcode(@PathVariable String barcode) throws ApiException {

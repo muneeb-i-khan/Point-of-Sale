@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class ClientDto {
@@ -35,6 +37,22 @@ public class ClientDto {
         }
         return list2;
     }
+
+    public Map<String, Object> getAllClientsPaginated(int page, int pageSize) {
+        List<ClientPojo> clientPojos = clientService.getAllClientsPaginated(page, pageSize);
+        Long totalClients = clientService.getClientCount();
+
+        List<ClientData> clientDataList = new ArrayList<>();
+        for (ClientPojo p : clientPojos) {
+            clientDataList.add(convert(p));
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("clients", clientDataList);
+        response.put("totalClients", totalClients);
+        return response;
+    }
+
 
     public void updateClient(ClientForm clientForm, Long id) throws ApiException {
         ClientPojo clientPojo = new ClientPojo();

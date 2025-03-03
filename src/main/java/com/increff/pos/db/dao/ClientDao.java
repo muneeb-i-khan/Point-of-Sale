@@ -51,6 +51,19 @@ public class ClientDao {
         return query.getSingleResult();
     }
 
+    public List<ClientPojo> selectAllPaginated(int page, int pageSize) {
+        TypedQuery<ClientPojo> query = em.createQuery(select_all, ClientPojo.class);
+        query.setFirstResult(page * pageSize);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
+    }
+
+    public Long countClients() {
+        Query query = em.createQuery("SELECT COUNT(p) FROM ClientPojo p");
+        return (Long) query.getSingleResult();
+    }
+
+
     TypedQuery<ClientPojo> getQuery(String jpql) {
         return em.createQuery(jpql, ClientPojo.class);
     }

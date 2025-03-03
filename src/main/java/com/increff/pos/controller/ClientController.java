@@ -44,6 +44,16 @@ public class ClientController {
         return ResponseEntity.ok(clients);
     }
 
+    @ApiOperation(value = "Get all clients with pagination")
+    @GetMapping("/paginated")
+    public ResponseEntity<Map<String, Object>> getAllPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int pageSize) {
+        Map<String, Object> response = clientDto.getAllClientsPaginated(page, pageSize);
+        return ResponseEntity.ok(response);
+    }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, String>> update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
         clientDto.updateClient(clientForm, id);

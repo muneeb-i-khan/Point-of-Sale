@@ -1,6 +1,7 @@
 package com.increff.pos.service;
 
 import com.increff.pos.db.dao.SalesReportDao;
+import com.increff.pos.db.pojo.DaySaleReportPojo;
 import com.increff.pos.db.pojo.SalesReportPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,12 @@ public class SalesReportService {
 
     public List<SalesReportPojo> getAllSalesReport() {
         return salesReportDao.selectAll();
+    }
+
+    public List<SalesReportPojo> getAllSalesReportsPaginated(int page, int pageSize) {
+        return salesReportDao.selectAllPaginated(page, pageSize);
+    }
+    public Long getSalesReportCount() {
+        return salesReportDao.countSalesReportPojo();
     }
 }

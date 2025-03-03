@@ -1,12 +1,10 @@
 package com.increff.pos.db.dao;
 
 import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.db.pojo.ProductPojo;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.util.List;
 
 @Repository
@@ -47,6 +45,18 @@ public class ProductDao {
         query.setParameter("barcode", barcode);
         List<ProductPojo> results = query.getResultList();
         return results.isEmpty() ? null : results.get(0);
+    }
+
+    public List<ProductPojo> selectAllPaginated(int page, int pageSize) {
+        TypedQuery<ProductPojo> query = em.createQuery(select_all, ProductPojo.class);
+        query.setFirstResult(page * pageSize);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
+    }
+
+    public Long countProducts() {
+        Query query = em.createQuery("SELECT COUNT(p) FROM ProductPojo p");
+        return (Long) query.getSingleResult();
     }
 
 
