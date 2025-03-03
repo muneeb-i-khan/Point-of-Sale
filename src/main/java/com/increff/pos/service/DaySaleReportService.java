@@ -3,6 +3,7 @@ package com.increff.pos.service;
 import com.increff.pos.db.dao.DaySaleReportDao;
 import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.pojo.DaySaleReportPojo;
+import com.increff.pos.db.pojo.InventoryPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +59,15 @@ public class DaySaleReportService {
     public List<DaySaleReportPojo> getReport(LocalDate start, LocalDate end) {
         return daySaleReportDao.findByDateRange(start, end);
     }
+
+    public List<DaySaleReportPojo> getAllDaySaleReportsPaginated(int page, int pageSize) {
+        return daySaleReportDao.selectAllPaginated(page, pageSize);
+    }
+
+    public Long getDaySaleReportCount() {
+        return daySaleReportDao.countDaySaleReportPojo();
+    }
+
 
     public List<DaySaleReportPojo> getReport() {
         return daySaleReportDao.selectAll();
