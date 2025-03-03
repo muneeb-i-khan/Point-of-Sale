@@ -8,11 +8,15 @@ import com.increff.pos.model.forms.SalesReportForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.SalesReportService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Api
 @RestController
@@ -31,5 +35,14 @@ public class SalesReportController {
     @GetMapping("/sales/all")
     public ResponseEntity<List<SalesReportData>> getAllReports() throws ApiException {
         return ResponseEntity.ok(salesReportDto.getAllSales());
+    }
+
+    @ApiOperation(value = "Get all sales report with pagination")
+    @GetMapping("/sales/paginated")
+    public ResponseEntity<Map<String, Object>> getAllPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
+        Map<String, Object> response = salesReportDto.getAllSalesReportPaginated(page, pageSize);
+        return ResponseEntity.ok(response);
     }
 }

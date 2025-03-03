@@ -5,6 +5,7 @@ import com.increff.pos.db.pojo.SalesReportPojo;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.List;
@@ -70,5 +71,17 @@ public class SalesReportDao {
     public List<SalesReportPojo> selectAll() {
         return em.createQuery("SELECT p FROM SalesReportPojo p", SalesReportPojo.class)
                 .getResultList();
+    }
+
+    public Long countSalesReportPojo() {
+        Query query = em.createQuery("SELECT COUNT(p) FROM SalesReportPojo p");
+        return (Long) query.getSingleResult();
+    }
+
+    public List<SalesReportPojo> selectAllPaginated(int page, int pageSize) {
+        TypedQuery<SalesReportPojo> query = em.createQuery("SELECT p FROM SalesReportPojo p", SalesReportPojo.class);
+        query.setFirstResult(page * pageSize);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
     }
 }
