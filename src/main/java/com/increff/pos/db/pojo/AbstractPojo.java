@@ -10,12 +10,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public abstract class AbstractPojo {
-
+// add app version field
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-    private LocalDateTime deletedAt;
 
     @PrePersist
     protected void onCreate() {
