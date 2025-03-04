@@ -26,15 +26,15 @@ public class DaySaleReportController {
     private DaySaleReportService daySaleReportService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<DaySaleReportPojo>> getAllReports(){
-        return ResponseEntity.ok(daySaleReportService.getReport());
+    public List<DaySaleReportPojo> getAllReports(){
+        return daySaleReportService.getReport();
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<DaySaleReportPojo>> getReport(
+    public List<DaySaleReportPojo> getReport(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return ResponseEntity.ok(daySaleReportService.getReport(startDate, endDate));
+        return daySaleReportService.getReport(startDate, endDate);
     }
 
     @ApiOperation(value = "Get all day sales report with pagination")
@@ -58,8 +58,7 @@ public class DaySaleReportController {
 
 
     @PostMapping("/generate")
-    public ResponseEntity<String> triggerDailySalesReport() {
+    public void triggerDailySalesReport() {
         daySaleReportService.recordDailySales();
-        return ResponseEntity.ok("Daily sales report generated.");
     }
 }
