@@ -81,6 +81,7 @@ public class OrderFlow {
             orderItem.setQuantity(itemPojo.getQuantity().intValue());
             orderItem.setProdName(product.getName());
             orderItem.setPrice(product.getPrice());
+            orderItem.setSellingPrice(itemPojo.getSellingPrice());
             orderItems.add(orderItem);
         }
 
@@ -101,7 +102,12 @@ public class OrderFlow {
             OrderItemPojo orderItemPojo = new OrderItemPojo();
             orderItemPojo.setProd_id(product.getId());
             orderItemPojo.setQuantity(form.getQuantity());
-
+            if(form.getSellingPrice() <= product.getPrice()) {
+                orderItemPojo.setSellingPrice(form.getSellingPrice());
+            }
+            else {
+                throw new ApiException("Selling price can't be more than Product's MRP");
+            }
             orderItemPojoList.add(orderItemPojo);
         }
 

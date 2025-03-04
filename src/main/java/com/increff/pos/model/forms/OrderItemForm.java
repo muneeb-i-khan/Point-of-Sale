@@ -12,8 +12,10 @@ import java.util.List;
 @Setter
 public class OrderItemForm {
   @Positive
-  private Long      quantity;
+  private Long quantity;
   @NotNull
   @NotBlank
-  private String    barcode;
+  private String barcode;
+  @Positive
+  private Double sellingPrice;
 }

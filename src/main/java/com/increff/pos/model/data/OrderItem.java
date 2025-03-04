@@ -10,4 +10,5 @@ public class OrderItem {
     private String      barcode;
     private int         quantity;
     private String      prodName;
+    private Double      sellingPrice;
 }

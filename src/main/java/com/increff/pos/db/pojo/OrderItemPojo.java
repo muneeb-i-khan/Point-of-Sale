@@ -17,4 +17,5 @@ public class OrderItemPojo extends AbstractPojo {
     private Long prod_id;
     private Long quantity;
     private Long order_id;
+    private Double sellingPrice;
 }
