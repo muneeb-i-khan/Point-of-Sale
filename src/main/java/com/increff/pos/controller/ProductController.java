@@ -25,29 +25,25 @@ public class ProductController {
     @Autowired
     private ProductDto productDto;
     @PostMapping
-    public ResponseEntity<Map<String, String>> addProduct(@Valid @RequestBody ProductForm productForm) throws ApiException {
+    public void addProduct(@Valid @RequestBody ProductForm productForm) throws ApiException {
         productDto.addProduct(productForm);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Product added successfully"));
     }
 
     @ApiOperation(value = "Get a product based on its Id")
     @GetMapping("/{id}")
-    public ResponseEntity<ProductData> getProduct(@PathVariable Long id) throws ApiException {
-        ProductData product = productDto.getProduct(id);
-        return ResponseEntity.ok(product);
+    public ProductData getProduct(@PathVariable Long id) throws ApiException {
+        return productDto.getProduct(id);
     }
 
     @ApiOperation(value = "Get all products")
     @GetMapping
-    public ResponseEntity<List<ProductData>> getAll() throws ApiException {
-        List<ProductData> products = productDto.getAllProducts();
-        return ResponseEntity.ok(products);
+    public List<ProductData> getAll() throws ApiException {
+        return productDto.getAllProducts();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, String>> updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
+    public void updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
         productDto.updateProduct(id, productForm);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Product updated successfully"));
     }
     
     @ApiOperation(value = "Get all products with pagination")
@@ -60,8 +56,7 @@ public class ProductController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, String>> uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
+    public void uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
         productDto.uploadProducts(file);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Product file uploaded successfully"));
     }
 }
