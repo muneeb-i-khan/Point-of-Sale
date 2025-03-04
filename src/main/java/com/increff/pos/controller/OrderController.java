@@ -26,17 +26,15 @@ public class OrderController {
     private OrderDto orderDto;
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addOrder(@Valid @RequestBody OrderForm orderForm) throws ApiException {
+    public void addOrder(@Valid @RequestBody OrderForm orderForm) throws ApiException {
         orderDto.addOrder(orderForm.getOrderItems(), orderForm.getCustomer());
-        return ResponseEntity.ok(Collections.singletonMap("message", "Order created successfully"));
     }
 
 
     @ApiOperation(value = "Get all orders")
     @GetMapping
-    public ResponseEntity<List<OrderData>> getAllOrders() throws ApiException {
-        List<OrderData> orders = orderDto.getAllOrders();
-        return ResponseEntity.ok(orders);
+    public List<OrderData> getAllOrders() throws ApiException {
+        return orderDto.getAllOrders();
     }
 
 
@@ -51,9 +49,8 @@ public class OrderController {
 
     @ApiOperation(value = "Get order by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<OrderData> getOrderById(@PathVariable Long id) throws ApiException {
-        OrderData order = orderDto.getOrder(id);
-        return ResponseEntity.ok(order);
+    public OrderData getOrderById(@PathVariable Long id) throws ApiException {
+        return orderDto.getOrder(id);
     }
 
     @ApiOperation(value = "Download Invoice PDF")
@@ -61,5 +58,4 @@ public class OrderController {
     public ResponseEntity<byte[]> downloadInvoice(@PathVariable Long id) throws ApiException {
         return orderDto.downloadInvoice(id);
     }
-
 }
