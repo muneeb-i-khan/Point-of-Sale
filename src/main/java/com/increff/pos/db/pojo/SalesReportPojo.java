@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Table(name = "salesReport")
-public class SalesReportPojo {
+public class SalesReportPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
