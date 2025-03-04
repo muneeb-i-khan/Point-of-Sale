@@ -33,8 +33,8 @@ public class SalesReportController {
     }
 
     @GetMapping("/sales/all")
-    public ResponseEntity<List<SalesReportData>> getAllReports() throws ApiException {
-        return ResponseEntity.ok(salesReportDto.getAllSales());
+    public List<SalesReportData> getAllReports() throws ApiException {
+        return salesReportDto.getAllSales();
     }
 
     @ApiOperation(value = "Get all sales report with pagination")
