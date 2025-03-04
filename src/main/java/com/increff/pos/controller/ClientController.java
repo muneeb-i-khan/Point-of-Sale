@@ -24,24 +24,21 @@ public class ClientController {
     private ClientDto clientDto;
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> addClient(@Valid @RequestBody ClientForm clientForm) {
+    public void addClient(@Valid @RequestBody ClientForm clientForm) {
         clientDto.addClient(clientForm);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Client added successfully"));
     }
 
 
     @ApiOperation(value = "Get a client based on its Id")
     @GetMapping("/{id}")
-    public ResponseEntity<ClientData> get(@PathVariable Long id) throws ApiException {
-        ClientData clientData = clientDto.getClient(id);
-        return ResponseEntity.ok(clientData);
+    public ClientData get(@PathVariable Long id) throws ApiException {
+        return clientDto.getClient(id);
     }
 
     @ApiOperation(value = "Get all clients")
     @GetMapping
-    public ResponseEntity<List<ClientData>> getAll() {
-        List<ClientData> clients = clientDto.getAllClients();
-        return ResponseEntity.ok(clients);
+    public List<ClientData> getAll() {
+        return clientDto.getAllClients();
     }
 
     @ApiOperation(value = "Get all clients with pagination")
@@ -55,8 +52,7 @@ public class ClientController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, String>> update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
+    public void update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
         clientDto.updateClient(clientForm, id);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Client updated successfully"));
     }
 }
