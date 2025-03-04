@@ -2,6 +2,7 @@ package com.increff.pos.controller;
 
 import com.increff.pos.dto.UserDto;
 import com.increff.pos.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,11 +18,8 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
+    @Autowired
+    private AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDto loginRequest, HttpSession session) {
@@ -42,18 +40,15 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request) {
+    public void logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Logged out successfully");
-        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody UserDto signupRequest, BindingResult bindingResult) {
-        return authService.registerUser(signupRequest.getEmail(), signupRequest.getPassword());
+    public void signup(@Valid @RequestBody UserDto signupRequest) {
+        authService.registerUser(signupRequest.getEmail(), signupRequest.getPassword());
     }
 }
