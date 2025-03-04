@@ -2,8 +2,7 @@ package com.increff.pos.service;
 
 import com.increff.pos.db.dao.UserDao;
 import com.increff.pos.db.pojo.UserPojo;
-import com.increff.pos.dto.UserDto;
-import com.increff.pos.model.constants.Role;
+import com.increff.pos.model.data.UserData;
 import com.increff.pos.util.RoleAssigner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,26 +22,26 @@ public class AuthService {
     private UserDao userDao;
     final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UserDto login(String email, String password, HttpSession session) {
+    public UserData login(String email, String password, HttpSession session) {
         Optional<UserPojo> userOpt = userDao.findByEmail(email);
         if (userOpt.isPresent()) {
             UserPojo user = userOpt.get();
             if (passwordEncoder.matches(password, user.getPassword())) {
                 session.setAttribute("userId", user.getId());
                 session.setAttribute("role", user.getRole());
-                return new UserDto(user.getId(), user.getEmail(), user.getRole());
+                return new UserData(user.getId(), user.getEmail(), user.getRole());
             }
         }
         return null;
     }
 
-    public UserDto getSessionUser(HttpSession session) {
+    public UserData getSessionUser(HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId != null) {
             Optional<UserPojo> userOpt = userDao.findById(userId);
             if (userOpt.isPresent()) {
                 UserPojo user = userOpt.get();
-                return new UserDto(user.getId(), user.getEmail(), user.getRole());
+                return new UserData(user.getId(), user.getEmail(), user.getRole());
             }
         }
         return null;

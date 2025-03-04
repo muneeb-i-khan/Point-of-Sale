@@ -2,8 +2,8 @@ package com.increff.pos.service;
 
 import com.increff.pos.db.dao.UserDao;
 import com.increff.pos.db.pojo.UserPojo;
-import com.increff.pos.dto.UserDto;
 import com.increff.pos.model.constants.Role;
+import com.increff.pos.model.data.UserData;
 import com.increff.pos.util.RoleAssigner;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class AuthServiceTest extends AbstractUnitTest{
         user.setRole(RoleAssigner.assignRole("test@increff.com"));
         userDao.save(user);
 
-        UserDto result = authService.login("test@increff.com", "password123", session);
+        UserData result = authService.login("test@increff.com", "password123", session);
 
         assertNotNull(result);
         assertEquals("test@increff.com", result.getEmail());
@@ -61,7 +61,7 @@ public class AuthServiceTest extends AbstractUnitTest{
         user.setRole(RoleAssigner.assignRole("test@example.com"));
         userDao.save(user);
 
-        UserDto result = authService.login("test@example.com", "password123", session);
+        UserData result = authService.login("test@example.com", "password123", session);
 
         assertNotNull(result);
         assertEquals("test@example.com", result.getEmail());
@@ -76,7 +76,7 @@ public class AuthServiceTest extends AbstractUnitTest{
         user.setPassword(authService.passwordEncoder.encode("password123"));
         user.setRole(Role.SUPERVISOR);
         userDao.save(user);
-        UserDto result = authService.login("test@example.com", "wrongpassword", session);
+        UserData result = authService.login("test@example.com", "wrongpassword", session);
 
         assertNull(result);
         assertNull(session.getAttribute("userId"));
@@ -84,7 +84,7 @@ public class AuthServiceTest extends AbstractUnitTest{
 
     @Test
     public void testLogin_FailureUserNotFound() {
-        UserDto result = authService.login("nonexistent@example.com", "password123", session);
+        UserData result = authService.login("nonexistent@example.com", "password123", session);
         assertNull(result);
     }
 
@@ -97,7 +97,7 @@ public class AuthServiceTest extends AbstractUnitTest{
         userDao.save(user);
         session.setAttribute("userId", user.getId());
 
-        UserDto result = authService.getSessionUser(session);
+        UserData result = authService.getSessionUser(session);
 
         assertNotNull(result);
         assertEquals("test@example.com", result.getEmail());
@@ -106,7 +106,7 @@ public class AuthServiceTest extends AbstractUnitTest{
 
     @Test
     public void testGetSessionUser_NoSession() {
-        UserDto result = authService.getSessionUser(session);
+        UserData result = authService.getSessionUser(session);
         assertNull(result);
     }
 
