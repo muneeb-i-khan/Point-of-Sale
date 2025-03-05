@@ -63,7 +63,7 @@ public class OrderService {
             }
 
             inventoryPojo.setQuantity(inventoryPojo.getQuantity() - orderItem.getQuantity());
-            totalAmt += productPojo.getPrice() * orderItem.getQuantity();
+            totalAmt += orderItem.getSellingPrice() * orderItem.getQuantity();
         }
         order.setTotalAmount(totalAmt);
         updateSalesReport(order, orderItemPojoList, totalAmt);
