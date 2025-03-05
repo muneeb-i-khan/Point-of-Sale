@@ -21,6 +21,10 @@ public class ProductService {
     }
 
     public void addProduct(ProductPojo p) {
+        ProductPojo existingProduct = getProductByBarcode(p.getBarcode());
+        if(existingProduct != null) {
+            throw new ApiException("Barcode "+p.getBarcode()+" already exists!");
+        }
         dao.add(p);
     }
 
