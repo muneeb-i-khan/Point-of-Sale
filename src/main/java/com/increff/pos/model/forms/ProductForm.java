@@ -10,15 +10,12 @@ import javax.validation.constraints.Positive;
 @Setter
 @Getter
 public class ProductForm {
-    @NotNull
-    @NotBlank
-    private String      name;
-    @NotNull
-    @NotBlank
-    private String      barcode;
-    @Positive
-    private double      price;
-    @NotNull
-    @NotBlank
-    private String      clientName;
+    @NotBlank(message = "Product name can't be blank")
+    private String name;
+    @NotBlank(message = "Barcode can't be blank")
+    private String barcode;
+    @Positive(message = "Price has to be positive")
+    private double price;
+    @NotBlank(message = "Client name can't be blank")
+    private String clientName;
 }

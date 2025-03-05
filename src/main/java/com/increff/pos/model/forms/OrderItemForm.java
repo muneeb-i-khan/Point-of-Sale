@@ -11,11 +11,10 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderItemForm {
-  @Positive
+  @Positive(message = "Quantity has to be positive")
   private Long quantity;
-  @NotNull
-  @NotBlank
+  @NotBlank(message = "Barcode can't be blank")
   private String barcode;
-  @Positive
+  @Positive(message = "Selling price has to be positive")
   private Double sellingPrice;
 }

@@ -9,10 +9,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class ClientForm {
-    @NotBlank
-    @NotNull
-    private String      name;
-    @NotBlank
-    @NotNull
-    private String      description;
+    @NotBlank(message = "Client name can't be blank")
+    private String name;
+    @NotBlank(message = "Client description can't be blank")
+    private String description;
 }

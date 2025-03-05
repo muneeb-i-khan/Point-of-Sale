@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class UserForm {
-    @Email
+    @Email(message = "Has to be a valid email")
     private String email;
     @Size(min=6, message = "Password should be of length greater than 6")
     private String password;

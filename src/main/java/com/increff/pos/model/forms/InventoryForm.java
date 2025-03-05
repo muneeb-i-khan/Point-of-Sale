@@ -10,9 +10,8 @@ import javax.validation.constraints.Positive;
 @Getter
 @Setter
 public class InventoryForm {
-    @NotBlank
-    @NotNull
-    private String      barcode;
-    @Positive
-    private Long        quantity;
+    @NotBlank(message = "Barcode can't be blank")
+    private String barcode;
+    @Positive(message = "Quantity has to be positive")
+    private Long quantity;
 }

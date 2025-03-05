@@ -11,7 +11,6 @@ import java.util.List;
 public class OrderForm {
     @Valid
     private CustomerForm customer;
-
     @Valid
     private List<OrderItemForm> orderItems;
 }
