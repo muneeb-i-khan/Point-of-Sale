@@ -27,7 +27,7 @@ public class InventoryController {
     private InventoryDto inventoryDto;
 
     @PostMapping
-    public void addInventory(@Valid @RequestBody InventoryForm inventoryForm) throws ApiException {
+    public void addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.addInventory(inventoryForm);
     }
 
