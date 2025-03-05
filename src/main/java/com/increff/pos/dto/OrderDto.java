@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ public class OrderDto {
         return orderFlow.getOrder(id);
     }
 
-    public Map<String, Object> getAllOrdersPaginated(int page, int pageSize) throws ApiException {
+    public List<OrderData> getAllOrdersPaginated(int page, int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
         List<OrderPojo> orderPojos = orderService.getAllOrdersPaginated(page, pageSize);
         Long totalOrders = orderService.getOrderCount();
 
@@ -46,11 +47,8 @@ public class OrderDto {
         for (OrderPojo p : orderPojos) {
             orderDataList.add(orderFlow.convert(p));
         }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("orders", orderDataList);
-        response.put("totalOrders", totalOrders);
-        return response;
+        httpServletResponse.setHeader("totalOrders", totalOrders.toString());
+        return orderDataList;
     }
 
     public ResponseEntity<byte[]> downloadInvoice(Long id) throws ApiException{

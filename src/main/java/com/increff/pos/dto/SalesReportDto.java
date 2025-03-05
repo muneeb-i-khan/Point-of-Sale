@@ -12,6 +12,7 @@ import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,19 +54,16 @@ public class SalesReportDto {
         return salesReportDataList;
     }
 
-    public Map<String, Object> getAllSalesReportPaginated(int page, int pageSize) throws ApiException {
+    public List<SalesReportData> getAllSalesReportPaginated(int page, int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
         List<SalesReportPojo> salesReportPojos = salesReportService.getAllSalesReportsPaginated(page, pageSize);
         Long totalSalesReport = salesReportService.getSalesReportCount();
 
-        List<SalesReportPojo> salesReportPojoList = new ArrayList<>();
+        List<SalesReportData> salesReportDataList = new ArrayList<>();
         for (SalesReportPojo p : salesReportPojos) {
-            salesReportPojoList.add(p);
+            salesReportDataList.add(convert(p));
         }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("report", salesReportPojoList);
-        response.put("totalSalesReport", totalSalesReport);
-        return response;
+        httpServletResponse.setHeader("totalSalesReport", totalSalesReport.toString());
+        return salesReportDataList;
     }
 
 

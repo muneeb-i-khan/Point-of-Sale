@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
@@ -41,13 +42,13 @@ public class ClientController {
         return clientDto.getAllClients();
     }
 
+    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalClients")
     @ApiOperation(value = "Get all clients with pagination")
     @GetMapping("/paginated")
-    public ResponseEntity<Map<String, Object>> getAllPaginated(
+    public List<ClientData> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int pageSize) {
-        Map<String, Object> response = clientDto.getAllClientsPaginated(page, pageSize);
-        return ResponseEntity.ok(response);
+            @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) {
+        return clientDto.getAllClientsPaginated(page, pageSize, httpServletResponse);
     }
 
 

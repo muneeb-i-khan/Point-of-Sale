@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,12 +38,12 @@ public class SalesReportController {
         return salesReportDto.getAllSales();
     }
 
+    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalReports")
     @ApiOperation(value = "Get all sales report with pagination")
     @GetMapping("/sales/paginated")
-    public ResponseEntity<Map<String, Object>> getAllPaginated(
+    public List<SalesReportData> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
-        Map<String, Object> response = salesReportDto.getAllSalesReportPaginated(page, pageSize);
-        return ResponseEntity.ok(response);
+            @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
+        return salesReportDto.getAllSalesReportPaginated(page, pageSize,httpServletResponse);
     }
 }

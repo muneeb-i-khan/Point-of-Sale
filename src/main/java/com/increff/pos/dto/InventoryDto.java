@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public class InventoryDto {
     }
 
 
-    public Map<String, Object> getAllInventoriesPaginated(int page, int pageSize) throws ApiException {
+    public List<InventoryData> getAllInventoriesPaginated(int page, int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
         List<InventoryPojo> inventoryPojos = inventoryService.getAllInventoriesPaginated(page, pageSize);
         Long totalInventories = inventoryService.getInventoryCount();
 
@@ -58,10 +59,8 @@ public class InventoryDto {
             inventoryDataList.add(inventoryFlow.convert(p));
         }
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("inventories", inventoryDataList);
-        response.put("totalInventories", totalInventories);
-        return response;
+        httpServletResponse.setHeader("totalInventories", totalInventories.toString());
+        return inventoryDataList;
     }
     
 

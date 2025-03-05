@@ -9,6 +9,7 @@ import com.increff.pos.util.Normalize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ClientDto {
         return list2;
     }
 
-    public Map<String, Object> getAllClientsPaginated(int page, int pageSize) {
+    public List<ClientData> getAllClientsPaginated(int page, int pageSize, HttpServletResponse httpServletResponse) {
         List<ClientPojo> clientPojos = clientService.getAllClientsPaginated(page, pageSize);
         Long totalClients = clientService.getClientCount();
 
@@ -47,10 +48,8 @@ public class ClientDto {
             clientDataList.add(convert(p));
         }
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("clients", clientDataList);
-        response.put("totalClients", totalClients);
-        return response;
+        httpServletResponse.setHeader("totalClients",totalClients.toString());
+        return clientDataList;
     }
 
 

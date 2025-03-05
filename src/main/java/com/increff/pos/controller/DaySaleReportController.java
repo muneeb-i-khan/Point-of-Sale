@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,11 +38,12 @@ public class DaySaleReportController {
         return daySaleReportService.getReport(startDate, endDate);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalDaySaleReport")
     @ApiOperation(value = "Get all day sales report with pagination")
     @GetMapping("/paginated")
-    public ResponseEntity<Map<String, Object>> getAllPaginated(
+    public List<DaySaleReportPojo> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
+            @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
         List<DaySaleReportPojo> daySaleReportPojos = daySaleReportService.getAllDaySaleReportsPaginated(page, pageSize);
         Long toalDaySaleReports = daySaleReportService.getDaySaleReportCount();
 
@@ -50,10 +52,8 @@ public class DaySaleReportController {
             daySaleReportPojoList.add(p);
         }
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("reports", daySaleReportPojoList);
-        response.put("totalReports", toalDaySaleReports);
-        return ResponseEntity.ok(response);
+        httpServletResponse.setHeader("totalDaySaleReport", toalDaySaleReports.toString());
+        return daySaleReportPojoList;
     }
 
 

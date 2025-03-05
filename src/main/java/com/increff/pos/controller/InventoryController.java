@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Collections;
@@ -42,13 +43,13 @@ public class InventoryController {
         return inventoryDto.getInventory(id);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalInventories")
     @ApiOperation(value = "Get all inventories with pagination")
     @GetMapping("/paginated")
-    public ResponseEntity<Map<String, Object>> getAllPaginated(
+    public List<InventoryData> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
-        Map<String, Object> response = inventoryDto.getAllInventoriesPaginated(page, pageSize);
-        return ResponseEntity.ok(response);
+            @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
+        return inventoryDto.getAllInventoriesPaginated(page, pageSize, httpServletResponse);
     }
 
     @ApiOperation(value = "Get inventory based on barcode")

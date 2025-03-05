@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class ProductDto {
         return list2;
     }
 
-    public Map<String, Object> getAllProductsPaginated(int page, int pageSize) throws ApiException {
+    public List<ProductData> getAllProductsPaginated(int page, int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
         List<ProductPojo> productPojos = productService.getAllProductsPaginated(page, pageSize);
         Long totalProducts = productService.getProductCount();
 
@@ -53,11 +54,8 @@ public class ProductDto {
         for (ProductPojo p : productPojos) {
             productDataList.add(productFlow.convert(p));
         }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("products", productDataList);
-        response.put("totalProducts", totalProducts);
-        return response;
+        httpServletResponse.setHeader("totalProducts",totalProducts.toString());
+        return productDataList;
     }
 
 

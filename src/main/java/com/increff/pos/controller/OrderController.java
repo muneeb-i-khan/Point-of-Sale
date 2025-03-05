@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Base64;
 import java.util.Collections;
@@ -37,14 +38,13 @@ public class OrderController {
         return orderDto.getAllOrders();
     }
 
-
+    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalOrders")
     @ApiOperation(value = "Get all orders with pagination")
     @GetMapping("/paginated")
-    public ResponseEntity<Map<String, Object>> getAllPaginated(
+    public List<OrderData> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
-        Map<String, Object> response = orderDto.getAllOrdersPaginated(page, pageSize);
-        return ResponseEntity.ok(response);
+            @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
+        return orderDto.getAllOrdersPaginated(page, pageSize, httpServletResponse);
     }
 
     @ApiOperation(value = "Get order by ID")

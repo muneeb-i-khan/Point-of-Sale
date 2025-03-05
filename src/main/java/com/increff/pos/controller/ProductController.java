@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Collections;
@@ -45,14 +46,14 @@ public class ProductController {
     public void updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
         productDto.updateProduct(id, productForm);
     }
-    
+
+    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalProducts")
     @ApiOperation(value = "Get all products with pagination")
     @GetMapping("/paginated")
-    public ResponseEntity<Map<String, Object>> getAllPaginated(
+    public List<ProductData> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
-        Map<String, Object> response = productDto.getAllProductsPaginated(page, pageSize);
-        return ResponseEntity.ok(response);
+            @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
+        return productDto.getAllProductsPaginated(page, pageSize, httpServletResponse);
     }
 
     @PostMapping("/upload")
