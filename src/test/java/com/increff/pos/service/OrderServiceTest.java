@@ -10,7 +10,7 @@
 //import org.springframework.test.context.ContextConfiguration;
 //import org.springframework.transaction.annotation.Transactional;
 //
-//import java.time.LocalDate;
+//import java.time.ZonedDateTime;
 //import java.util.Collections;
 //import java.util.List;
 //
@@ -74,7 +74,7 @@
 //        OrderPojo createdOrder = orderService.createOrder(Collections.singletonList(orderItem),customerPojo);
 //
 //        assertNotNull(createdOrder);
-//        assertEquals(LocalDate.now(), createdOrder.getOrderDate());
+//        assertEquals(ZonedDateTime.now(), createdOrder.getOrderDate());
 //        assertEquals(100.0, createdOrder.getTotalAmount(), 0.01);
 //
 //        InventoryPojo updatedInventory = inventoryService.getInventoryByBarcode(product.getBarcode());

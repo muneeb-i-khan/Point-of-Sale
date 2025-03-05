@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class OrderService {
     @Transactional(rollbackOn = ApiException.class)
     public OrderPojo createOrder(List<OrderItemPojo> orderItemPojoList, CustomerPojo customerPojo) throws ApiException {
         OrderPojo order = new OrderPojo();
-        order.setOrderDate(LocalDate.now());
+        order.setOrderDate(ZonedDateTime.now());
         double totalAmt = 0.0;
         customerService.addCustomer(customerPojo);
         order.setCustomerId(customerPojo.getId());
@@ -100,15 +100,15 @@ public class OrderService {
                 .orElseThrow(() -> new ApiException("Order with ID " + id + " not found"));
     }
 
-    public int countOrdersByDate(LocalDate date) {
+    public int countOrdersByDate(ZonedDateTime date) {
         return orderDao.countOrdersByDate(date);
     }
 
-    public int countItemsSoldByDate(LocalDate date) {
+    public int countItemsSoldByDate(ZonedDateTime date) {
         return orderDao.countItemsSoldByDate(date);
     }
 
-    public Double calculateRevenueByDate(LocalDate date) {
+    public Double calculateRevenueByDate(ZonedDateTime date) {
         return orderDao.calculateRevenueByDate(date);
     }
 

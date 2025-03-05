@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -16,7 +16,7 @@ public class DaySaleReportPojo extends AbstractPojo {
     private Long id;
 
     @Column(name = "date", unique = true, nullable = false)
-    private LocalDate date;
+    private ZonedDateTime date;
 
     @Column(name = "order_count", nullable = false)
     private int orderCount;

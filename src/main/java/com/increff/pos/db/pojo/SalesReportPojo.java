@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -17,5 +17,5 @@ public class SalesReportPojo extends AbstractPojo {
     private Long clientId;
     private Long itemSold;
     private Long revenue;
-    private LocalDate date;
+    private ZonedDateTime date;
 }

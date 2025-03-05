@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +29,8 @@ public class SalesReportDto {
     public List<SalesReportData> getSalesReport(SalesReportForm salesReportForm) throws ApiException {
         String clientName = salesReportForm.getClientName();
         String description = salesReportForm.getDescription();
-        LocalDate startDate = salesReportForm.getStartDate();
-        LocalDate endDate = salesReportForm.getEndDate();
+        ZonedDateTime startDate = salesReportForm.getStartDate();
+        ZonedDateTime endDate = salesReportForm.getEndDate();
 
         List<SalesReportPojo> salesReportPojos = salesReportService.getSalesReport(clientName, description, startDate, endDate);
         List<SalesReportData> salesReportDataList = new ArrayList<>();

@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Repository
@@ -24,7 +24,7 @@ public class SalesReportDao {
         em.merge(report);
     }
 
-    public SalesReportPojo findByClientAndDate(Long clientId, LocalDate date) {
+    public SalesReportPojo findByClientAndDate(Long clientId, ZonedDateTime date) {
         TypedQuery<SalesReportPojo> query = em.createQuery(
                 "SELECT r FROM SalesReportPojo r WHERE r.clientId = :clientId AND r.date = :date",
                 SalesReportPojo.class
@@ -35,7 +35,7 @@ public class SalesReportDao {
         return result.isEmpty() ? null : result.get(0);
     }
 
-    public List<SalesReportPojo> filterReports(String clientName, String description, LocalDate startDate, LocalDate endDate) {
+    public List<SalesReportPojo> filterReports(String clientName, String description, ZonedDateTime startDate, ZonedDateTime endDate) {
         StringBuilder queryString = new StringBuilder("SELECT r FROM SalesReportPojo r JOIN ClientPojo c ON r.clientId = c.id WHERE 1=1");
         if (clientName != null && !clientName.isEmpty()) {
             queryString.append(" AND c.name LIKE :clientName");

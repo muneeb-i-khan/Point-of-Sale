@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,21 +51,21 @@ public class OrderDao {
         return (Long) query.getSingleResult();
     }
 
-    public int countOrdersByDate(LocalDate date) {
+    public int countOrdersByDate(ZonedDateTime date) {
         return ((Number) em.createQuery(
                         "SELECT COUNT(o) FROM OrderPojo o WHERE o.orderDate = :date")
                 .setParameter("date", date)
                 .getSingleResult()).intValue();
     }
 
-    public int countItemsSoldByDate(LocalDate date) {
+    public int countItemsSoldByDate(ZonedDateTime date) {
         return ((Number) em.createQuery(
                         "SELECT COALESCE(SUM(oi.quantity), 0) FROM OrderItemPojo oi JOIN OrderPojo o ON oi.order_id = o.id WHERE o.orderDate = :date")
                 .setParameter("date", date)
                 .getSingleResult()).intValue();
     }
 
-    public Double calculateRevenueByDate(LocalDate date) {
+    public Double calculateRevenueByDate(ZonedDateTime date) {
         return (Double) em.createQuery(
                         "SELECT COALESCE(SUM(p.price * oi.quantity), 0) " +
                                 "FROM OrderItemPojo oi " +

@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Repository
@@ -38,7 +38,7 @@ public class DaySaleReportDao {
     }
 
 
-    public List<DaySaleReportPojo> findByDateRange(LocalDate startDate, LocalDate endDate) {
+    public List<DaySaleReportPojo> findByDateRange(ZonedDateTime startDate, ZonedDateTime endDate) {
         return entityManager.createQuery("SELECT p FROM DaySaleReportPojo p WHERE p.date BETWEEN :start AND :end",
                 DaySaleReportPojo.class)
                 .setParameter("start", startDate)
@@ -46,7 +46,7 @@ public class DaySaleReportDao {
                 .getResultList();
     }
 
-    public DaySaleReportPojo findByDate(LocalDate date) {
+    public DaySaleReportPojo findByDate(ZonedDateTime date) {
         List<DaySaleReportPojo> result = entityManager.createQuery(
                         "SELECT p FROM DaySaleReportPojo p WHERE p.date = :date", DaySaleReportPojo.class)
                 .setParameter("date", date)

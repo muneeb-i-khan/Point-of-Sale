@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -17,7 +17,7 @@ public class SalesReportService {
     @Autowired
     private SalesReportDao salesReportDao;
 
-    public List<SalesReportPojo> getSalesReport( String clientName, String description, LocalDate startDate, LocalDate endDate) {
+    public List<SalesReportPojo> getSalesReport( String clientName, String description, ZonedDateTime startDate, ZonedDateTime endDate) {
         return salesReportDao.filterReports(clientName, description, startDate, endDate);
     }
 

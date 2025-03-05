@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -24,7 +24,7 @@ public class DaySaleReportService {
 
     @Transactional
     public void recordDailySales() {
-        LocalDate yesterday = LocalDate.now().minusDays(1);
+        ZonedDateTime yesterday = ZonedDateTime.now().minusDays(1);
 
         int orderCount = orderDao.countOrdersByDate(yesterday);
         int itemSoldCount = orderDao.countItemsSoldByDate(yesterday);
@@ -56,7 +56,7 @@ public class DaySaleReportService {
         }
     }
 
-    public List<DaySaleReportPojo> getReport(LocalDate start, LocalDate end) {
+    public List<DaySaleReportPojo> getReport(ZonedDateTime start, ZonedDateTime end) {
         return daySaleReportDao.findByDateRange(start, end);
     }
 
