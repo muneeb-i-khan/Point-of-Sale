@@ -18,9 +18,14 @@ public class ClientService {
     @Autowired
     private  ClientDao dao;
 
-    public void addClient(ClientPojo p) {
+    public void addClient(ClientPojo p) throws ApiException {
+        ClientPojo existingClient = getClientByName(p.getName());
+        if (existingClient != null) {
+            throw new ApiException("Client with name '" + p.getName() + "' already exists.");
+        }
         dao.add(p);
     }
+
 
 
     public ClientPojo getClient(Long id) throws ApiException {
