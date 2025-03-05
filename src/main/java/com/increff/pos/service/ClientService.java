@@ -19,7 +19,7 @@ public class ClientService {
     private  ClientDao dao;
 
     public void addClient(ClientPojo p) throws ApiException {
-        ClientPojo existingClient = getClientByName(p.getName());
+        ClientPojo existingClient = dao.selectByName(p.getName());
         if (existingClient != null) {
             throw new ApiException("Client with name '" + p.getName() + "' already exists.");
         }
