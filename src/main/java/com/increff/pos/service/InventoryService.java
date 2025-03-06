@@ -20,7 +20,7 @@ public class InventoryService {
 
     public void addInventory(InventoryPojo inventoryPojo) throws ApiException {
         if (inventoryPojo.getQuantity() <= 0) throw new ApiException("Quantity can't be negative or 0!");
-        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProd_id());
+        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProdId());
         InventoryPojo existingInventory = dao.selectByBarcode(productPojo.getBarcode());
         if (existingInventory != null) {
             existingInventory.setQuantity(existingInventory.getQuantity() + inventoryPojo.getQuantity());
@@ -50,7 +50,7 @@ public class InventoryService {
     public void updateInventory(Long id, InventoryPojo p) throws ApiException {
         InventoryPojo ex = getCheck(id);
         ex.setQuantity(p.getQuantity());
-        ex.setProd_id(p.getProd_id());
+        ex.setProdId(p.getProdId());
         dao.update(p);
     }
 

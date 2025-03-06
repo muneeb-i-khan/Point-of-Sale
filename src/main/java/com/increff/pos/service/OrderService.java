@@ -57,9 +57,9 @@ public class OrderService {
         orderDao.add(order);
 
         for (OrderItemPojo orderItem : orderItemPojoList) {
-            orderItem.setOrder_id(order.getId());
+            orderItem.setOrderId(order.getId());
             orderItemDao.add(orderItem);
-            ProductPojo productPojo = productService.getProduct(orderItem.getProd_id());
+            ProductPojo productPojo = productService.getProduct(orderItem.getProdId());
             InventoryPojo inventoryPojo = inventoryService.getInventoryByBarcode(productPojo.getBarcode());
 
             if (orderItem.getQuantity() <= 0) {
@@ -79,7 +79,7 @@ public class OrderService {
     }
 
     private void updateSalesReport(OrderPojo order, List<OrderItemPojo> orderItems, double totalAmount) throws ApiException {
-        Long clientId = productService.getProduct(orderItems.get(0).getProd_id()).getClient_id();
+        Long clientId = productService.getProduct(orderItems.get(0).getProdId()).getClientId();
         SalesReportPojo report = salesReportDao.findByClientAndDate(clientId, order.getOrderDate());
 
         long totalItemsSold = orderItems.stream().mapToLong(OrderItemPojo::getQuantity).sum();

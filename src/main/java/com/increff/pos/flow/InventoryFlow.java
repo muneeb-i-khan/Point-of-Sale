@@ -44,11 +44,11 @@ public class InventoryFlow {
     public InventoryData convert(InventoryPojo inventoryPojo) throws ApiException {
         InventoryData inventoryData = new InventoryData();
         inventoryData.setId(inventoryPojo.getId());
-        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProd_id());
+        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProdId());
         inventoryData.setBarcode(productPojo.getBarcode());
         inventoryData.setQuantity(inventoryPojo.getQuantity());
         inventoryData.setProdName(productPojo.getName());
-        ClientPojo clientPojo = clientService.getClient(productPojo.getClient_id());
+        ClientPojo clientPojo = clientService.getClient(productPojo.getClientId());
         inventoryData.setClientName(clientPojo.getName());
         return inventoryData;
     }
@@ -56,7 +56,7 @@ public class InventoryFlow {
     public InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
         InventoryPojo inventoryPojo = new InventoryPojo();
         ProductPojo productPojo = productService.getProductByBarcode(inventoryForm.getBarcode());
-        inventoryPojo.setProd_id(productPojo.getId());
+        inventoryPojo.setProdId(productPojo.getId());
         inventoryPojo.setQuantity(inventoryForm.getQuantity());
         return inventoryPojo;
     }

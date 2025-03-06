@@ -34,13 +34,13 @@ public class ProductServiceTest extends AbstractUnitTest {
         ProductPojo product = new ProductPojo();
         product.setBarcode("12345");
         product.setName("Galaxy S21");
-        product.setClient_id(savedClient.getId());
+        product.setClientId(savedClient.getId());
         productService.addProduct(product);
 
         ProductPojo retrievedProduct = productService.getProductByBarcode("12345");
         assertNotNull(retrievedProduct);
         assertEquals("Galaxy S21", retrievedProduct.getName());
-        assertEquals("Samsung", clientService.getClient(product.getClient_id()).getName());
+        assertEquals("Samsung", clientService.getClient(product.getClientId()).getName());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         ProductPojo product = new ProductPojo();
         product.setBarcode("A123");
         product.setName("iPhone 15");
-        product.setClient_id(savedClient.getId());
+        product.setClientId(savedClient.getId());
         productService.addProduct(product);
         ProductPojo savedProduct = productService.getProductByBarcode("A123");
 
@@ -88,12 +88,12 @@ public class ProductServiceTest extends AbstractUnitTest {
         p1.setBarcode("SON123");
         p1.setName("PlayStation 5");
         p1.setPrice(45000);
-        p1.setClient_id(savedClient1.getId());
+        p1.setClientId(savedClient1.getId());
         ProductPojo p2 = new ProductPojo();
         p2.setBarcode("LG456");
         p2.setName("LG OLED TV");
         p2.setPrice(65000);
-        p2.setClient_id(savedClient2.getId());
+        p2.setClientId(savedClient2.getId());
         productService.addProduct(p1);
         productService.addProduct(p2);
 
@@ -113,7 +113,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         product.setBarcode("OP123");
         product.setName("OnePlus 9");
         product.setPrice(3200);
-        product.setClient_id(savedClient.getId());
+        product.setClientId(savedClient.getId());
         productService.addProduct(product);
 
         ProductPojo savedProduct = productService.getProductByBarcode("OP123");
@@ -122,7 +122,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         updatedProduct.setBarcode("OP999");
         updatedProduct.setName("OnePlus 10");
         updatedProduct.setPrice(4000);
-        updatedProduct.setClient_id(savedProduct.getClient_id());
+        updatedProduct.setClientId(savedProduct.getClientId());
         productService.updateProduct(savedProduct.getId(), updatedProduct);
 
         ProductPojo result = productService.getProduct(savedProduct.getId());

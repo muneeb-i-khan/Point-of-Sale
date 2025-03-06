@@ -32,13 +32,13 @@ public class InventoryServiceTest extends AbstractUnitTest {
 
         InventoryPojo inventory = new InventoryPojo();
         inventory.setQuantity(10L);
-        inventory.setProd_id(product.getId());
+        inventory.setProdId(product.getId());
         inventoryService.addInventory(inventory);
 
         InventoryPojo retrievedInventory = inventoryService.getInventoryByBarcode("123ABC");
         assertNotNull(retrievedInventory);
         assertEquals(10L, retrievedInventory.getQuantity().longValue());
-        assertEquals("123ABC", productService.getProduct(retrievedInventory.getProd_id()).getBarcode());
+        assertEquals("123ABC", productService.getProduct(retrievedInventory.getProdId()).getBarcode());
     }
 
     @Test
@@ -50,7 +50,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
 
         InventoryPojo inventory = new InventoryPojo();
         inventory.setQuantity(20L);
-        inventory.setProd_id(product.getId());
+        inventory.setProdId(product.getId());
 
         inventoryService.addInventory(inventory);
         InventoryPojo savedInventory = inventoryService.getInventoryByBarcode("456DEF");
@@ -58,7 +58,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
         InventoryPojo retrievedInventory = inventoryService.getInventory(savedInventory.getId());
 
         assertNotNull(retrievedInventory);
-        assertEquals("456DEF", productService.getProduct(retrievedInventory.getProd_id()).getBarcode());
+        assertEquals("456DEF", productService.getProduct(retrievedInventory.getProdId()).getBarcode());
         assertEquals(20L, retrievedInventory.getQuantity().longValue());
     }
 
@@ -76,7 +76,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
 
         InventoryPojo inventory = new InventoryPojo();
         inventory.setQuantity(15L);
-        inventory.setProd_id(product.getId());
+        inventory.setProdId(product.getId());
         inventoryService.addInventory(inventory);
 
         InventoryPojo retrievedInventory = inventoryService.getInventoryByBarcode("789XYZ");
@@ -103,11 +103,11 @@ public class InventoryServiceTest extends AbstractUnitTest {
 
         InventoryPojo inventory1 = new InventoryPojo();
         inventory1.setQuantity(30L);
-        inventory1.setProd_id(product1.getId());
+        inventory1.setProdId(product1.getId());
 
         InventoryPojo inventory2 = new InventoryPojo();
         inventory2.setQuantity(40L);
-        inventory2.setProd_id(product2.getId());
+        inventory2.setProdId(product2.getId());
         inventoryService.addInventory(inventory1);
         inventoryService.addInventory(inventory2);
 
@@ -124,13 +124,13 @@ public class InventoryServiceTest extends AbstractUnitTest {
 
         InventoryPojo inventory = new InventoryPojo();
         inventory.setQuantity(25L);
-        inventory.setProd_id(product.getId());
+        inventory.setProdId(product.getId());
         inventoryService.addInventory(inventory);
         InventoryPojo savedInventory = inventoryService.getInventoryByBarcode("PQR789");
 
         InventoryPojo updatedInventory = new InventoryPojo();
         updatedInventory.setQuantity(50L);
-        updatedInventory.setProd_id(product.getId());
+        updatedInventory.setProdId(product.getId());
 
         inventoryService.updateInventory(savedInventory.getId(), updatedInventory);
 

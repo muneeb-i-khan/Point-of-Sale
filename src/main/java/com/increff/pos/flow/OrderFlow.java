@@ -77,7 +77,7 @@ public class OrderFlow {
 
         for (OrderItemPojo itemPojo : orderItemPojos) {
             OrderItem orderItem = new OrderItem();
-            ProductPojo product = productService.getProduct(itemPojo.getProd_id());
+            ProductPojo product = productService.getProduct(itemPojo.getProdId());
             orderItem.setBarcode(product.getBarcode());
             orderItem.setQuantity(itemPojo.getQuantity().intValue());
             orderItem.setProdName(product.getName());
@@ -101,7 +101,7 @@ public class OrderFlow {
             }
 
             OrderItemPojo orderItemPojo = new OrderItemPojo();
-            orderItemPojo.setProd_id(product.getId());
+            orderItemPojo.setProdId(product.getId());
             orderItemPojo.setQuantity(form.getQuantity());
             if(form.getSellingPrice() <= product.getPrice()) {
                 orderItemPojo.setSellingPrice(form.getSellingPrice());

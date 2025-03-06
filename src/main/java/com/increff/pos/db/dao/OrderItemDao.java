@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public class OrderItemDao {
 
-    private static final String SELECT_ORDER_ID = "SELECT oi FROM OrderItemPojo oi WHERE oi.order_id = :orderId";
+    private static final String SELECT_ORDER_ID = "SELECT oi FROM OrderItemPojo oi WHERE oi.orderId = :orderId";
 
     @PersistenceContext
     EntityManager em;

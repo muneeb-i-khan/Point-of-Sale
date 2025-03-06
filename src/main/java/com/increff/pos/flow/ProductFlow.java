@@ -40,7 +40,7 @@ public class ProductFlow {
             throw new ApiException("Client not found: " + productForm.getClientName());
         }
 
-        p.setClient_id(clientPojo.getId());
+        p.setClientId(clientPojo.getId());
         productService.addProduct(p);
         return convert(p);
     }
@@ -54,7 +54,7 @@ public class ProductFlow {
         productData.setName(Normalize.normalizeName(productPojo.getName()));
         productData.setBarcode(productPojo.getBarcode());
         productData.setId(productPojo.getId());
-        productData.setClientName(clientService.getClient(productPojo.getClient_id()).getName());
+        productData.setClientName(clientService.getClient(productPojo.getClientId()).getName());
         productData.setPrice(productPojo.getPrice());
         return productData;
     }

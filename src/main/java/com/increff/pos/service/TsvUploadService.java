@@ -37,7 +37,7 @@ public class TsvUploadService {
 
                     try {
                         ClientPojo cp = clientService.getClientByName(record.get("clientName"));
-                        p.setClient_id(cp.getId());
+                        p.setClientId(cp.getId());
                     } catch (ApiException e) {
                         throw new RuntimeException("Client not found: " + record.get("clientName"));
                     }
@@ -56,7 +56,7 @@ public class TsvUploadService {
                     InventoryPojo inventoryPojo = new InventoryPojo();
                     try {
                         ProductPojo productPojo = productService.getProductByBarcode(record.get("barcode"));
-                        inventoryPojo.setProd_id(productPojo.getId());
+                        inventoryPojo.setProdId(productPojo.getId());
                     } catch (ApiException e) {
                         throw new RuntimeException("Product not found with barcode: " + record.get("barcode"));
                     }

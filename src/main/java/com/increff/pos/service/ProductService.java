@@ -60,8 +60,8 @@ public class ProductService {
         ex.setBarcode(p.getBarcode());
         ex.setName(p.getName());
         ex.setPrice(p.getPrice());
-        if (p.getClient_id() != null) {
-            ex.setClient_id(p.getClient_id());
+        if (p.getClientId() != null) {
+            ex.setClientId(p.getClientId());
         }
 
         dao.update(ex);

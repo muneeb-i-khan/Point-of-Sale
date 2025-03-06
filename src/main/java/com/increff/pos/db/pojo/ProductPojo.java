@@ -17,5 +17,5 @@ public class ProductPojo extends AbstractPojo{
     @Column(unique = true, nullable = false)
     private String barcode;
     private double price;
-    private Long client_id;
+    private Long clientId;
 }
