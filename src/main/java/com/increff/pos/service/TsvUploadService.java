@@ -41,7 +41,6 @@ public class TsvUploadService {
                     } catch (ApiException e) {
                         throw new RuntimeException("Client not found: " + record.get("clientName"));
                     }
-
                     return p;
                 });
 

@@ -1,7 +1,6 @@
 package com.increff.pos.db.dao;
 
 import com.increff.pos.db.pojo.OrderPojo;
-import com.increff.pos.db.pojo.OrderPojo;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +15,10 @@ public class OrderDao {
 
     private static final String SELECT_ALL = "SELECT o FROM OrderPojo o";
     private static final String SELECT_BY_ID = "SELECT o FROM OrderPojo o WHERE o.id = :orderId";
+    private static final String SELECT_COUNT = "SELECT COUNT(p) FROM OrderPojo p";
+    private static final String SELECT_DATE = "SELECT COUNT(o) FROM OrderPojo o WHERE o.orderDate = :date";
+    private static final String COUNT_ITEMS_SOLD_BY_DATE = "SELECT COALESCE(SUM(oi.quantity), 0) FROM OrderItemPojo oi JOIN OrderPojo o ON oi.order_id = o.id WHERE o.orderDate = :date";
+    private static final String CALCULATE_REVENUE_BY_DATE = "SELECT COALESCE(SUM(p.price * oi.quantity), 0) FROM OrderItemPojo oi JOIN OrderPojo p ON oi.prod_id = p.id JOIN OrderPojo o ON oi.order_id = o.id WHERE o.orderDate = :date";
 
     @PersistenceContext
     private EntityManager em;
@@ -47,35 +50,27 @@ public class OrderDao {
     }
 
     public Long countOrders() {
-        Query query = em.createQuery("SELECT COUNT(p) FROM OrderPojo p");
+        Query query = em.createQuery(SELECT_COUNT);
         return (Long) query.getSingleResult();
     }
 
     public int countOrdersByDate(ZonedDateTime date) {
-        return ((Number) em.createQuery(
-                        "SELECT COUNT(o) FROM OrderPojo o WHERE o.orderDate = :date")
+        return ((Number) em.createQuery(SELECT_DATE)
                 .setParameter("date", date)
                 .getSingleResult()).intValue();
     }
 
     public int countItemsSoldByDate(ZonedDateTime date) {
-        return ((Number) em.createQuery(
-                        "SELECT COALESCE(SUM(oi.quantity), 0) FROM OrderItemPojo oi JOIN OrderPojo o ON oi.order_id = o.id WHERE o.orderDate = :date")
+        return ((Number) em.createQuery(COUNT_ITEMS_SOLD_BY_DATE)
                 .setParameter("date", date)
                 .getSingleResult()).intValue();
     }
 
     public Double calculateRevenueByDate(ZonedDateTime date) {
-        return (Double) em.createQuery(
-                        "SELECT COALESCE(SUM(p.price * oi.quantity), 0) " +
-                                "FROM OrderItemPojo oi " +
-                                "JOIN OrderPojo p ON oi.prod_id = p.id " +
-                                "JOIN OrderPojo o ON oi.order_id = o.id " +
-                                "WHERE o.orderDate = :date")
+        return (Double) em.createQuery(CALCULATE_REVENUE_BY_DATE)
                 .setParameter("date", date)
                 .getSingleResult();
     }
-
 
     public void update(OrderPojo order) {
         em.merge(order);

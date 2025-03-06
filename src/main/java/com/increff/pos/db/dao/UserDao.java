@@ -15,10 +15,10 @@ public class UserDao {
     @PersistenceContext
     private EntityManager em;
 
-    private static String select_email = "SELECT u FROM UserPojo u WHERE u.email = :email";
+    private static String SELECT_EMAIL = "SELECT u FROM UserPojo u WHERE u.email = :email";
 
     public Optional<UserPojo> findByEmail(String email) {
-        TypedQuery<UserPojo> query = getQuery(select_email);
+        TypedQuery<UserPojo> query = getQuery(SELECT_EMAIL);
         query.setParameter("email", email);
         return query.getResultList().stream().findFirst();
     }

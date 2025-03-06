@@ -11,9 +11,9 @@ import java.util.List;
 
 @Repository
 public class CustomerDao {
-    private static final String select_id = "select p from CustomerPojo p where id=:id";
-    private static final String select_all = "select p from CustomerPojo p";
-    private static final String select_phone = "select p from CustomerPojo p where phone=:phone";
+    private static final String SELECT_ID = "select p from CustomerPojo p where id=:id";
+    private static final String SELECT_ALL = "select p from CustomerPojo p";
+    private static final String SELECT_PHONE = "select p from CustomerPojo p where phone=:phone";
     @PersistenceContext
     EntityManager em;
 
@@ -23,7 +23,7 @@ public class CustomerDao {
 
     public CustomerPojo select(Long id) {
         try {
-            TypedQuery<CustomerPojo> query = getQuery(select_id);
+            TypedQuery<CustomerPojo> query = getQuery(SELECT_ID);
             query.setParameter("id", id);
             return query.getSingleResult();
         } catch(NoResultException e) {
@@ -32,13 +32,13 @@ public class CustomerDao {
     }
 
     public List<CustomerPojo> selectAll() {
-        TypedQuery<CustomerPojo> query = getQuery(select_all);
+        TypedQuery<CustomerPojo> query = getQuery(SELECT_ALL);
         return query.getResultList();
     }
 
     public CustomerPojo selectPhone(String phone) {
         try {
-            TypedQuery<CustomerPojo> query = getQuery(select_phone);
+            TypedQuery<CustomerPojo> query = getQuery(SELECT_PHONE);
             query.setParameter("phone", phone);
             return query.getSingleResult();
         } catch(NoResultException e) {
