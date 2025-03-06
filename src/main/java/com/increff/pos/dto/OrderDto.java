@@ -1,24 +1,19 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.db.pojo.OrderPojo;
-import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.flow.OrderFlow;
 import com.increff.pos.model.data.OrderData;
-import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.forms.CustomerForm;
-import com.increff.pos.model.forms.OrderItemForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.OrderService;
-import org.hibernate.criterion.Order;
+import com.increff.pos.model.forms.OrderForm.OrderItemForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class OrderDto {
