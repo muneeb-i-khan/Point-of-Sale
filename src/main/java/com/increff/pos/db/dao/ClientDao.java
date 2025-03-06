@@ -8,10 +8,10 @@ import java.util.List;
 
 @Repository
 public class ClientDao {
-    private static final String SELECT_ID = "select p from ClientPojo p where id=:id";
-    private static final String SELECT_ALL = "select p from ClientPojo p";
-    private static final String SELECT_NAME = "select p from ClientPojo p where name=:name";
-    private static final String SELECT_COUNT = "select COUNT(p) from ClientPojo p";
+    private static final String SELECT_ID = "SELECT p FROM ClientPojo p WHERE id=:id";
+    private static final String SELECT_ALL = "SELECT p FROM ClientPojo p";
+    private static final String SELECT_NAME = "SELECT p FROM ClientPojo p WHERE name=:name";
+    private static final String SELECT_COUNT = "SELECT COUNT(p) FROM ClientPojo p";
 
     @PersistenceContext
     EntityManager em;

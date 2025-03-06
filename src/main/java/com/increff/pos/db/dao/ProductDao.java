@@ -8,9 +8,9 @@ import java.util.List;
 
 @Repository
 public class ProductDao {
-    private static final String SELECT_ID = "select p from ProductPojo p where id=:id";
-    private static final String SELECT_ALL = "select p from ProductPojo p";
-    private static final String SELECT_BARCODE = "select p from ProductPojo p where barcode=:barcode";
+    private static final String SELECT_ID = "SELECT p FROM ProductPojo p WHERE id=:id";
+    private static final String SELECT_ALL = "SELECT p FROM ProductPojo p";
+    private static final String SELECT_BARCODE = "SELECT p FROM ProductPojo p WHERE barcode=:barcode";
     private static final String SELECT_COUNT = "SELECT COUNT(p) FROM ProductPojo p";
 
     @PersistenceContext

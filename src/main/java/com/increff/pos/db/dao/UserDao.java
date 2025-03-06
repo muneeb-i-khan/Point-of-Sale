@@ -15,7 +15,7 @@ public class UserDao {
     @PersistenceContext
     private EntityManager em;
 
-    private static String SELECT_EMAIL = "SELECT u FROM UserPojo u WHERE u.email = :email";
+    private final static String SELECT_EMAIL = "SELECT u FROM UserPojo u WHERE u.email = :email";
 
     public Optional<UserPojo> findByEmail(String email) {
         TypedQuery<UserPojo> query = getQuery(SELECT_EMAIL);

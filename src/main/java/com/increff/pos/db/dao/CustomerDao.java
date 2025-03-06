@@ -11,9 +11,9 @@ import java.util.List;
 
 @Repository
 public class CustomerDao {
-    private static final String SELECT_ID = "select p from CustomerPojo p where id=:id";
-    private static final String SELECT_ALL = "select p from CustomerPojo p";
-    private static final String SELECT_PHONE = "select p from CustomerPojo p where phone=:phone";
+    private static final String SELECT_ID = "SELECT p FROM CustomerPojo p WHERE id=:id";
+    private static final String SELECT_ALL = "SELECT p FROM CustomerPojo p";
+    private static final String SELECT_PHONE = "SELECT p FROM CustomerPojo p WHERE phone=:phone";
     @PersistenceContext
     EntityManager em;
 

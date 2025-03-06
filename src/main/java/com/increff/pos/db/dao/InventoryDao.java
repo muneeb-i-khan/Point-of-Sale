@@ -8,8 +8,8 @@ import java.util.List;
 
 @Repository
 public class InventoryDao {
-    private static final String SELECT_ALL = "select p from InventoryPojo p";
-    private static final String SELECT_ID = "select p from InventoryPojo p where id=:id";
+    private static final String SELECT_ALL = "SELECT p FROM InventoryPojo p";
+    private static final String SELECT_ID = "SELECT p FROM InventoryPojo p WHERE id=:id";
     private static final String SELECT_BARCODE =
             "SELECT i FROM InventoryPojo i JOIN ProductPojo p ON i.prod_id = p.id WHERE p.barcode = :barcode";
     private static final String SELECT_COUNT = "SELECT COUNT(p) FROM InventoryPojo p";
