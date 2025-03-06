@@ -43,6 +43,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String,String>> handleIlleagalArgumentExceptions(IllegalArgumentException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(Collections.singletonMap("error", "Wrong file content"));
+                .body(Collections.singletonMap("error", ex.getMessage()));
     }
 }
