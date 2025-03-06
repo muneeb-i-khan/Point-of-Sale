@@ -26,6 +26,7 @@ public class OrderController {
     @Autowired
     private OrderDto orderDto;
 
+    @ApiOperation(value = "Add an order")
     @PostMapping
     public void addOrder(@Valid @RequestBody OrderForm orderForm) throws ApiException {
         orderDto.addOrder(orderForm.getOrderItems(), orderForm.getCustomer());

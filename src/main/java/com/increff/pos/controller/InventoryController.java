@@ -26,6 +26,7 @@ public class InventoryController {
     @Autowired
     private InventoryDto inventoryDto;
 
+    @ApiOperation(value = "Add Inventory")
     @PostMapping
     public void addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.addInventory(inventoryForm);
@@ -58,11 +59,13 @@ public class InventoryController {
         return inventoryDto.getInventory(barcode);
     }
 
+    @ApiOperation(value = "Update Inventory")
     @PutMapping("/{id}")
     public void updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException {
         inventoryDto.updateInventory(inventoryForm, id);
     }
 
+    @ApiOperation(value = "Upload TSV file")
     @PostMapping("/upload")
     public void uploadInventory(@RequestParam("file") MultipartFile file) throws IOException, ApiException {
         inventoryDto.uploadInventory(file);

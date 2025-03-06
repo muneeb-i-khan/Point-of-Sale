@@ -26,6 +26,8 @@ public class SalesReportController {
 
     @Autowired
     private SalesReportDto salesReportDto;
+
+    @ApiOperation(value = "Get sales report")
     @GetMapping("/filter")
     public List<SalesReportData> getSalesReport(
             @ModelAttribute SalesReportForm salesReportForm
@@ -33,6 +35,7 @@ public class SalesReportController {
         return salesReportDto.getSalesReport(salesReportForm);
     }
 
+    @ApiOperation(value = "Get all sales report")
     @GetMapping("/sales/all")
     public List<SalesReportData> getAllReports() throws ApiException {
         return salesReportDto.getAllSales();

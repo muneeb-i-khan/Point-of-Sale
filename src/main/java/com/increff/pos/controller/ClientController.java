@@ -24,6 +24,7 @@ public class ClientController {
     @Autowired
     private ClientDto clientDto;
 
+    @ApiOperation(value = "Add a client")
     @PostMapping
     public void addClient(@Valid @RequestBody ClientForm clientForm) {
         clientDto.addClient(clientForm);

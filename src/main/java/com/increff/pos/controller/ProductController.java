@@ -25,6 +25,8 @@ public class ProductController {
 
     @Autowired
     private ProductDto productDto;
+
+    @ApiOperation(value = "Add a product")
     @PostMapping
     public void addProduct(@Valid @RequestBody ProductForm productForm) throws ApiException {
         productDto.addProduct(productForm);
@@ -42,6 +44,7 @@ public class ProductController {
         return productDto.getAllProducts();
     }
 
+    @ApiOperation(value = "Update a product")
     @PutMapping("/{id}")
     public void updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
         productDto.updateProduct(id, productForm);
@@ -56,6 +59,7 @@ public class ProductController {
         return productDto.getAllProductsPaginated(page, pageSize, httpServletResponse);
     }
 
+    @ApiOperation(value = "Upload TSV file")
     @PostMapping("/upload")
     public void uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
         productDto.uploadProducts(file);
