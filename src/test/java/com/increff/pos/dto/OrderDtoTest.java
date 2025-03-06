@@ -11,7 +11,7 @@
 //import com.increff.pos.model.forms.CustomerForm;
 //import com.increff.pos.model.forms.OrderItemForm;
 //import com.increff.pos.service.AbstractUnitTest;
-//import com.increff.pos.service.ApiException;
+//import com.increff.pos.util.ApiException;
 //import com.increff.pos.service.QaConfig;
 //import org.junit.Before;
 //import org.junit.Test;

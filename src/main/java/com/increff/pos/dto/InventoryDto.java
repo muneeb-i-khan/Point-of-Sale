@@ -3,7 +3,7 @@ package com.increff.pos.dto;
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.forms.InventoryForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.flow.InventoryFlow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class InventoryDto {

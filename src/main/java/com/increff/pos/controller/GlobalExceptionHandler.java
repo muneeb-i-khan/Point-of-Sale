@@ -1,6 +1,6 @@
 package com.increff.pos.controller;
 
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

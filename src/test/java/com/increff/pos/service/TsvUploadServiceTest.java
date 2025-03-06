@@ -3,6 +3,7 @@ package com.increff.pos.service;
 import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.util.ApiException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

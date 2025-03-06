@@ -4,7 +4,7 @@ import com.increff.pos.db.pojo.OrderPojo;
 import com.increff.pos.flow.OrderFlow;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.forms.CustomerForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.model.forms.OrderForm.OrderItemForm;
 import org.springframework.beans.factory.annotation.Autowired;

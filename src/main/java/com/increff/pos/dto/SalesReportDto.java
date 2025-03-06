@@ -1,23 +1,18 @@
 package com.increff.pos.dto;
 
-import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.SalesReportPojo;
-import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.data.SalesReportData;
 import com.increff.pos.model.forms.SalesReportForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.service.SalesReportService;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class SalesReportDto {

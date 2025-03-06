@@ -3,7 +3,7 @@ package com.increff.pos.controller;
 import com.increff.pos.dto.OrderDto;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.forms.OrderForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.util.ApiException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;

@@ -1,10 +1,10 @@
 package com.increff.pos.service;
 
 import com.increff.pos.db.dao.ProductDao;
-import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.flow.ProductFlow;
 import com.increff.pos.model.data.ProductData;
+import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

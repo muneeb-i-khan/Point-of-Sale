@@ -3,7 +3,7 @@ package com.increff.pos.dto;
 import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.model.data.ClientData;
 import com.increff.pos.model.forms.ClientForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.util.Normalize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class ClientDto {

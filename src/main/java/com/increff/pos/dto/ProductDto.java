@@ -1,11 +1,9 @@
 package com.increff.pos.dto;
 
-import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
-import com.increff.pos.model.data.ClientData;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.forms.ProductForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.Normalize;
 import com.increff.pos.flow.ProductFlow;
@@ -16,9 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class ProductDto {

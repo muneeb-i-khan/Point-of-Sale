@@ -1,7 +1,7 @@
 package com.increff.pos.controller;
 
 import com.increff.pos.db.pojo.DaySaleReportPojo;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.DaySaleReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

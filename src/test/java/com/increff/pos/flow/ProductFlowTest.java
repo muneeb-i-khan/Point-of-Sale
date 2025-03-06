@@ -5,6 +5,7 @@ import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.forms.ProductForm;
 import com.increff.pos.service.*;
+import com.increff.pos.util.ApiException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
