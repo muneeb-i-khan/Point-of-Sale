@@ -27,7 +27,7 @@ public class ProductFlow {
     @Autowired
     private TsvUploadService tsvUploadService;
 
-    public void addProduct(ProductForm productForm) throws ApiException {
+    public ProductData addProduct(ProductForm productForm) throws ApiException {
         ProductPojo p = new ProductPojo();
         p.setName(productForm.getName());
         p.setBarcode(productForm.getBarcode());
@@ -42,6 +42,7 @@ public class ProductFlow {
 
         p.setClient_id(clientPojo.getId());
         productService.addProduct(p);
+        return convert(p);
     }
 
     public void uploadProducts(MultipartFile file) throws IOException, ApiException {

@@ -20,9 +20,10 @@ public class ClientDto {
     @Autowired
     ClientService clientService;
 
-    public void addClient(ClientForm clientForm) {
+    public ClientData addClient(ClientForm clientForm) {
         ClientPojo clientPojo = convert(clientForm);
         clientService.addClient(clientPojo);
+        return convert(clientPojo);
     }
 
     public ClientData getClient(Long id) throws ApiException {
@@ -53,11 +54,12 @@ public class ClientDto {
     }
 
 
-    public void updateClient(ClientForm clientForm, Long id) throws ApiException {
+    public ClientData updateClient(ClientForm clientForm, Long id) throws ApiException {
         ClientPojo clientPojo = new ClientPojo();
         clientPojo.setName(Normalize.normalizeName(clientForm.getName().trim()));
         clientPojo.setDescription(clientForm.getDescription());
         clientService.updateClient(id, clientPojo);
+        return convert(clientPojo);
     }
 
 

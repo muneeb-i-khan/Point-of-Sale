@@ -3,6 +3,8 @@ package com.increff.pos.service;
 import com.increff.pos.db.dao.ProductDao;
 import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.flow.ProductFlow;
+import com.increff.pos.model.data.ProductData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,9 @@ public class ProductService {
     public ProductService(ProductDao dao) {
         this.dao = dao;
     }
+
+    @Autowired
+    private ProductFlow productFlow;
 
     public void addProduct(ProductPojo p) {
         ProductPojo existingProduct = dao.selectByBarcode(p.getBarcode());
@@ -44,7 +49,7 @@ public class ProductService {
         return dao.selectAll();
     }
 
-    public void updateProduct(Long id, ProductPojo p) throws ApiException {
+    public ProductData updateProduct(Long id, ProductPojo p) throws ApiException {
         ProductPojo ex = getCheck(id);
         ProductPojo existingProduct = dao.selectByBarcode(p.getBarcode());
 
@@ -60,6 +65,7 @@ public class ProductService {
         }
 
         dao.update(ex);
+        return productFlow.convert(ex);
     }
 
 

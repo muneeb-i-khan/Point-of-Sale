@@ -28,8 +28,8 @@ public class ProductDto {
     @Autowired
     private ProductFlow productFlow;
 
-    public void addProduct(ProductForm productForm) throws ApiException {
-        productFlow.addProduct(productForm);
+    public ProductData addProduct(ProductForm productForm) throws ApiException {
+        return productFlow.addProduct(productForm);
     }
 
     public ProductData getProduct(Long id) throws ApiException {
@@ -59,9 +59,9 @@ public class ProductDto {
     }
 
 
-    public void updateProduct(Long id, ProductForm productForm) throws ApiException {
+    public ProductData updateProduct(Long id, ProductForm productForm) throws ApiException {
         ProductPojo p = convert(productForm);
-        productService.updateProduct(id, p);
+        return productService.updateProduct(id, p);
     }
 
     public void uploadProducts(MultipartFile file) throws IOException, ApiException {

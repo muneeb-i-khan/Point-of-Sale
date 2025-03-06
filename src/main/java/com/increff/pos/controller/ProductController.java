@@ -25,8 +25,8 @@ public class ProductController {
 
     @ApiOperation(value = "Add a product")
     @PostMapping
-    public void addProduct(@Valid @RequestBody ProductForm productForm) throws ApiException {
-        productDto.addProduct(productForm);
+    public ProductData addProduct(@Valid @RequestBody ProductForm productForm) throws ApiException {
+        return productDto.addProduct(productForm);
     }
 
     @ApiOperation(value = "Get a product based on its Id")
@@ -43,8 +43,8 @@ public class ProductController {
 
     @ApiOperation(value = "Update a product")
     @PutMapping("/{id}")
-    public void updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
-        productDto.updateProduct(id, productForm);
+    public ProductData updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
+       return productDto.updateProduct(id, productForm);
     }
 
     @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalProducts")
@@ -56,7 +56,7 @@ public class ProductController {
         return productDto.getAllProductsPaginated(page, pageSize, httpServletResponse);
     }
 
-    @ApiOperation(value = "Upload TSV file")
+    @ApiOperation(value = "check session")
     @PostMapping("/upload")
     public void uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
         productDto.uploadProducts(file);

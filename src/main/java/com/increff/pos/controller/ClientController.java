@@ -23,8 +23,8 @@ public class ClientController {
 
     @ApiOperation(value = "Add a client")
     @PostMapping
-    public void addClient(@Valid @RequestBody ClientForm clientForm) {
-        clientDto.addClient(clientForm);
+    public ClientData addClient(@Valid @RequestBody ClientForm clientForm) {
+        return clientDto.addClient(clientForm);
     }
 
 
@@ -51,7 +51,7 @@ public class ClientController {
 
 
     @PutMapping("/{id}")
-    public void update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
-        clientDto.updateClient(clientForm, id);
+    public ClientData update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
+        return clientDto.updateClient(clientForm, id);
     }
 }

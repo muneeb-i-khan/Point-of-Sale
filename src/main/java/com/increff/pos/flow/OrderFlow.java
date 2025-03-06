@@ -37,14 +37,15 @@ public class OrderFlow {
     @Autowired
     private CustomerService customerService;
 
-    public void addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
+    public OrderData addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
         if (orderItemFormList == null || orderItemFormList.isEmpty()) {
             throw new ApiException("Order cannot be empty.");
         }
         List<OrderItemForm> mergedOrderItems = mergeDuplicateItems(orderItemFormList);
         List<OrderItemPojo> orderItemPojoList = convert(mergedOrderItems);
         CustomerPojo customerPojo = customerDto.convert(customerForm);
-        orderService.createOrder(orderItemPojoList, customerPojo);
+        OrderPojo orderPojo = orderService.createOrder(orderItemPojoList, customerPojo);
+        return convert(orderPojo);
     }
 
 

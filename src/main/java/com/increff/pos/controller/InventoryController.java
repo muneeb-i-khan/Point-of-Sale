@@ -24,8 +24,8 @@ public class InventoryController {
 
     @ApiOperation(value = "Add Inventory")
     @PostMapping
-    public void addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
-        inventoryDto.addInventory(inventoryForm);
+    public InventoryData addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
+        return inventoryDto.addInventory(inventoryForm);
     }
 
     @ApiOperation(value = "Get all inventories")
@@ -57,8 +57,8 @@ public class InventoryController {
 
     @ApiOperation(value = "Update Inventory")
     @PutMapping("/{id}")
-    public void updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException {
-        inventoryDto.updateInventory(inventoryForm, id);
+    public InventoryData updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException {
+       return  inventoryDto.updateInventory(inventoryForm, id);
     }
 
     @ApiOperation(value = "Upload TSV file")

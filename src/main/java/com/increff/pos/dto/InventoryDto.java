@@ -25,9 +25,10 @@ public class InventoryDto {
     @Autowired
     private InventoryFlow inventoryFlow;
 
-    public void addInventory(InventoryForm inventoryForm) throws ApiException {
+    public InventoryData addInventory(InventoryForm inventoryForm) throws ApiException {
         InventoryPojo inventoryPojo = inventoryFlow.convert(inventoryForm);
         inventoryService.addInventory(inventoryPojo);
+        return inventoryFlow.convert(inventoryPojo);
     }
 
     public List<InventoryData> getAllInventories() throws ApiException {
@@ -64,10 +65,11 @@ public class InventoryDto {
     }
     
 
-    public void updateInventory(InventoryForm inventoryForm, Long id) throws ApiException {
+    public InventoryData updateInventory(InventoryForm inventoryForm, Long id) throws ApiException {
         InventoryPojo inventoryPojo = inventoryFlow.convert(inventoryForm);
         inventoryService.getCheck(id);
         inventoryService.updateInventory(id, inventoryPojo);
+        return inventoryFlow.convert(inventoryPojo);
     }
 
     public void uploadInventory(MultipartFile file) throws IOException, ApiException {

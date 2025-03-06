@@ -9,6 +9,7 @@ import com.increff.pos.model.forms.CustomerForm;
 import com.increff.pos.model.forms.OrderItemForm;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.OrderService;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -27,8 +28,8 @@ public class OrderDto {
     @Autowired
     private OrderService orderService;
 
-    public void addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
-        orderFlow.addOrder(orderItemFormList, customerForm);
+    public OrderData addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
+        return orderFlow.addOrder(orderItemFormList, customerForm);
     }
 
     public List<OrderData> getAllOrders() throws ApiException {
