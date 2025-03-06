@@ -42,18 +42,23 @@
 
                     <!-- Table for Items -->
                     <fo:table border="0.5pt solid black" width="100%" space-before="5pt">
-                        <fo:table-column column-width="40%"/>
+                        <!-- Define 5 columns -->
+                        <fo:table-column column-width="30%"/>
+                        <fo:table-column column-width="15%"/>
+                        <fo:table-column column-width="15%"/>
                         <fo:table-column column-width="20%"/>
                         <fo:table-column column-width="20%"/>
-                        <fo:table-column column-width="20%"/>
+
                         <fo:table-header>
                             <fo:table-row background-color="#E6E6E6">
                                 <fo:table-cell><fo:block font-weight="bold">Product Name</fo:block></fo:table-cell>
                                 <fo:table-cell><fo:block font-weight="bold">Barcode</fo:block></fo:table-cell>
                                 <fo:table-cell><fo:block font-weight="bold">Quantity</fo:block></fo:table-cell>
-                                <fo:table-cell><fo:block font-weight="bold">Price</fo:block></fo:table-cell>
+                                <fo:table-cell><fo:block font-weight="bold">MRP</fo:block></fo:table-cell>
+                                <fo:table-cell><fo:block font-weight="bold">Selling Price</fo:block></fo:table-cell>
                             </fo:table-row>
                         </fo:table-header>
+
                         <fo:table-body>
                             <xsl:for-each select="invoice/items/item">
                                 <fo:table-row>
@@ -61,6 +66,7 @@
                                     <fo:table-cell><fo:block><xsl:value-of select="barcode"/></fo:block></fo:table-cell>
                                     <fo:table-cell><fo:block><xsl:value-of select="quantity"/></fo:block></fo:table-cell>
                                     <fo:table-cell><fo:block><xsl:value-of select="price"/></fo:block></fo:table-cell>
+                                    <fo:table-cell><fo:block><xsl:value-of select="sellingPrice"/></fo:block></fo:table-cell>
                                 </fo:table-row>
                             </xsl:for-each>
                         </fo:table-body>
@@ -68,7 +74,7 @@
 
                     <!-- Total Amount -->
                     <fo:block space-before="10pt" font-size="12pt" font-weight="bold">
-                        <xsl:text>Total Amount: Rs.</xsl:text><xsl:value-of select="invoice/totalAmount"/>
+                        <xsl:text>Total Amount: Rs. </xsl:text><xsl:value-of select="invoice/totalAmount"/>
                     </fo:block>
 
                 </fo:flow>

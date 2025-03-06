@@ -81,6 +81,7 @@ public class InvoiceService {
                 writer.write("<prodName>" + item.getProdName() + "</prodName>");
                 writer.write("<price>" + item.getPrice() + "</price>");
                 writer.write("<quantity>" + item.getQuantity() + "</quantity>");
+                writer.write("<sellingPrice>"+ item.getSellingPrice() + "</sellingPrice>");
                 writer.write("</item>");
             }
             writer.write("</items>");

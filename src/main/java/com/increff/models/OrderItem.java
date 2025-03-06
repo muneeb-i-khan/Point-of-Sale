@@ -10,5 +10,6 @@ public class OrderItem {
     private String prodName;
     private Double price;
     private Integer quantity;
+    private Double sellingPrice;
 }
 
