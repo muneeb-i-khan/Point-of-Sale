@@ -5,15 +5,21 @@ import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.dao.SalesReportDao;
 import com.increff.pos.db.pojo.*;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -47,6 +53,7 @@ public class OrderService {
         double totalAmt = 0.0;
         customerService.addCustomer(customerPojo);
         order.setCustomerId(customerPojo.getId());
+        order.setInvoicePath("");
         orderDao.add(order);
 
         for (OrderItemPojo orderItem : orderItemPojoList) {
@@ -121,11 +128,33 @@ public class OrderService {
     }
 
     public ResponseEntity<byte[]> downloadPdf(Long id) throws ApiException {
-        String url = "http://localhost:9001/invoice/api/invoice/"+id;
+        OrderPojo orderPojo = getOrderById(id);
+        if (orderPojo.getInvoicePath() != null && !orderPojo.getInvoicePath().isEmpty()) {
+            File pdfFile = new File(orderPojo.getInvoicePath());
+            if (pdfFile.exists()) {
+                try {
+                    byte[] pdfBytes = Files.readAllBytes(pdfFile.toPath());
+                    return ResponseEntity.ok()
+                            .header("Content-Disposition", "attachment; filename=invoice_" + id + ".pdf")
+                            .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                            .body(pdfBytes);
+                } catch (IOException e) {
+                    throw new ApiException("Failed to read existing invoice file for order ID: " + id);
+                }
+            }
+
+        }
+
+        String url = "http://localhost:9001/invoice/api/invoice/" + id;
         RestTemplate restTemplate = new RestTemplate();
         try {
             String base64Pdf = restTemplate.getForObject(url, String.class);
             byte[] pdfBytes = Base64.getDecoder().decode(base64Pdf);
+
+            String filePath = "src/main/pdf/output" + id + ".pdf";
+            Files.write(Paths.get(filePath), pdfBytes);
+            orderPojo.setInvoicePath(filePath);
+
             return ResponseEntity.ok()
                     .header("Content-Disposition", "attachment; filename=invoice_" + id + ".pdf")
                     .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
@@ -134,5 +163,6 @@ public class OrderService {
             throw new ApiException("Failed to download invoice for order ID: " + id);
         }
     }
+
 }
 

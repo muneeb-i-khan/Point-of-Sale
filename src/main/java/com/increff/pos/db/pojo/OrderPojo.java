@@ -18,6 +18,7 @@ public class OrderPojo extends AbstractPojo {
     private double totalAmount;
     private ZonedDateTime orderDate;
     private Long customerId;
+    private String invoicePath;
 }
 
 
