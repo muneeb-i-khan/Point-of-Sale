@@ -16,6 +16,7 @@ public class InventoryDao {
 
     @PersistenceContext
     EntityManager em;
+
     public void add(InventoryPojo p) {
         em.persist(p);
     }
@@ -36,7 +37,7 @@ public class InventoryDao {
 
 
     public List<InventoryPojo> selectAllPaginated(int page, int pageSize) {
-        TypedQuery<InventoryPojo> query = em.createQuery(SELECT_ALL, InventoryPojo.class);
+        TypedQuery<InventoryPojo> query = getQuery(SELECT_ALL);
         query.setFirstResult(page * pageSize);
         query.setMaxResults(pageSize);
         return query.getResultList();
@@ -49,7 +50,7 @@ public class InventoryDao {
     
     public InventoryPojo selectByBarcode(String barcode) {
         try {
-            TypedQuery<InventoryPojo> query = em.createQuery(SELECT_BARCODE, InventoryPojo.class);
+            TypedQuery<InventoryPojo> query = getQuery(SELECT_BARCODE);
             query.setParameter("barcode", barcode);
             return query.getSingleResult();
         } catch (NoResultException e) {

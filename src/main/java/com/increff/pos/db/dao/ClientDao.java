@@ -42,7 +42,7 @@ public class ClientDao {
 
     public ClientPojo selectByName(String name) {
         try {
-            TypedQuery<ClientPojo> query = em.createQuery(SELECT_NAME, ClientPojo.class);
+            TypedQuery<ClientPojo> query = getQuery(SELECT_NAME);
             query.setParameter("name", name);
             return query.getSingleResult();
         } catch (NoResultException e) {
@@ -51,7 +51,7 @@ public class ClientDao {
     }
 
     public List<ClientPojo> selectAllPaginated(int page, int pageSize) {
-        TypedQuery<ClientPojo> query = em.createQuery(SELECT_ALL, ClientPojo.class);
+        TypedQuery<ClientPojo> query = getQuery(SELECT_ALL);
         query.setFirstResult(page * pageSize);
         query.setMaxResults(pageSize);
         return query.getResultList();

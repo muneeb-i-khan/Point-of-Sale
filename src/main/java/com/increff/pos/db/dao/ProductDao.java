@@ -42,7 +42,7 @@ public class ProductDao {
 
     public ProductPojo selectByBarcode(String barcode) {
         try {
-            TypedQuery<ProductPojo> query = em.createQuery(SELECT_BARCODE, ProductPojo.class);
+            TypedQuery<ProductPojo> query = getQuery(SELECT_BARCODE);
             query.setParameter("barcode", barcode);
             return query.getSingleResult();
         }
@@ -52,7 +52,7 @@ public class ProductDao {
     }
 
     public List<ProductPojo> selectAllPaginated(int page, int pageSize) {
-        TypedQuery<ProductPojo> query = em.createQuery(SELECT_ALL, ProductPojo.class);
+        TypedQuery<ProductPojo> query = getQuery(SELECT_ALL);
         query.setFirstResult(page * pageSize);
         query.setMaxResults(pageSize);
         return query.getResultList();
