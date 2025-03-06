@@ -23,5 +23,6 @@ public class UserPojo extends AbstractPojo{
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 }
