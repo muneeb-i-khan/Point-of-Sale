@@ -1,7 +1,5 @@
 package com.increff.services;
 
-import com.increff.db.dao.InvoiceDao;
-import com.increff.db.pojo.InvoicePojo;
 import com.increff.models.OrderData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.increff.models.OrderItem;
@@ -19,9 +17,6 @@ import java.util.Base64;
 
 @Service
 public class InvoiceService {
-    @Autowired
-    private InvoiceDao invoiceDao;
-
     private static final String ORDER_API_URL = "http://localhost:9000/pos/api/order/";
 
     public OrderData fetchOrderDetails(Long orderId) {
@@ -40,25 +35,12 @@ public class InvoiceService {
         try {
             Long orderId = orderData.getId();
 
-            InvoicePojo existingInvoice = invoiceDao.getByOrderId(orderId);
-            if (existingInvoice != null) {
-                File existingPdf = new File(existingInvoice.getPath());
-                if (existingPdf.exists()) {
-                    return encodePdfToBase64(existingPdf);
-                }
-            }
-
             File xmlFile = new File("src/main/resources/invoice.xml");
             File xslFile = new File("src/main/resources/stylesheet.xsl");
             generateXml(orderData, xmlFile);
 
-            File pdfFile = new File("src/main/pdf/output" + orderId + ".pdf");
+            File pdfFile = new File("../POS/src/main/pdf/output" + orderId + ".pdf");
             transformToPdf(xmlFile, xslFile, pdfFile);
-
-            InvoicePojo invoicePojo = new InvoicePojo();
-            invoicePojo.setOrderId(orderId);
-            invoicePojo.setPath(pdfFile.getAbsolutePath());
-            invoiceDao.add(invoicePojo);
 
             return encodePdfToBase64(pdfFile);
         } catch (Exception e) {
