@@ -34,16 +34,19 @@ public class ClientService {
     public List<ClientPojo> getAllClients() {
         return dao.selectAll();
     }
-
     public void updateClient(Long id, ClientPojo p) throws ApiException {
-        ClientPojo ex = getCheck(id);
-        ClientPojo existingName = getCheck(p.getName());
-        if(Objects.equals(p.getName(), existingName.getName())) {
-            throw new ApiException("Name "+p.getName()+" already exists");
+        ClientPojo existingClient = getCheck(id);
+        checkDuplicateName(id, p.getName());
+        existingClient.setDescription(p.getDescription());
+        existingClient.setName(p.getName());
+        dao.update(existingClient);
+    }
+
+    private void checkDuplicateName(Long id, String name) throws ApiException {
+        ClientPojo clientWithSameName = dao.selectByName(name);
+        if (clientWithSameName != null && !clientWithSameName.getId().equals(id)) {
+            throw new ApiException("Name " + name + " already exists");
         }
-        ex.setDescription(p.getDescription());
-        ex.setName(p.getName());
-        dao.update(ex);
     }
 
     public List<ClientPojo> getAllClientsPaginated(int page, int pageSize) {
