@@ -30,7 +30,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         client.setName("Samsung");
         client.setDescription("Electronics");
         clientService.addClient(client);
-        ClientPojo savedClient = clientService.getClientByName("Samsung");
+        ClientPojo savedClient = clientService.getCheck("Samsung");
 
         ProductPojo product = new ProductPojo();
         product.setBarcode("12345");
@@ -50,7 +50,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         client.setName("Apple");
         client.setDescription("Technology");
         clientService.addClient(client);
-        ClientPojo savedClient = clientService.getClientByName("Apple");
+        ClientPojo savedClient = clientService.getCheck("Apple");
 
         ProductPojo product = new ProductPojo();
         product.setBarcode("A123");
@@ -77,13 +77,13 @@ public class ProductServiceTest extends AbstractUnitTest {
         client1.setName("Sony");
         client1.setDescription("Entertainment");
         clientService.addClient(client1);
-        ClientPojo savedClient1 = clientService.getClientByName("Sony");
+        ClientPojo savedClient1 = clientService.getCheck("Sony");
 
         ClientPojo client2 = new ClientPojo();
         client2.setName("LG");
         client2.setDescription("Appliances");
         clientService.addClient(client2);
-        ClientPojo savedClient2 = clientService.getClientByName("LG");
+        ClientPojo savedClient2 = clientService.getCheck("LG");
 
         ProductPojo p1 = new ProductPojo();
         p1.setBarcode("SON123");
@@ -108,7 +108,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         client.setName("OnePlus");
         client.setDescription("Mobiles");
         clientService.addClient(client);
-        ClientPojo savedClient = clientService.getClientByName("OnePlus");
+        ClientPojo savedClient = clientService.getCheck("OnePlus");
 
         ProductPojo product = new ProductPojo();
         product.setBarcode("OP123");

@@ -1,6 +1,7 @@
 package com.increff.pos.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -36,6 +37,10 @@ public class ClientService {
 
     public void updateClient(Long id, ClientPojo p) throws ApiException {
         ClientPojo ex = getCheck(id);
+        ClientPojo existingName = getCheck(p.getName());
+        if(Objects.equals(p.getName(), existingName.getName())) {
+            throw new ApiException("Name "+p.getName()+" already exists");
+        }
         ex.setDescription(p.getDescription());
         ex.setName(p.getName());
         dao.update(ex);
@@ -50,7 +55,7 @@ public class ClientService {
     }
 
 
-    public ClientPojo getClientByName(String name) throws ApiException {
+    public ClientPojo getCheck(String name) throws ApiException {
         ClientPojo client = dao.selectByName(name);
         if (client == null) {
             throw new ApiException("Client with the given name does not exist: " + name);

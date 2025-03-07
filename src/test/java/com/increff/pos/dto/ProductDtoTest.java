@@ -54,7 +54,7 @@ public class ProductDtoTest extends AbstractUnitTest {
         List<ProductData> products = productDto.getAllProducts();
         assertEquals(1, products.size());
         assertEquals("test product", products.get(0).getName());
-        assertEquals("Test Client", clientService.getClientByName(products.get(0).getClientName()).getName());
+        assertEquals("Test Client", clientService.getCheck(products.get(0).getClientName()).getName());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class ProductDtoTest extends AbstractUnitTest {
         assertEquals("product a", product.getName());
         assertEquals("7891011", product.getBarcode());
         assertEquals(150.0, product.getPrice(), 0.001);
-        assertEquals("Test Client", clientService.getClientByName(product.getClientName()).getName());
+        assertEquals("Test Client", clientService.getCheck(product.getClientName()).getName());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class ProductDtoTest extends AbstractUnitTest {
         ProductData updatedProduct = productDto.getProduct(productId);
         assertEquals("updated name", updatedProduct.getName());
         assertEquals(250.0, updatedProduct.getPrice(),0.001);
-        assertEquals("Test Client", clientService.getClientByName(updatedProduct.getClientName()).getName());
+        assertEquals("Test Client", clientService.getCheck(updatedProduct.getClientName()).getName());
     }
 
     @Test(expected = ApiException.class)

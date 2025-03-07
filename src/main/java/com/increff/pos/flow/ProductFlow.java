@@ -35,7 +35,7 @@ public class ProductFlow {
 
         ClientPojo clientPojo;
         try {
-            clientPojo = clientService.getClientByName(productForm.getClientName());
+            clientPojo = clientService.getCheck(productForm.getClientName());
         } catch (NoResultException e) {
             throw new ApiException("Client not found: " + productForm.getClientName());
         }

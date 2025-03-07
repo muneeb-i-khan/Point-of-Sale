@@ -37,7 +37,7 @@ public class TsvUploadService {
                     p.setPrice(Double.parseDouble(record.get("price")));
 
                     try {
-                        ClientPojo cp = clientService.getClientByName(record.get("clientName"));
+                        ClientPojo cp = clientService.getCheck(record.get("clientName"));
                         p.setClientId(cp.getId());
                     } catch (ApiException e) {
                         throw new RuntimeException("Client not found: " + record.get("clientName"));
