@@ -28,11 +28,11 @@ public class DBConfig {
         bean.setUsername(applicationProperties.getJdbcUsername());
         bean.setPassword(applicationProperties.getJdbcPassword());
         bean.setInitialSize(2);
-        bean.setDefaultAutoCommit(false);
-        bean.setMinIdle(2);
-        bean.setValidationQuery("SELECT 1");
-        bean.setTestWhileIdle(true);
-        bean.setTimeBetweenEvictionRunsMillis(10 * 60 * 100);
+        bean.setDefaultAutoCommit(applicationProperties.getSetDefaultAutoCommit());
+        bean.setMinIdle(applicationProperties.getSetMinIdle());
+        bean.setValidationQuery(applicationProperties.getSetValidationQuery());
+        bean.setTestWhileIdle(applicationProperties.getSetTestWhileIdle());
+        bean.setTimeBetweenEvictionRunsMillis(applicationProperties.getSetTimeBetweenEvictionRunsMillis());
         return bean;
     }
 
