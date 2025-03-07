@@ -37,14 +37,14 @@ public class RestConfig extends WebMvcConfigurerAdapter {
                 .addResourceLocations("/static/");
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .exposedHeaders("totalClients", "totalDaySaleReport",  "totalInventories", "totalOrders", "totalProducts",
-                        "totalReports")
-                .allowCredentials(true);
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOrigins("http://localhost:4200")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+//                .allowedHeaders("*")
+//                .exposedHeaders("totalClients", "totalDaySaleReport",  "totalInventories", "totalOrders", "totalProducts",
+//                        "totalReports")
+//                .allowCredentials(true);
+//    }
 }
