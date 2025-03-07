@@ -40,7 +40,6 @@ public class InventoryController {
         return inventoryDto.getInventory(id);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalInventories")
     @ApiOperation(value = "Get all inventories with pagination")
     @GetMapping("/paginated")
     public List<InventoryData> getAllPaginated(

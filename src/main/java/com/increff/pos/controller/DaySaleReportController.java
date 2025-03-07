@@ -36,7 +36,6 @@ public class DaySaleReportController {
         return daySaleReportService.getReport(startDate, endDate);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalDaySaleReport")
     @ApiOperation(value = "Get all day sales report with pagination")
     @GetMapping("/paginated")
     public List<DaySaleReportPojo> getAllPaginated(

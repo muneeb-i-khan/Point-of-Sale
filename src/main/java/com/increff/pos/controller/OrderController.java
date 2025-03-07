@@ -35,7 +35,6 @@ public class OrderController {
         return orderDto.getAllOrders();
     }
 
-    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalOrders")
     @ApiOperation(value = "Get all orders with pagination")
     @GetMapping("/paginated")
     public List<OrderData> getAllPaginated(

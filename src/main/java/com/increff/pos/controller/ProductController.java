@@ -47,7 +47,6 @@ public class ProductController {
        return productDto.updateProduct(id, productForm);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalProducts")
     @ApiOperation(value = "Get all products with pagination")
     @GetMapping("/paginated")
     public List<ProductData> getAllPaginated(

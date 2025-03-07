@@ -34,7 +34,6 @@ public class SalesReportController {
         return salesReportDto.getAllSales();
     }
 
-    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalReports")
     @ApiOperation(value = "Get all sales report with pagination")
     @GetMapping("/sales/paginated")
     public List<SalesReportData> getAllPaginated(

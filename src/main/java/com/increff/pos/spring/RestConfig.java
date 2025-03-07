@@ -43,6 +43,8 @@ public class RestConfig extends WebMvcConfigurerAdapter {
                 .allowedOrigins("http://localhost:4200")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
+                .exposedHeaders("totalClients", "totalDaySaleReport",  "totalInventories", "totalOrders", "totalProducts",
+                        "totalReports")
                 .allowCredentials(true);
     }
 }

@@ -40,7 +40,6 @@ public class ClientController {
         return clientDto.getAllClients();
     }
 
-    @CrossOrigin(origins = "http://localhost:4200", exposedHeaders = "totalClients")
     @ApiOperation(value = "Get all clients with pagination")
     @GetMapping("/paginated")
     public List<ClientData> getAllPaginated(
