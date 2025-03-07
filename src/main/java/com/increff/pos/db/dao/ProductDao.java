@@ -7,14 +7,11 @@ import javax.persistence.*;
 import java.util.List;
 
 @Repository
-public class ProductDao {
+public class ProductDao extends AbstractDao {
     private static final String SELECT_ID = "SELECT p FROM ProductPojo p WHERE id=:id";
     private static final String SELECT_ALL = "SELECT p FROM ProductPojo p";
     private static final String SELECT_BARCODE = "SELECT p FROM ProductPojo p WHERE barcode=:barcode";
     private static final String SELECT_COUNT = "SELECT COUNT(p) FROM ProductPojo p";
-
-    @PersistenceContext
-    EntityManager em;
 
     public void add(ProductPojo p) {
         em.persist(p);
@@ -22,7 +19,7 @@ public class ProductDao {
 
     public ProductPojo select(Long id) {
         try {
-            TypedQuery<ProductPojo> query = getQuery(SELECT_ID);
+            TypedQuery<ProductPojo> query = getQuery(SELECT_ID, ProductPojo.class);
             query.setParameter("id", id);
             return query.getSingleResult();
         } catch (NoResultException e) {
@@ -32,7 +29,7 @@ public class ProductDao {
 
 
     public List<ProductPojo> selectAll() {
-        TypedQuery<ProductPojo> query = getQuery(SELECT_ALL);
+        TypedQuery<ProductPojo> query = getQuery(SELECT_ALL, ProductPojo.class);
         return query.getResultList();
     }
 
@@ -42,7 +39,7 @@ public class ProductDao {
 
     public ProductPojo selectByBarcode(String barcode) {
         try {
-            TypedQuery<ProductPojo> query = getQuery(SELECT_BARCODE);
+            TypedQuery<ProductPojo> query = getQuery(SELECT_BARCODE, ProductPojo.class);
             query.setParameter("barcode", barcode);
             return query.getSingleResult();
         }
@@ -52,7 +49,7 @@ public class ProductDao {
     }
 
     public List<ProductPojo> selectAllPaginated(int page, int pageSize) {
-        TypedQuery<ProductPojo> query = getQuery(SELECT_ALL);
+        TypedQuery<ProductPojo> query = getQuery(SELECT_ALL, ProductPojo.class);
         query.setFirstResult(page * pageSize);
         query.setMaxResults(pageSize);
         return query.getResultList();
@@ -61,11 +58,6 @@ public class ProductDao {
     public Long countProducts() {
         Query query = em.createQuery(SELECT_COUNT);
         return (Long) query.getSingleResult();
-    }
-
-
-    TypedQuery<ProductPojo> getQuery(String jpql) {
-        return em.createQuery(jpql, ProductPojo.class);
     }
 }
 

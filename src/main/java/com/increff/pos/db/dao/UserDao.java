@@ -10,15 +10,12 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
-public class UserDao {
-
-    @PersistenceContext
-    private EntityManager em;
+public class UserDao extends AbstractDao{
 
     private final static String SELECT_EMAIL = "SELECT u FROM UserPojo u WHERE u.email = :email";
 
     public Optional<UserPojo> findByEmail(String email) {
-        TypedQuery<UserPojo> query = getQuery(SELECT_EMAIL);
+        TypedQuery<UserPojo> query = getQuery(SELECT_EMAIL, UserPojo.class);
         query.setParameter("email", email);
         return query.getResultList().stream().findFirst();
     }
@@ -30,9 +27,5 @@ public class UserDao {
 
     public Optional<UserPojo> findById(Long id) {
         return Optional.ofNullable(em.find(UserPojo.class, id));
-    }
-
-    TypedQuery<UserPojo> getQuery(String jpql) {
-        return em.createQuery(jpql, UserPojo.class);
     }
 }

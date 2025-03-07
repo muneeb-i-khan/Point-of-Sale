@@ -7,58 +7,53 @@ import javax.persistence.*;
 import java.util.List;
 
 @Repository
-public class InventoryDao {
+public class InventoryDao extends AbstractDao {
     private static final String SELECT_ALL = "SELECT p FROM InventoryPojo p";
     private static final String SELECT_ID = "SELECT p FROM InventoryPojo p WHERE id=:id";
     private static final String SELECT_BARCODE =
             "SELECT i FROM InventoryPojo i JOIN ProductPojo p ON i.prodId = p.id WHERE p.barcode = :barcode";
     private static final String SELECT_COUNT = "SELECT COUNT(p) FROM InventoryPojo p";
 
-    @PersistenceContext
-    EntityManager em;
-
     public void add(InventoryPojo p) {
         em.persist(p);
     }
 
     public List<InventoryPojo> selectAll() {
-        TypedQuery<InventoryPojo> query = getQuery(SELECT_ALL);
-        return query.getResultList();
+        return getQuery(SELECT_ALL, InventoryPojo.class).getResultList();
     }
 
     public InventoryPojo select(Long id) {
-        TypedQuery<InventoryPojo> query = getQuery(SELECT_ID);
-        query.setParameter("id",id);
-        return query.getSingleResult();
+        try {
+            return getQuery(SELECT_ID, InventoryPojo.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public void update(InventoryPojo p) {
+        em.merge(p);
     }
 
-
     public List<InventoryPojo> selectAllPaginated(int page, int pageSize) {
-        TypedQuery<InventoryPojo> query = getQuery(SELECT_ALL);
+        TypedQuery<InventoryPojo> query = getQuery(SELECT_ALL, InventoryPojo.class);
         query.setFirstResult(page * pageSize);
         query.setMaxResults(pageSize);
         return query.getResultList();
     }
 
     public Long countInventories() {
-        Query query = em.createQuery(SELECT_COUNT);
-        return (Long) query.getSingleResult();
+        return em.createQuery(SELECT_COUNT, Long.class).getSingleResult();
     }
-    
+
     public InventoryPojo selectByBarcode(String barcode) {
         try {
-            TypedQuery<InventoryPojo> query = getQuery(SELECT_BARCODE);
-            query.setParameter("barcode", barcode);
-            return query.getSingleResult();
+            return getQuery(SELECT_BARCODE, InventoryPojo.class)
+                    .setParameter("barcode", barcode)
+                    .getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
-    }
-
-    TypedQuery<InventoryPojo> getQuery(String jpql) {
-        return em.createQuery(jpql, InventoryPojo.class);
     }
 }
