@@ -40,6 +40,11 @@ public class InventoryFlow {
     public void uploadInventory(MultipartFile file) throws IOException, ApiException {
         tsvUploadService.uploadInventory(file);
     }
+
+    public String getBarcode(InventoryPojo inventoryPojo) {
+        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProdId());
+        return productPojo.getBarcode();
+    }
     public InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
         InventoryPojo inventoryPojo = new InventoryPojo();
         ProductPojo productPojo = productService.getProductByBarcode(inventoryForm.getBarcode());
