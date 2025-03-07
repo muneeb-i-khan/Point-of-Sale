@@ -3,10 +3,9 @@ package com.increff.pos.controller;
 import com.increff.pos.model.data.UserData;
 import com.increff.pos.model.forms.UserForm;
 import com.increff.pos.service.AuthService;
+import com.increff.pos.util.ApiException;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,22 +21,14 @@ public class AuthController {
 
     @ApiOperation(value = "Login")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserForm loginRequest, HttpSession session) {
-        UserData user = authService.login(loginRequest.getEmail(), loginRequest.getPassword(), session);
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+    public UserData login(@RequestBody UserForm loginRequest, HttpSession session) throws ApiException {
+        return authService.login(loginRequest.getEmail(), loginRequest.getPassword(), session);
     }
 
-    @ApiOperation(value = "check session")
+    @ApiOperation(value = "Check session")
     @GetMapping("/check")
-    public ResponseEntity<?> checkSession(HttpSession session) {
-        UserData user = authService.getSessionUser(session);
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
+    public UserData checkSession(HttpSession session) throws ApiException {
+        return authService.getSessionUser(session);
     }
 
     @ApiOperation(value = "Logout")
@@ -51,7 +42,7 @@ public class AuthController {
 
     @ApiOperation(value = "Sign up")
     @PostMapping("/signup")
-    public void signup(@Valid @RequestBody UserForm signupRequest) {
+    public void signup(@Valid @RequestBody UserForm signupRequest) throws ApiException {
         authService.registerUser(signupRequest.getEmail(), signupRequest.getPassword());
     }
 }
