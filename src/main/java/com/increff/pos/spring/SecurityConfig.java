@@ -5,6 +5,7 @@ import com.increff.pos.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,7 +56,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/auth/login", "/api/auth/logout", "/api/auth/signup").permitAll()
-                .antMatchers("/api/**").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("OPERATOR", "SUPERVISOR")
+                .antMatchers(HttpMethod.POST, "/api/**").hasRole("SUPERVISOR")
+                .antMatchers(HttpMethod.PUT, "/api/**").hasRole("SUPERVISOR")
+                .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("SUPERVISOR")
+                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
@@ -73,10 +78,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setExposedHeaders(Arrays.asList("totalClients", "totalDaySaleReport",  "totalInventories", "totalOrders", "totalProducts",
-                "totalReports"));
+        configuration.setExposedHeaders(Arrays.asList("totalClients", "totalDaySaleReport", "totalInventories", "totalOrders", "totalProducts", "totalReports"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
-        configuration.setAllowCredentials(true); // Important for session cookies
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
