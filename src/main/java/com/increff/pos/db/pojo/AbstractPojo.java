@@ -6,15 +6,20 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
-@MappedSuperclass // Ensures this class is mapped to subclasses but does not become its own table
+@MappedSuperclass
 @Getter
 @Setter
 public abstract class AbstractPojo {
-// add app version field
+
     @Column(nullable = false, updatable = false)
     private ZonedDateTime createdAt;
+
     @Column(nullable = false)
     private ZonedDateTime updatedAt;
+
+    @Version
+    @Column(nullable = false)
+    private Long version;
 
     @PrePersist
     protected void onCreate() {
