@@ -5,6 +5,7 @@ import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.dao.SalesReportDao;
 import com.increff.pos.db.pojo.*;
+import com.increff.pos.flow.OrderFlow;
 import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,26 +32,17 @@ public class OrderService {
     private OrderDao orderDao;
 
     @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private InventoryService inventoryService;
-
-    @Autowired
     private SalesReportDao salesReportDao;
 
     @Autowired
-    private ClientDao clientDao;
-
-    @Autowired
-    private CustomerService customerService;
+    private OrderFlow orderFlow;
 
     @Transactional(rollbackOn = ApiException.class)
     public OrderPojo createOrder(List<OrderItemPojo> orderItemPojoList, CustomerPojo customerPojo) throws ApiException {
         OrderPojo order = new OrderPojo();
         order.setOrderDate(ZonedDateTime.now());
         double totalAmt = 0.0;
-        customerService.addCustomer(customerPojo);
+        orderFlow.addCustomer(customerPojo);
         order.setCustomerId(customerPojo.getId());
         order.setInvoicePath("");
         orderDao.add(order);
@@ -58,9 +50,8 @@ public class OrderService {
         for (OrderItemPojo orderItem : orderItemPojoList) {
             orderItem.setOrderId(order.getId());
             orderItemDao.add(orderItem);
-            ProductPojo productPojo = productService.getProduct(orderItem.getProdId());
-            InventoryPojo inventoryPojo = inventoryService.getInventoryByBarcode(productPojo.getBarcode());
-
+            ProductPojo productPojo = orderFlow.getProduct(orderItem.getProdId());
+            InventoryPojo inventoryPojo = orderFlow.getInventoryByBarcode(productPojo.getBarcode());
             if (orderItem.getQuantity() <= 0) {
                 throw new ApiException("Quantity can't be negative");
             }
@@ -78,7 +69,7 @@ public class OrderService {
     }
 
     private void updateSalesReport(OrderPojo order, List<OrderItemPojo> orderItems, double totalAmount) throws ApiException {
-        Long clientId = productService.getProduct(orderItems.get(0).getProdId()).getClientId();
+        Long clientId = orderFlow.getProduct(orderItems.get(0).getProdId()).getClientId();
         SalesReportPojo report = salesReportDao.findByClientAndDate(clientId, order.getOrderDate());
 
         long totalItemsSold = orderItems.stream().mapToLong(OrderItemPojo::getQuantity).sum();

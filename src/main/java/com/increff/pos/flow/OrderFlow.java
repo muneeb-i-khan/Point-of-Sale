@@ -1,15 +1,13 @@
 package com.increff.pos.flow;
 
 import com.increff.pos.db.dao.OrderItemDao;
-import com.increff.pos.db.pojo.CustomerPojo;
-import com.increff.pos.db.pojo.OrderItemPojo;
-import com.increff.pos.db.pojo.OrderPojo;
-import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.db.pojo.*;
 import com.increff.pos.dto.CustomerDto;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderData.OrderItem;
 import com.increff.pos.model.forms.CustomerForm;
 import com.increff.pos.model.forms.OrderForm.OrderItemForm;
+import com.increff.pos.service.InventoryService;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.service.CustomerService;
 import com.increff.pos.service.OrderService;
@@ -37,6 +35,9 @@ public class OrderFlow {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private InventoryService inventoryService;
+
     public OrderData addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
         if (orderItemFormList == null || orderItemFormList.isEmpty()) {
             throw new ApiException("Order cannot be empty.");
@@ -62,6 +63,18 @@ public class OrderFlow {
             orderDataList.add(convert(order));
         }
         return orderDataList;
+    }
+
+    public void addCustomer(CustomerPojo customerPojo) {
+        customerService.addCustomer(customerPojo);
+    }
+
+    public InventoryPojo getInventoryByBarcode(String barcode) {
+        return inventoryService.getInventoryByBarcode(barcode);
+    }
+
+    public ProductPojo getProduct(Long id) {
+        return productService.getProduct(id);
     }
 
     public OrderData convert(OrderPojo orderPojo) throws ApiException {
