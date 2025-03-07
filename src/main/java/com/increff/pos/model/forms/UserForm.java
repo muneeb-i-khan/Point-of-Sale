@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 @Setter
 public class UserForm {
     @Email(message = "Has to be a valid email")
+    @Size(max = 255, message = "Email can be maximum of size 255")
     private String email;
     @Size(min=6, message = "Password should be of length greater than 6")
     @Pattern(
