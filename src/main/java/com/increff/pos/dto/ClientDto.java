@@ -61,7 +61,7 @@ public class ClientDto {
     }
 
 
-    public ClientData convert(ClientPojo p) {
+    private ClientData convert(ClientPojo p) {
         ClientData clientData = new ClientData();
         clientData.setName(Normalize.normalizeName(p.getName().trim()));
         clientData.setDescription(p.getDescription());
@@ -69,7 +69,7 @@ public class ClientDto {
         return clientData;
     }
 
-    public ClientPojo convert(ClientForm ClientForm) {
+    private ClientPojo convert(ClientForm ClientForm) {
         ClientPojo p = new ClientPojo();
         p.setName(Normalize.normalizeName((ClientForm.getName().trim())));
         p.setDescription(ClientForm.getDescription().trim());

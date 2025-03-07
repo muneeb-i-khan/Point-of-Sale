@@ -64,7 +64,7 @@ public class OrderFlow {
         return orderDataList;
     }
 
-    public OrderData convert(OrderPojo orderPojo) throws ApiException {
+    private OrderData convert(OrderPojo orderPojo) throws ApiException {
         OrderData orderData = new OrderData();
         orderData.setId(orderPojo.getId());
         orderData.setTotalAmount(orderPojo.getTotalAmount());

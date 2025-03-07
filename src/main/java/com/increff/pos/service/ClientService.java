@@ -26,8 +26,6 @@ public class ClientService {
         dao.add(p);
     }
 
-
-
     public ClientPojo getClient(Long id) throws ApiException {
         return getCheck(id);
     }
@@ -35,7 +33,6 @@ public class ClientService {
     public List<ClientPojo> getAllClients() {
         return dao.selectAll();
     }
-
 
     public void updateClient(Long id, ClientPojo p) throws ApiException {
         ClientPojo ex = getCheck(id);

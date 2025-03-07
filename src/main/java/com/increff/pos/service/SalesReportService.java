@@ -28,6 +28,7 @@ public class SalesReportService {
     public List<SalesReportPojo> getAllSalesReportsPaginated(int page, int pageSize) {
         return salesReportDao.selectAllPaginated(page, pageSize);
     }
+
     public Long getSalesReportCount() {
         return salesReportDao.countSalesReportPojo();
     }

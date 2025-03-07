@@ -40,6 +40,13 @@ public class InventoryFlow {
     public void uploadInventory(MultipartFile file) throws IOException, ApiException {
         tsvUploadService.uploadInventory(file);
     }
+    public InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
+        InventoryPojo inventoryPojo = new InventoryPojo();
+        ProductPojo productPojo = productService.getProductByBarcode(inventoryForm.getBarcode());
+        inventoryPojo.setProdId(productPojo.getId());
+        inventoryPojo.setQuantity(inventoryForm.getQuantity());
+        return inventoryPojo;
+    }
 
     public InventoryData convert(InventoryPojo inventoryPojo) throws ApiException {
         InventoryData inventoryData = new InventoryData();
@@ -51,13 +58,5 @@ public class InventoryFlow {
         ClientPojo clientPojo = clientService.getClient(productPojo.getClientId());
         inventoryData.setClientName(clientPojo.getName());
         return inventoryData;
-    }
-
-    public InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
-        InventoryPojo inventoryPojo = new InventoryPojo();
-        ProductPojo productPojo = productService.getProductByBarcode(inventoryForm.getBarcode());
-        inventoryPojo.setProdId(productPojo.getId());
-        inventoryPojo.setQuantity(inventoryForm.getQuantity());
-        return inventoryPojo;
     }
 }
