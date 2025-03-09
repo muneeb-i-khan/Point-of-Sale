@@ -34,12 +34,6 @@ public class ClientController {
         return clientDto.getClient(id);
     }
 
-    @ApiOperation(value = "Get all clients")
-    @GetMapping
-    public List<ClientData> getAll() {
-        return clientDto.getAllClients();
-    }
-
     @ApiOperation(value = "Get all clients with pagination")
     @GetMapping("/paginated")
     public List<ClientData> getAllPaginated(

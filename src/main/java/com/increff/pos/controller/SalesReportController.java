@@ -28,12 +28,6 @@ public class SalesReportController {
         return salesReportDto.getSalesReport(salesReportForm);
     }
 
-    @ApiOperation(value = "Get all sales report")
-    @GetMapping("/sales/all")
-    public List<SalesReportData> getAllReports() throws ApiException {
-        return salesReportDto.getAllSales();
-    }
-
     @ApiOperation(value = "Get all sales report with pagination")
     @GetMapping("/sales/paginated")
     public List<SalesReportData> getAllPaginated(

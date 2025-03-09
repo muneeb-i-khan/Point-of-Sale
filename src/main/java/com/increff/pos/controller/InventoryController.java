@@ -28,12 +28,6 @@ public class InventoryController {
         return inventoryDto.addInventory(inventoryForm);
     }
 
-    @ApiOperation(value = "Get all inventories")
-    @GetMapping
-    public List<InventoryData> getAll() throws ApiException {
-        return inventoryDto.getAllInventories();
-    }
-
     @ApiOperation(value = "Get inventory")
     @GetMapping("/{id}")
     public InventoryData get(@PathVariable Long id) throws ApiException {

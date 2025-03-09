@@ -35,12 +35,6 @@ public class ProductController {
         return productDto.getProduct(id);
     }
 
-    @ApiOperation(value = "Get all products")
-    @GetMapping
-    public List<ProductData> getAll() throws ApiException {
-        return productDto.getAllProducts();
-    }
-
     @ApiOperation(value = "Update a product")
     @PutMapping("/{id}")
     public ProductData updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
