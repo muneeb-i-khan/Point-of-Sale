@@ -32,4 +32,16 @@ public class SalesReportService {
     public Long getSalesReportCount() {
         return salesReportDao.countSalesReportPojo();
     }
+
+    public SalesReportPojo findByClientAndDate(Long id, ZonedDateTime date) {
+        return salesReportDao.findByClientAndDate(id, date);
+    }
+
+    public void add(SalesReportPojo salesReportPojo) {
+        salesReportDao.add(salesReportPojo);
+    }
+
+    public void update(SalesReportPojo salesReportPojo) {
+        salesReportDao.update(salesReportPojo);
+    }
 }

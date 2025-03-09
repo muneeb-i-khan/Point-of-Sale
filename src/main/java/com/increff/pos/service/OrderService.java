@@ -1,6 +1,5 @@
 package com.increff.pos.service;
 
-import com.increff.pos.db.dao.ClientDao;
 import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.dao.SalesReportDao;
@@ -32,7 +31,7 @@ public class OrderService {
     private OrderDao orderDao;
 
     @Autowired
-    private SalesReportDao salesReportDao;
+    private SalesReportService salesReportService;
 
     @Autowired
     private OrderFlow orderFlow;
@@ -70,7 +69,7 @@ public class OrderService {
 
     private void updateSalesReport(OrderPojo order, List<OrderItemPojo> orderItems, double totalAmount) throws ApiException {
         Long clientId = orderFlow.getProduct(orderItems.get(0).getProdId()).getClientId();
-        SalesReportPojo report = salesReportDao.findByClientAndDate(clientId, order.getOrderDate());
+        SalesReportPojo report = salesReportService.findByClientAndDate(clientId, order.getOrderDate());
 
         long totalItemsSold = orderItems.stream().mapToLong(OrderItemPojo::getQuantity).sum();
 
@@ -80,11 +79,11 @@ public class OrderService {
             report.setDate(order.getOrderDate());
             report.setItemSold(totalItemsSold);
             report.setRevenue((long) totalAmount);
-            salesReportDao.add(report);
+            salesReportService.add(report);
         } else {
             report.setItemSold(report.getItemSold() + totalItemsSold);
             report.setRevenue(report.getRevenue() + (long) totalAmount);
-            salesReportDao.update(report);
+            salesReportService.update(report);
         }
     }
 
