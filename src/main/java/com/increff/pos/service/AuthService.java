@@ -32,10 +32,14 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserData login(String email, String password, HttpSession session) throws ApiException {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (org.springframework.security.authentication.BadCredentialsException e) {
+            throw new ApiException("Bad credentials");
+        }
 
         Optional<UserPojo> userOpt = userDao.findByEmail(email);
         UserPojo user = userOpt.orElseThrow(() -> new ApiException("User not found"));
