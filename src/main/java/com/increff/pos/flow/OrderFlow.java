@@ -78,19 +78,31 @@ public class OrderFlow {
     }
 
     public OrderData convert(OrderPojo orderPojo) throws ApiException {
+        if (orderPojo == null) {
+            throw new ApiException("Order cannot be null");
+        }
+
         OrderData orderData = new OrderData();
         orderData.setId(orderPojo.getId());
         orderData.setTotalAmount(orderPojo.getTotalAmount());
         orderData.setOrderDate(orderPojo.getOrderDate());
-        orderData.setCustomerName(customerService.getCustomer(orderPojo.getId()).getName());
-        orderData.setCustomerPhone(customerService.getCustomer(orderData.getId()).getPhone());
+
+        CustomerPojo customer = customerService.getCustomer(orderPojo.getId());
+        orderData.setCustomerName(customer != null ? customer.getName() : null);
+        orderData.setCustomerPhone(customer != null ? customer.getPhone() : null);
 
         List<OrderItemPojo> orderItemPojos = orderItemDao.getItemsByOrderId(orderPojo.getId());
-        List<OrderItem> orderItems = new ArrayList<>();
+        if (orderItemPojos == null) {
+            throw new ApiException("No items found for order ID: " + orderPojo.getId());
+        }
 
+        List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemPojo itemPojo : orderItemPojos) {
             OrderItem orderItem = new OrderItem();
             ProductPojo product = productService.getProduct(itemPojo.getProdId());
+            if (product == null) {
+                throw new ApiException("Product not found for ID: " + itemPojo.getProdId() + " in order: " + orderPojo.getId());
+            }
             orderItem.setBarcode(product.getBarcode());
             orderItem.setQuantity(itemPojo.getQuantity().intValue());
             orderItem.setProdName(product.getName());
@@ -102,7 +114,6 @@ public class OrderFlow {
         orderData.setItems(orderItems);
         return orderData;
     }
-
     private List<OrderItemPojo> convert(List<OrderItemForm> orderItemFormList) throws ApiException {
         List<OrderItemPojo> orderItemPojoList = new ArrayList<>();
 
