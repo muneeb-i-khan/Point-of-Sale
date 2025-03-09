@@ -31,7 +31,7 @@ public class DaySaleReportDao extends AbstractDao {
     }
 
     public Long countDaySaleReportPojo() {
-        Query query = em.createQuery(SELECT_COUNT);
+        TypedQuery<Long> query = getQuery(SELECT_COUNT, Long.class);
         return (Long) query.getSingleResult();
     }
 

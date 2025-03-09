@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
-public class UserDao extends AbstractDao{
+public class UserDao extends AbstractDao {
 
     private final static String SELECT_EMAIL = "SELECT u FROM UserPojo u WHERE u.email = :email";
 

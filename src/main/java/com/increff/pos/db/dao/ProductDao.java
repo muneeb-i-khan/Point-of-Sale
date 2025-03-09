@@ -56,8 +56,9 @@ public class ProductDao extends AbstractDao {
     }
 
     public Long countProducts() {
-        Query query = em.createQuery(SELECT_COUNT);
-        return (Long) query.getSingleResult();
+//        Query query = em.createQuery(SELECT_COUNT);
+//        return (Long) query.getSingleResult();
+        return (Long) getQuery(SELECT_COUNT, Long.class).getSingleResult();
     }
 }
 

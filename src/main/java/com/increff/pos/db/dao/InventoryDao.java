@@ -44,8 +44,9 @@ public class InventoryDao extends AbstractDao {
     }
 
     public Long countInventories() {
-        return em.createQuery(SELECT_COUNT, Long.class).getSingleResult();
+        return getQuery(SELECT_COUNT, Long.class).getSingleResult();
     }
+
 
     public InventoryPojo selectByBarcode(String barcode) {
         try {

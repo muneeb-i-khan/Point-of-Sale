@@ -53,6 +53,7 @@ public class ClientDao extends AbstractDao {
     }
 
     public Long countClients() {
-        return em.createQuery(SELECT_COUNT, Long.class).getSingleResult();
+//        return em.createQuery(SELECT_COUNT, Long.class).getSingleResult();
+        return getQuery(SELECT_COUNT, Long.class).getSingleResult();
     }
 }
