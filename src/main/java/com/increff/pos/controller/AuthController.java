@@ -19,10 +19,14 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @ApiOperation(value = "Login")
-    @PostMapping("/login")
-    public UserData login(@RequestBody UserForm loginRequest, HttpSession session) throws ApiException {
+    @PostMapping(value = "/login", consumes = "application/x-www-form-urlencoded")
+    public UserData login(@ModelAttribute @Valid UserForm loginRequest, HttpSession session) throws ApiException {
         return authService.login(loginRequest.getEmail(), loginRequest.getPassword(), session);
+    }
+
+    @PostMapping(value = "/signup", consumes = "application/x-www-form-urlencoded")
+    public void signup(@ModelAttribute @Valid UserForm signupRequest) throws ApiException {
+        authService.registerUser(signupRequest.getEmail(), signupRequest.getPassword());
     }
 
     @ApiOperation(value = "Check session")
@@ -38,11 +42,5 @@ public class AuthController {
         if (session != null) {
             session.invalidate();
         }
-    }
-
-    @ApiOperation(value = "Sign up")
-    @PostMapping("/signup")
-    public void signup(@Valid @RequestBody UserForm signupRequest) throws ApiException {
-        authService.registerUser(signupRequest.getEmail(), signupRequest.getPassword());
     }
 }
