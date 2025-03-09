@@ -22,6 +22,12 @@ public class DaySaleReportController {
     @Autowired
     private DaySaleReportService daySaleReportService;
 
+    @ApiOperation(value = "Get all reports")
+    @GetMapping("/all")
+    public List<DaySaleReportPojo> getAllReports(){
+        return daySaleReportService.getReport();
+    }
+
     @ApiOperation(value = "Get a report")
     @GetMapping("/")
     public List<DaySaleReportPojo> getReport(

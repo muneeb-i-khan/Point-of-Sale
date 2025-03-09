@@ -28,6 +28,12 @@ public class OrderController {
         return orderDto.addOrder(orderForm.getOrderItems(), orderForm.getCustomer());
     }
 
+    @ApiOperation(value = "Get all orders")
+    @GetMapping
+    public List<OrderData> getAllOrders() throws ApiException {
+        return orderDto.getAllOrders();
+    }
+
     @ApiOperation(value = "Get all orders with pagination")
     @GetMapping("/paginated")
     public List<OrderData> getAllPaginated(
