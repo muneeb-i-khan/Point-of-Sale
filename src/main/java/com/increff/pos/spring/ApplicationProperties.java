@@ -9,23 +9,45 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class ApplicationProperties {
+    @Value("${app.version}")
+    private String appVersion;
+
+    @Value("${app.name}")
+    private String appName;
+
     @Value("${jdbc.driverClassName}")
     private String jdbcDriver;
+
     @Value("${jdbc.url}")
     private String jdbcUrl;
+
     @Value("${jdbc.username}")
     private String jdbcUsername;
+
     @Value("${jdbc.password}")
     private String jdbcPassword;
+
     @Value("${hibernate.dialect}")
     private String hibernateDialect;
+
     @Value("${hibernate.show_sql}")
     private String hibernateShowSql;
+
     @Value("${hibernate.hbm2ddl.auto}")
     private String hibernateHbm2ddl;
-    private String setValidationQuery = "SELECT 1";
-    private Boolean setDefaultAutoCommit = false;
-    private int setMinIdle = 2;
-    private Boolean setTestWhileIdle = true;
-    private long setTimeBetweenEvictionRunsMillis = 10 * 60 * 100;
+
+    @Value("${validation.query:SELECT 1}")
+    private String setValidationQuery;
+
+    @Value("${default.auto.commit:false}")
+    private Boolean setDefaultAutoCommit;
+
+    @Value("${min.idle:2}")
+    private int setMinIdle;
+
+    @Value("${test.while.idle:true}")
+    private Boolean setTestWhileIdle;
+
+    @Value("${time.between.eviction.runs.millis:60000}")
+    private long setTimeBetweenEvictionRunsMillis;
 }
