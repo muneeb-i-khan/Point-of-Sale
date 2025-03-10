@@ -2,6 +2,7 @@ package com.increff.pos.spring;
 
 import com.increff.pos.db.pojo.UserPojo;
 import com.increff.pos.service.AuthService;
+import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -96,5 +98,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public void configure(WebSecurity webSecurity) throws ApiException {
+        webSecurity.ignoring().antMatchers("/swagger-ui.html", "/v2/api-docs", "/configuration/ui", "/swagger-resources", "configuration/security",
+                "/webjars/**");
     }
 }
