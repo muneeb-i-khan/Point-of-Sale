@@ -4,11 +4,12 @@ import com.increff.pos.db.dao.DaySaleReportDao;
 import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.pojo.DaySaleReportPojo;
 import com.increff.pos.db.pojo.InventoryPojo;
+import com.increff.pos.flow.DaySaleReportFlow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -17,18 +18,15 @@ public class DaySaleReportService {
     private DaySaleReportDao daySaleReportDao;
 
     @Autowired
-    private OrderDao orderDao;
-
-    @Autowired
-    private OrderService orderService;
+    private DaySaleReportFlow daySaleReportFlow;
 
     @Transactional
     public void recordDailySales() {
-        LocalDate yesterday = LocalDate.now().minusDays(1);
+        ZonedDateTime yesterday = ZonedDateTime.now().minusDays(1);
 
-        int orderCount = orderDao.countOrdersByDate(yesterday);
-        int itemSoldCount = orderDao.countItemsSoldByDate(yesterday);
-        double revenue = orderDao.calculateRevenueByDate(yesterday);
+        int orderCount = daySaleReportFlow.getOrderCountByDate(yesterday);
+        int itemSoldCount = daySaleReportFlow.getItemSoldCount(yesterday);
+        double revenue = daySaleReportFlow.getRevenue(yesterday);
 
         System.out.println("Generating Report for " + yesterday);
         System.out.println("Orders: " + orderCount + ", Items Sold: " + itemSoldCount + ", Revenue: " + revenue);
@@ -56,7 +54,7 @@ public class DaySaleReportService {
         }
     }
 
-    public List<DaySaleReportPojo> getReport(LocalDate start, LocalDate end) {
+    public List<DaySaleReportPojo> getReport(ZonedDateTime start, ZonedDateTime end) {
         return daySaleReportDao.findByDateRange(start, end);
     }
 

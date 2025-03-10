@@ -14,7 +14,8 @@ public class OrderItemPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long prod_id;
+    private Long prodId;
     private Long quantity;
-    private Long order_id;
+    private Long orderId;
+    private Double sellingPrice;
 }

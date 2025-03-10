@@ -3,18 +3,17 @@ package com.increff.pos.dto;
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.forms.InventoryForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.flow.InventoryFlow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class InventoryDto {
@@ -24,9 +23,10 @@ public class InventoryDto {
     @Autowired
     private InventoryFlow inventoryFlow;
 
-    public void addInventory(InventoryForm inventoryForm) throws ApiException {
+    public InventoryData addInventory(InventoryForm inventoryForm) throws ApiException {
         InventoryPojo inventoryPojo = inventoryFlow.convert(inventoryForm);
         inventoryService.addInventory(inventoryPojo);
+        return inventoryFlow.convert(inventoryPojo);
     }
 
     public List<InventoryData> getAllInventories() throws ApiException {
@@ -49,7 +49,7 @@ public class InventoryDto {
     }
 
 
-    public Map<String, Object> getAllInventoriesPaginated(int page, int pageSize) throws ApiException {
+    public List<InventoryData> getAllInventoriesPaginated(int page, int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
         List<InventoryPojo> inventoryPojos = inventoryService.getAllInventoriesPaginated(page, pageSize);
         Long totalInventories = inventoryService.getInventoryCount();
 
@@ -58,17 +58,16 @@ public class InventoryDto {
             inventoryDataList.add(inventoryFlow.convert(p));
         }
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("inventories", inventoryDataList);
-        response.put("totalInventories", totalInventories);
-        return response;
+        httpServletResponse.setHeader("totalInventories", totalInventories.toString());
+        return inventoryDataList;
     }
     
 
-    public void updateInventory(InventoryForm inventoryForm, Long id) throws ApiException {
+    public InventoryData updateInventory(InventoryForm inventoryForm, Long id) throws ApiException {
         InventoryPojo inventoryPojo = inventoryFlow.convert(inventoryForm);
         inventoryService.getCheck(id);
         inventoryService.updateInventory(id, inventoryPojo);
+        return inventoryFlow.convert(inventoryPojo);
     }
 
     public void uploadInventory(MultipartFile file) throws IOException, ApiException {

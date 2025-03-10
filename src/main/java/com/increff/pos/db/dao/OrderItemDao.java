@@ -9,19 +9,16 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
-public class OrderItemDao {
+public class OrderItemDao extends AbstractDao {
 
-    private static final String SELECT_ORDER_ID = "SELECT oi FROM OrderItemPojo oi WHERE oi.order_id = :orderId";
+    private static final String SELECT_ORDER_ID = "SELECT oi FROM OrderItemPojo oi WHERE oi.orderId = :orderId";
 
-    @PersistenceContext
-    EntityManager em;
     public void add(OrderItemPojo p) {
         em.persist(p);
     }
 
     public List<OrderItemPojo> getItemsByOrderId(Long orderId) {
-        TypedQuery<OrderItemPojo> query = em.createQuery(
-               SELECT_ORDER_ID , OrderItemPojo.class);
+        TypedQuery<OrderItemPojo> query = getQuery(SELECT_ORDER_ID, OrderItemPojo.class);
         query.setParameter("orderId", orderId);
         return query.getResultList();
     }

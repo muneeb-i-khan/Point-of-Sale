@@ -1,8 +1,10 @@
 package com.increff.pos.service;
 
 import com.increff.pos.db.dao.ProductDao;
-import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.flow.ProductFlow;
+import com.increff.pos.model.data.ProductData;
+import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,14 @@ public class ProductService {
         this.dao = dao;
     }
 
+    @Autowired
+    private ProductFlow productFlow;
+
     public void addProduct(ProductPojo p) {
+        ProductPojo existingProduct = dao.selectByBarcode(p.getBarcode());
+        if(existingProduct != null) {
+            throw new ApiException("Barcode "+p.getBarcode()+" already exists!");
+        }
         dao.add(p);
     }
 
@@ -40,7 +49,7 @@ public class ProductService {
         return dao.selectAll();
     }
 
-    public void updateProduct(Long id, ProductPojo p) throws ApiException {
+    public ProductData updateProduct(Long id, ProductPojo p) throws ApiException {
         ProductPojo ex = getCheck(id);
         ProductPojo existingProduct = dao.selectByBarcode(p.getBarcode());
 
@@ -51,11 +60,12 @@ public class ProductService {
         ex.setBarcode(p.getBarcode());
         ex.setName(p.getName());
         ex.setPrice(p.getPrice());
-        if (p.getClient_id() != null) {
-            ex.setClient_id(p.getClient_id());
+        if (p.getClientId() != null) {
+            ex.setClientId(p.getClientId());
         }
 
         dao.update(ex);
+        return productFlow.convert(ex);
     }
 
 

@@ -1,22 +1,16 @@
 package com.increff.pos.controller;
 
-import com.increff.pos.db.pojo.DaySaleReportPojo;
-import com.increff.pos.db.pojo.SalesReportPojo;
 import com.increff.pos.dto.SalesReportDto;
 import com.increff.pos.model.data.SalesReportData;
 import com.increff.pos.model.forms.SalesReportForm;
-import com.increff.pos.service.ApiException;
-import com.increff.pos.service.SalesReportService;
+import com.increff.pos.util.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
 @Api
 @RestController
@@ -25,6 +19,8 @@ public class SalesReportController {
 
     @Autowired
     private SalesReportDto salesReportDto;
+
+    @ApiOperation(value = "Get sales report")
     @GetMapping("/filter")
     public List<SalesReportData> getSalesReport(
             @ModelAttribute SalesReportForm salesReportForm
@@ -32,17 +28,17 @@ public class SalesReportController {
         return salesReportDto.getSalesReport(salesReportForm);
     }
 
+    @ApiOperation(value = "Get all sales report")
     @GetMapping("/sales/all")
-    public ResponseEntity<List<SalesReportData>> getAllReports() throws ApiException {
-        return ResponseEntity.ok(salesReportDto.getAllSales());
+    public List<SalesReportData> getAllReports() throws ApiException {
+        return salesReportDto.getAllSales();
     }
 
     @ApiOperation(value = "Get all sales report with pagination")
     @GetMapping("/sales/paginated")
-    public ResponseEntity<Map<String, Object>> getAllPaginated(
+    public List<SalesReportData> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
-        Map<String, Object> response = salesReportDto.getAllSalesReportPaginated(page, pageSize);
-        return ResponseEntity.ok(response);
+            @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
+        return salesReportDto.getAllSalesReportPaginated(page, pageSize,httpServletResponse);
     }
 }

@@ -4,26 +4,31 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
-@MappedSuperclass // Ensures this class is mapped to subclasses but does not become its own table
+@MappedSuperclass
 @Getter
 @Setter
 public abstract class AbstractPojo {
-// add app version field
+
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
+
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private ZonedDateTime updatedAt;
+
+    @Version
+    @Column(nullable = false)
+    private Long version;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = ZonedDateTime.now();
+        this.updatedAt = ZonedDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = ZonedDateTime.now();
     }
 }

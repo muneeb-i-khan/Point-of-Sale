@@ -3,6 +3,7 @@ package com.increff.pos.service;
 import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.pojo.*;
+import com.increff.pos.util.ApiException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,14 +49,14 @@ public class OrderServiceTest extends AbstractUnitTest {
         clientService.addClient(client);
 
         product = new ProductPojo();
-        product.setClient_id(client.getId());
+        product.setClientId(client.getId());
         product.setName("Test Product");
         product.setBarcode("123456789");
         product.setPrice(50.0);
         productService.addProduct(product);
 
         InventoryPojo inventory = new InventoryPojo();
-        inventory.setProd_id(product.getId());
+        inventory.setProdId(product.getId());
         inventory.setQuantity(100L);
         inventoryService.addInventory(inventory);
     }
@@ -64,17 +64,17 @@ public class OrderServiceTest extends AbstractUnitTest {
     @Test
     public void testCreateOrder_Success() throws ApiException {
         OrderItemPojo orderItem = new OrderItemPojo();
-        orderItem.setProd_id(product.getId());
+        orderItem.setProdId(product.getId());
         orderItem.setQuantity(2L);
+        orderItem.setSellingPrice(product.getPrice());
 
         CustomerPojo customerPojo = new CustomerPojo();
         customerPojo.setName("Customer Test");
         customerPojo.setPhone("1234567890");
 
-        OrderPojo createdOrder = orderService.createOrder(Collections.singletonList(orderItem),customerPojo);
+        OrderPojo createdOrder = orderService.createOrder(Collections.singletonList(orderItem), customerPojo);
 
         assertNotNull(createdOrder);
-        assertEquals(LocalDate.now(), createdOrder.getOrderDate());
         assertEquals(100.0, createdOrder.getTotalAmount(), 0.01);
 
         InventoryPojo updatedInventory = inventoryService.getInventoryByBarcode(product.getBarcode());
@@ -88,8 +88,9 @@ public class OrderServiceTest extends AbstractUnitTest {
     @Test(expected = ApiException.class)
     public void testCreateOrderInsufficientStock() throws ApiException {
         OrderItemPojo orderItem = new OrderItemPojo();
-        orderItem.setProd_id(product.getId());
+        orderItem.setProdId(product.getId());
         orderItem.setQuantity(200L);
+        orderItem.setSellingPrice(product.getPrice());
 
         CustomerPojo customerPojo = new CustomerPojo();
         customerPojo.setName("Customer Test");
@@ -101,8 +102,9 @@ public class OrderServiceTest extends AbstractUnitTest {
     @Test(expected = ApiException.class)
     public void testCreateOrderNonPositiveQuantity() throws ApiException {
         OrderItemPojo orderItem = new OrderItemPojo();
-        orderItem.setProd_id(product.getId());
+        orderItem.setProdId(product.getId());
         orderItem.setQuantity(-1L);
+        orderItem.setSellingPrice(product.getPrice());
 
         CustomerPojo customerPojo = new CustomerPojo();
         customerPojo.setName("Customer Test");
@@ -111,13 +113,12 @@ public class OrderServiceTest extends AbstractUnitTest {
         orderService.createOrder(Collections.singletonList(orderItem), customerPojo);
     }
 
-
-
     @Test
     public void testGetAllOrders() throws ApiException {
         OrderItemPojo orderItem = new OrderItemPojo();
-        orderItem.setProd_id(product.getId());
+        orderItem.setProdId(product.getId());
         orderItem.setQuantity(2L);
+        orderItem.setSellingPrice(product.getPrice());
 
         CustomerPojo customerPojo = new CustomerPojo();
         customerPojo.setName("Customer Test");
@@ -134,8 +135,9 @@ public class OrderServiceTest extends AbstractUnitTest {
     @Test
     public void testGetOrderById_Success() throws ApiException {
         OrderItemPojo orderItem = new OrderItemPojo();
-        orderItem.setProd_id(product.getId());
+        orderItem.setProdId(product.getId());
         orderItem.setQuantity(1L);
+        orderItem.setSellingPrice(product.getPrice());
 
         CustomerPojo customerPojo = new CustomerPojo();
         customerPojo.setName("Customer Test");

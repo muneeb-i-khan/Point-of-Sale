@@ -1,20 +1,21 @@
 package com.increff.pos.db.dao;
 
-import com.increff.pos.db.pojo.DaySaleReportPojo;
 import com.increff.pos.db.pojo.SalesReportPojo;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Repository
-public class SalesReportDao {
+public class SalesReportDao extends AbstractDao {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final String FIND_BY_CLIENT_AND_DATE = "SELECT r FROM SalesReportPojo r WHERE r.clientId = :clientId AND r.date = :date";
+    private static final String SELECT_ALL = "SELECT p FROM SalesReportPojo p";
+    private static final String COUNT_ALL = "SELECT COUNT(p) FROM SalesReportPojo p";
+    private static final String SELECT_FILTER = "SELECT r FROM SalesReportPojo r JOIN ClientPojo c ON r.clientId = c.id WHERE 1=1";
 
     public void add(SalesReportPojo report) {
         em.persist(report);
@@ -24,19 +25,16 @@ public class SalesReportDao {
         em.merge(report);
     }
 
-    public SalesReportPojo findByClientAndDate(Long clientId, LocalDate date) {
-        TypedQuery<SalesReportPojo> query = em.createQuery(
-                "SELECT r FROM SalesReportPojo r WHERE r.clientId = :clientId AND r.date = :date",
-                SalesReportPojo.class
-        );
+    public SalesReportPojo findByClientAndDate(Long clientId, ZonedDateTime date) {
+        TypedQuery<SalesReportPojo> query = getQuery(FIND_BY_CLIENT_AND_DATE, SalesReportPojo.class);
         query.setParameter("clientId", clientId);
         query.setParameter("date", date);
         List<SalesReportPojo> result = query.getResultList();
         return result.isEmpty() ? null : result.get(0);
     }
 
-    public List<SalesReportPojo> filterReports(String clientName, String description, LocalDate startDate, LocalDate endDate) {
-        StringBuilder queryString = new StringBuilder("SELECT r FROM SalesReportPojo r JOIN ClientPojo c ON r.clientId = c.id WHERE 1=1");
+    public List<SalesReportPojo> filterReports(String clientName, String description, ZonedDateTime startDate, ZonedDateTime endDate) {
+        StringBuilder queryString = new StringBuilder(SELECT_FILTER);
         if (clientName != null && !clientName.isEmpty()) {
             queryString.append(" AND c.name LIKE :clientName");
         }
@@ -50,7 +48,7 @@ public class SalesReportDao {
             queryString.append(" AND r.date <= :endDate");
         }
 
-        TypedQuery<SalesReportPojo> query = em.createQuery(queryString.toString(), SalesReportPojo.class);
+        TypedQuery<SalesReportPojo> query = getQuery(queryString.toString(), SalesReportPojo.class);
 
         if (clientName != null && !clientName.isEmpty()) {
             query.setParameter("clientName", "%" + clientName + "%");
@@ -69,17 +67,16 @@ public class SalesReportDao {
     }
 
     public List<SalesReportPojo> selectAll() {
-        return em.createQuery("SELECT p FROM SalesReportPojo p", SalesReportPojo.class)
-                .getResultList();
+        return getQuery(SELECT_ALL, SalesReportPojo.class).getResultList();
     }
 
     public Long countSalesReportPojo() {
-        Query query = em.createQuery("SELECT COUNT(p) FROM SalesReportPojo p");
+        TypedQuery<Long> query = getQuery(COUNT_ALL, Long.class);
         return (Long) query.getSingleResult();
     }
 
     public List<SalesReportPojo> selectAllPaginated(int page, int pageSize) {
-        TypedQuery<SalesReportPojo> query = em.createQuery("SELECT p FROM SalesReportPojo p", SalesReportPojo.class);
+        TypedQuery<SalesReportPojo> query = getQuery(SELECT_ALL, SalesReportPojo.class);
         query.setFirstResult(page * pageSize);
         query.setMaxResults(pageSize);
         return query.getResultList();

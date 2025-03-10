@@ -3,6 +3,7 @@ package com.increff.pos.service;
 import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.util.Normalize;
 import com.increff.pos.util.TsvParserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +37,11 @@ public class TsvUploadService {
                     p.setPrice(Double.parseDouble(record.get("price")));
 
                     try {
-                        ClientPojo cp = clientService.getClientByName(record.get("clientName"));
-                        p.setClient_id(cp.getId());
+                        ClientPojo cp = clientService.getCheck(record.get("clientName"));
+                        p.setClientId(cp.getId());
                     } catch (ApiException e) {
                         throw new RuntimeException("Client not found: " + record.get("clientName"));
                     }
-
                     return p;
                 });
 
@@ -57,7 +57,7 @@ public class TsvUploadService {
                     InventoryPojo inventoryPojo = new InventoryPojo();
                     try {
                         ProductPojo productPojo = productService.getProductByBarcode(record.get("barcode"));
-                        inventoryPojo.setProd_id(productPojo.getId());
+                        inventoryPojo.setProdId(productPojo.getId());
                     } catch (ApiException e) {
                         throw new RuntimeException("Product not found with barcode: " + record.get("barcode"));
                     }

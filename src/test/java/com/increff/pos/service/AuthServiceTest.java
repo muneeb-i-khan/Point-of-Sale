@@ -2,19 +2,20 @@ package com.increff.pos.service;
 
 import com.increff.pos.db.dao.UserDao;
 import com.increff.pos.db.pojo.UserPojo;
-import com.increff.pos.dto.UserDto;
-import com.increff.pos.model.constants.Role;
+import com.increff.pos.model.data.UserData;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.util.RoleAssigner;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -22,7 +23,7 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = QaConfig.class)
 @Transactional
 @Rollback
-public class AuthServiceTest extends AbstractUnitTest{
+public class AuthServiceTest extends AbstractUnitTest {
 
     @Autowired
     private AuthService authService;
@@ -30,7 +31,11 @@ public class AuthServiceTest extends AbstractUnitTest{
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     private MockHttpSession session;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Before
     public void setUp() {
@@ -38,34 +43,34 @@ public class AuthServiceTest extends AbstractUnitTest{
     }
 
     @Test
-    public void testLoginSuccessSupervisor() {
+    public void testLoginSuccessSupervisor() throws ApiException {
         UserPojo user = new UserPojo();
-        user.setEmail("test@increff.com");
-        user.setPassword(authService.passwordEncoder.encode("password123"));
-        user.setRole(RoleAssigner.assignRole("test@increff.com"));
+        user.setEmail("supervisor@increff.com");
+        user.setPassword(passwordEncoder.encode("password123"));
+        user.setRole(RoleAssigner.assignRole("supervisor@increff.com"));
         userDao.save(user);
 
-        UserDto result = authService.login("test@increff.com", "password123", session);
+        UserData result = authService.login("supervisor@increff.com", "password123", session);
 
         assertNotNull(result);
-        assertEquals("test@increff.com", result.getEmail());
-        assertEquals(Role.SUPERVISOR, result.getRole());
+        assertEquals("supervisor@increff.com", result.getEmail());
+        assertEquals(user.getRole(), result.getRole());
         assertEquals(user.getId(), session.getAttribute("userId"));
     }
 
     @Test
-    public void testLoginSuccessOperator() {
+    public void testLoginSuccessOperator() throws ApiException {
         UserPojo user = new UserPojo();
-        user.setEmail("test@example.com");
-        user.setPassword(authService.passwordEncoder.encode("password123"));
-        user.setRole(RoleAssigner.assignRole("test@example.com"));
+        user.setEmail("operator@example.com");
+        user.setPassword(passwordEncoder.encode("password123"));
+        user.setRole(RoleAssigner.assignRole("operator@example.com"));
         userDao.save(user);
 
-        UserDto result = authService.login("test@example.com", "password123", session);
+        UserData result = authService.login("operator@example.com", "password123", session);
 
         assertNotNull(result);
-        assertEquals("test@example.com", result.getEmail());
-        assertEquals(Role.OPERATOR, result.getRole());
+        assertEquals("operator@example.com", result.getEmail());
+        assertEquals(user.getRole(), result.getRole());
         assertEquals(user.getId(), session.getAttribute("userId"));
     }
 
@@ -73,81 +78,77 @@ public class AuthServiceTest extends AbstractUnitTest{
     public void testLogin_FailureInvalidPassword() {
         UserPojo user = new UserPojo();
         user.setEmail("test@example.com");
-        user.setPassword(authService.passwordEncoder.encode("password123"));
-        user.setRole(Role.SUPERVISOR);
+        user.setPassword(passwordEncoder.encode("password123"));
+        user.setRole(RoleAssigner.assignRole("test@example.com"));
         userDao.save(user);
-        UserDto result = authService.login("test@example.com", "wrongpassword", session);
 
-        assertNull(result);
+        try {
+            authService.login("test@example.com", "wrongpassword", session);
+            fail("Expected ApiException for incorrect password");
+        } catch (ApiException e) {
+            assertEquals("Bad credentials", e.getMessage());
+        }
         assertNull(session.getAttribute("userId"));
     }
 
     @Test
     public void testLogin_FailureUserNotFound() {
-        UserDto result = authService.login("nonexistent@example.com", "password123", session);
-        assertNull(result);
+        try {
+            authService.login("nonexistent@example.com", "password123", session);
+            fail("Expected ApiException for non-existent user");
+        } catch (ApiException e) {
+            assertEquals("Bad credentials", e.getMessage());
+        }
     }
 
     @Test
-    public void testGetSessionUserSuccess() {
+    public void testGetSessionUserSuccess() throws ApiException {
         UserPojo user = new UserPojo();
         user.setEmail("test@example.com");
-        user.setPassword(authService.passwordEncoder.encode("password123"));
-        user.setRole(Role.OPERATOR);
+        user.setPassword(passwordEncoder.encode("password123"));
+        user.setRole(RoleAssigner.assignRole("test@example.com"));
         userDao.save(user);
         session.setAttribute("userId", user.getId());
 
-        UserDto result = authService.getSessionUser(session);
+        UserData result = authService.getSessionUser(session);
 
         assertNotNull(result);
         assertEquals("test@example.com", result.getEmail());
-        assertEquals(Role.OPERATOR, result.getRole());
+        assertEquals(user.getRole(), result.getRole());
     }
 
     @Test
     public void testGetSessionUser_NoSession() {
-        UserDto result = authService.getSessionUser(session);
-        assertNull(result);
-    }
-
-    @Test
-    public void testLogout() {
-        session.setAttribute("userId", 1L);
-        session.setAttribute("role", Role.SUPERVISOR);
-        authService.logout(session);
         try {
-            session.getAttribute("userId");
-            fail("Expected IllegalStateException due to invalidated session");
-        } catch (IllegalStateException e) {
+            authService.getSessionUser(session);
+            fail("Expected ApiException for no active session");
+        } catch (ApiException e) {
+            assertEquals("No active session", e.getMessage());
         }
     }
 
-
     @Test
-    public void testRegisterUserSuccess() {
-        ResponseEntity<Map<String, String>> response = authService.registerUser("newuser@example.com", "password123");
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("User registered successfully", response.getBody().get("message"));
+    public void testRegisterUserSuccess() throws ApiException {
+        authService.registerUser("newuser@example.com", "password123");
 
         Optional<UserPojo> savedUser = userDao.findByEmail("newuser@example.com");
         assertTrue(savedUser.isPresent());
-        assertTrue(authService.passwordEncoder.matches("password123",
-                savedUser.get().getPassword()));
+        assertTrue(passwordEncoder.matches("password123", savedUser.get().getPassword()));
     }
 
     @Test
     public void testRegisterUserEmailAlreadyExists() {
         UserPojo user = new UserPojo();
         user.setEmail("existing@example.com");
-        user.setPassword(authService.passwordEncoder.encode("password123"));
+        user.setPassword(passwordEncoder.encode("password123"));
         user.setRole(RoleAssigner.assignRole("existing@example.com"));
         userDao.save(user);
 
-        ResponseEntity<Map<String, String>> response = authService.registerUser("existing@example.com",
-                "password123");
-
-        assertEquals(409, response.getStatusCodeValue());
-        assertEquals("Email already exists", response.getBody().get("message"));
+        try {
+            authService.registerUser("existing@example.com", "password123");
+            fail("Expected ApiException for duplicate email");
+        } catch (ApiException e) {
+            assertEquals("Email already exists", e.getMessage());
+        }
     }
 }

@@ -14,6 +14,6 @@ public class InventoryPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long prod_id;
+    private Long prodId;
     private Long quantity;
 }

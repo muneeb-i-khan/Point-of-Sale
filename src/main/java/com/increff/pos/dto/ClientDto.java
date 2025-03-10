@@ -3,25 +3,25 @@ package com.increff.pos.dto;
 import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.model.data.ClientData;
 import com.increff.pos.model.forms.ClientForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.util.Normalize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class ClientDto {
     @Autowired
     ClientService clientService;
 
-    public void addClient(ClientForm clientForm) {
+    public ClientData addClient(ClientForm clientForm) {
         ClientPojo clientPojo = convert(clientForm);
         clientService.addClient(clientPojo);
+        return convert(clientPojo);
     }
 
     public ClientData getClient(Long id) throws ApiException {
@@ -38,7 +38,7 @@ public class ClientDto {
         return list2;
     }
 
-    public Map<String, Object> getAllClientsPaginated(int page, int pageSize) {
+    public List<ClientData> getAllClientsPaginated(int page, int pageSize, HttpServletResponse httpServletResponse) {
         List<ClientPojo> clientPojos = clientService.getAllClientsPaginated(page, pageSize);
         Long totalClients = clientService.getClientCount();
 
@@ -47,32 +47,31 @@ public class ClientDto {
             clientDataList.add(convert(p));
         }
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("clients", clientDataList);
-        response.put("totalClients", totalClients);
-        return response;
+        httpServletResponse.setHeader("totalClients",totalClients.toString());
+        return clientDataList;
     }
 
 
-    public void updateClient(ClientForm clientForm, Long id) throws ApiException {
+    public ClientData updateClient(ClientForm clientForm, Long id) throws ApiException {
         ClientPojo clientPojo = new ClientPojo();
-        clientPojo.setName(Normalize.normalizeName(clientForm.getName().trim()));
+        clientPojo.setName(Normalize.normalizeName(clientForm.getName()));
         clientPojo.setDescription(clientForm.getDescription());
         clientService.updateClient(id, clientPojo);
+        return convert(clientPojo);
     }
 
 
     public ClientData convert(ClientPojo p) {
         ClientData clientData = new ClientData();
-        clientData.setName(Normalize.normalizeName(p.getName().trim()));
+        clientData.setName(Normalize.normalizeName(p.getName()));
         clientData.setDescription(p.getDescription());
         clientData.setId(p.getId());
         return clientData;
     }
 
-    public ClientPojo convert(ClientForm ClientForm) {
+    private ClientPojo convert(ClientForm ClientForm) {
         ClientPojo p = new ClientPojo();
-        p.setName(Normalize.normalizeName((ClientForm.getName().trim())));
+        p.setName(Normalize.normalizeName((ClientForm.getName())));
         p.setDescription(ClientForm.getDescription().trim());
         return p;
     }

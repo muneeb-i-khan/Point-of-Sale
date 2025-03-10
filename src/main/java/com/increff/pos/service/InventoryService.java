@@ -3,6 +3,8 @@ package com.increff.pos.service;
 import com.increff.pos.db.dao.InventoryDao;
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.flow.InventoryFlow;
+import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +18,12 @@ public class InventoryService {
     private InventoryDao dao;
 
     @Autowired
-    private ProductService productService;
+    private InventoryFlow inventoryFlow;
 
     public void addInventory(InventoryPojo inventoryPojo) throws ApiException {
-
-        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProd_id());
-        InventoryPojo existingInventory = dao.selectByBarcode(productPojo.getBarcode());
+        if (inventoryPojo.getQuantity() <= 0) throw new ApiException("Quantity can't be negative or 0!");
+        String prodBarcode = inventoryFlow.getBarcode(inventoryPojo);
+        InventoryPojo existingInventory = dao.selectByBarcode(prodBarcode);
         if (existingInventory != null) {
             existingInventory.setQuantity(existingInventory.getQuantity() + inventoryPojo.getQuantity());
             dao.update(existingInventory);
@@ -50,7 +52,7 @@ public class InventoryService {
     public void updateInventory(Long id, InventoryPojo p) throws ApiException {
         InventoryPojo ex = getCheck(id);
         ex.setQuantity(p.getQuantity());
-        ex.setProd_id(p.getProd_id());
+        ex.setProdId(p.getProdId());
         dao.update(p);
     }
 

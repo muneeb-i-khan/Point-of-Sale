@@ -23,4 +23,9 @@ public class ApplicationProperties {
     private String hibernateShowSql;
     @Value("${hibernate.hbm2ddl.auto}")
     private String hibernateHbm2ddl;
+    private String setValidationQuery = "SELECT 1";
+    private Boolean setDefaultAutoCommit = false;
+    private int setMinIdle = 2;
+    private Boolean setTestWhileIdle = true;
+    private long setTimeBetweenEvictionRunsMillis = 10 * 60 * 100;
 }

@@ -3,6 +3,7 @@ package com.increff.pos.service;
 import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.util.ApiException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class TsvUploadServiceTest extends AbstractUnitTest {
         assertEquals("test product", product.getName());
         assertEquals("123456", product.getBarcode());
         assertEquals(50.0, product.getPrice(), 0.01);
-        assertEquals(client.getId(), product.getClient_id());
+        assertEquals(client.getId(), product.getClientId());
     }
 
     @Test(expected = RuntimeException.class)
@@ -83,7 +84,7 @@ public class TsvUploadServiceTest extends AbstractUnitTest {
         product.setName("Test Product");
         product.setBarcode("123456");
         product.setPrice(50.0);
-        product.setClient_id(client.getId());
+        product.setClientId(client.getId());
         productService.addProduct(product);
 
         String tsvData = "barcode\tquantity\n" +
@@ -118,7 +119,7 @@ public class TsvUploadServiceTest extends AbstractUnitTest {
         product.setName("Test Product");
         product.setBarcode("123456");
         product.setPrice(50.0);
-        product.setClient_id(client.getId());
+        product.setClientId(client.getId());
         productService.addProduct(product);
 
         String tsvData = "barcode\tprice\n" +

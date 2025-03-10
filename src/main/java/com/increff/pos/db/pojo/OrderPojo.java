@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -16,8 +16,9 @@ public class OrderPojo extends AbstractPojo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private double totalAmount;
-    private LocalDate orderDate;
+    private ZonedDateTime orderDate;
     private Long customerId;
+    private String invoicePath;
 }
 
 

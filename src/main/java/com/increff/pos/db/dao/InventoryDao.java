@@ -7,57 +7,54 @@ import javax.persistence.*;
 import java.util.List;
 
 @Repository
-public class InventoryDao {
-    private static final String select_all = "select p from InventoryPojo p";
-    private static final String select_id = "select p from InventoryPojo p where id=:id";
-    private static final String delete_id = "delete from InventoryPojo p where id=:id";
-    private static final String select_by_product_barcode =
-            "SELECT i FROM InventoryPojo i JOIN ProductPojo p ON i.prod_id = p.id WHERE p.barcode = :barcode";
+public class InventoryDao extends AbstractDao {
+    private static final String SELECT_ALL = "SELECT p FROM InventoryPojo p";
+    private static final String SELECT_ID = "SELECT p FROM InventoryPojo p WHERE id=:id";
+    private static final String SELECT_BARCODE =
+            "SELECT i FROM InventoryPojo i JOIN ProductPojo p ON i.prodId = p.id WHERE p.barcode = :barcode";
+    private static final String SELECT_COUNT = "SELECT COUNT(p) FROM InventoryPojo p";
 
-    @PersistenceContext
-    EntityManager em;
     public void add(InventoryPojo p) {
         em.persist(p);
     }
 
     public List<InventoryPojo> selectAll() {
-        TypedQuery<InventoryPojo> query = getQuery(select_all);
-        return query.getResultList();
+        return getQuery(SELECT_ALL, InventoryPojo.class).getResultList();
     }
 
     public InventoryPojo select(Long id) {
-        TypedQuery<InventoryPojo> query = getQuery(select_id);
-        query.setParameter("id",id);
-        return query.getSingleResult();
+        try {
+            return getQuery(SELECT_ID, InventoryPojo.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public void update(InventoryPojo p) {
+        em.merge(p);
     }
 
-
     public List<InventoryPojo> selectAllPaginated(int page, int pageSize) {
-        TypedQuery<InventoryPojo> query = em.createQuery(select_all, InventoryPojo.class);
+        TypedQuery<InventoryPojo> query = getQuery(SELECT_ALL, InventoryPojo.class);
         query.setFirstResult(page * pageSize);
         query.setMaxResults(pageSize);
         return query.getResultList();
     }
 
     public Long countInventories() {
-        Query query = em.createQuery("SELECT COUNT(p) FROM InventoryPojo p");
-        return (Long) query.getSingleResult();
+        return getQuery(SELECT_COUNT, Long.class).getSingleResult();
     }
-    
+
+
     public InventoryPojo selectByBarcode(String barcode) {
         try {
-            TypedQuery<InventoryPojo> query = em.createQuery(select_by_product_barcode, InventoryPojo.class);
-            query.setParameter("barcode", barcode);
-            return query.getSingleResult();
+            return getQuery(SELECT_BARCODE, InventoryPojo.class)
+                    .setParameter("barcode", barcode)
+                    .getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
-    }
-
-    TypedQuery<InventoryPojo> getQuery(String jpql) {
-        return em.createQuery(jpql, InventoryPojo.class);
     }
 }

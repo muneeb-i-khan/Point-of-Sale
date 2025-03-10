@@ -1,16 +1,14 @@
 package com.increff.pos.flow;
 
 import com.increff.pos.db.dao.OrderItemDao;
-import com.increff.pos.db.pojo.CustomerPojo;
-import com.increff.pos.db.pojo.OrderItemPojo;
-import com.increff.pos.db.pojo.OrderPojo;
-import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.db.pojo.*;
 import com.increff.pos.dto.CustomerDto;
 import com.increff.pos.model.data.OrderData;
-import com.increff.pos.model.data.OrderItem;
+import com.increff.pos.model.data.OrderData.OrderItem;
 import com.increff.pos.model.forms.CustomerForm;
-import com.increff.pos.model.forms.OrderItemForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.model.forms.OrderForm.OrderItemForm;
+import com.increff.pos.service.InventoryService;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.CustomerService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
@@ -37,14 +35,18 @@ public class OrderFlow {
     @Autowired
     private CustomerService customerService;
 
-    public void addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
+    @Autowired
+    private InventoryService inventoryService;
+
+    public OrderData addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
         if (orderItemFormList == null || orderItemFormList.isEmpty()) {
             throw new ApiException("Order cannot be empty.");
         }
         List<OrderItemForm> mergedOrderItems = mergeDuplicateItems(orderItemFormList);
         List<OrderItemPojo> orderItemPojoList = convert(mergedOrderItems);
         CustomerPojo customerPojo = customerDto.convert(customerForm);
-        orderService.createOrder(orderItemPojoList, customerPojo);
+        OrderPojo orderPojo = orderService.createOrder(orderItemPojoList, customerPojo);
+        return convert(orderPojo);
     }
 
 
@@ -63,31 +65,55 @@ public class OrderFlow {
         return orderDataList;
     }
 
+    public void addCustomer(CustomerPojo customerPojo) {
+        customerService.addCustomer(customerPojo);
+    }
+
+    public InventoryPojo getInventoryByBarcode(String barcode) {
+        return inventoryService.getInventoryByBarcode(barcode);
+    }
+
+    public ProductPojo getProduct(Long id) {
+        return productService.getProduct(id);
+    }
+
     public OrderData convert(OrderPojo orderPojo) throws ApiException {
+        if (orderPojo == null) {
+            throw new ApiException("Order cannot be null");
+        }
+
         OrderData orderData = new OrderData();
         orderData.setId(orderPojo.getId());
         orderData.setTotalAmount(orderPojo.getTotalAmount());
         orderData.setOrderDate(orderPojo.getOrderDate());
-        orderData.setCustomerName(customerService.getCustomer(orderPojo.getId()).getName());
-        orderData.setCustomerPhone(customerService.getCustomer(orderData.getId()).getPhone());
+
+        CustomerPojo customer = customerService.getCustomer(orderPojo.getId());
+        orderData.setCustomerName(customer != null ? customer.getName() : null);
+        orderData.setCustomerPhone(customer != null ? customer.getPhone() : null);
 
         List<OrderItemPojo> orderItemPojos = orderItemDao.getItemsByOrderId(orderPojo.getId());
-        List<OrderItem> orderItems = new ArrayList<>();
+        if (orderItemPojos == null) {
+            throw new ApiException("No items found for order ID: " + orderPojo.getId());
+        }
 
+        List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemPojo itemPojo : orderItemPojos) {
             OrderItem orderItem = new OrderItem();
-            ProductPojo product = productService.getProduct(itemPojo.getProd_id());
+            ProductPojo product = productService.getProduct(itemPojo.getProdId());
+            if (product == null) {
+                throw new ApiException("Product not found for ID: " + itemPojo.getProdId() + " in order: " + orderPojo.getId());
+            }
             orderItem.setBarcode(product.getBarcode());
             orderItem.setQuantity(itemPojo.getQuantity().intValue());
             orderItem.setProdName(product.getName());
             orderItem.setPrice(product.getPrice());
+            orderItem.setSellingPrice(itemPojo.getSellingPrice());
             orderItems.add(orderItem);
         }
 
         orderData.setItems(orderItems);
         return orderData;
     }
-
     private List<OrderItemPojo> convert(List<OrderItemForm> orderItemFormList) throws ApiException {
         List<OrderItemPojo> orderItemPojoList = new ArrayList<>();
 
@@ -99,9 +125,14 @@ public class OrderFlow {
             }
 
             OrderItemPojo orderItemPojo = new OrderItemPojo();
-            orderItemPojo.setProd_id(product.getId());
+            orderItemPojo.setProdId(product.getId());
             orderItemPojo.setQuantity(form.getQuantity());
-
+            if(form.getSellingPrice() <= product.getPrice()) {
+                orderItemPojo.setSellingPrice(form.getSellingPrice());
+            }
+            else {
+                throw new ApiException("Selling price can't be more than Product's MRP");
+            }
             orderItemPojoList.add(orderItemPojo);
         }
 

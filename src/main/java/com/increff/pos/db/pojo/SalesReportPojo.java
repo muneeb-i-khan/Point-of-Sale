@@ -4,18 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "salesReport")
-public class SalesReportPojo {
+public class SalesReportPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long clientId;
     private Long itemSold;
     private Long revenue;
-    private LocalDate date;
+    private ZonedDateTime date;
 }

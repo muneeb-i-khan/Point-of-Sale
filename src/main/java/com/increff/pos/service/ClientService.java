@@ -1,10 +1,11 @@
 package com.increff.pos.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
-import com.increff.pos.util.Normalize;
+import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +19,13 @@ public class ClientService {
     @Autowired
     private  ClientDao dao;
 
-    public void addClient(ClientPojo p) {
+    public void addClient(ClientPojo p) throws ApiException {
+        ClientPojo existingClient = dao.selectByName(p.getName());
+        if (existingClient != null) {
+            throw new ApiException("Client with name '" + p.getName() + "' already exists.");
+        }
         dao.add(p);
     }
-
 
     public ClientPojo getClient(Long id) throws ApiException {
         return getCheck(id);
@@ -30,13 +34,19 @@ public class ClientService {
     public List<ClientPojo> getAllClients() {
         return dao.selectAll();
     }
-
-
     public void updateClient(Long id, ClientPojo p) throws ApiException {
-        ClientPojo ex = getCheck(id);
-        ex.setDescription(p.getDescription());
-        ex.setName(p.getName());
-        dao.update(ex);
+        ClientPojo existingClient = getCheck(id);
+        checkDuplicateName(id, p.getName());
+        existingClient.setDescription(p.getDescription());
+        existingClient.setName(p.getName());
+        dao.update(existingClient);
+    }
+
+    private void checkDuplicateName(Long id, String name) throws ApiException {
+        ClientPojo clientWithSameName = dao.selectByName(name);
+        if (clientWithSameName != null && !clientWithSameName.getId().equals(id)) {
+            throw new ApiException("Name " + name + " already exists");
+        }
     }
 
     public List<ClientPojo> getAllClientsPaginated(int page, int pageSize) {
@@ -48,7 +58,7 @@ public class ClientService {
     }
 
 
-    public ClientPojo getClientByName(String name) throws ApiException {
+    public ClientPojo getCheck(String name) throws ApiException {
         ClientPojo client = dao.selectByName(name);
         if (client == null) {
             throw new ApiException("Client with the given name does not exist: " + name);

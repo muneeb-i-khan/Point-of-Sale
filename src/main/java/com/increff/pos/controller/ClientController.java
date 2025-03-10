@@ -3,17 +3,15 @@ package com.increff.pos.controller;
 import com.increff.pos.dto.ClientDto;
 import com.increff.pos.model.data.ClientData;
 import com.increff.pos.model.forms.ClientForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Api
 @RestController
@@ -23,40 +21,30 @@ public class ClientController {
     @Autowired
     private ClientDto clientDto;
 
+    @ApiOperation(value = "Add a client")
     @PostMapping
-    public ResponseEntity<Map<String, String>> addClient(@Valid @RequestBody ClientForm clientForm) {
-        clientDto.addClient(clientForm);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Client added successfully"));
+    public ClientData addClient(@Valid @RequestBody ClientForm clientForm) {
+        return clientDto.addClient(clientForm);
     }
 
 
     @ApiOperation(value = "Get a client based on its Id")
     @GetMapping("/{id}")
-    public ResponseEntity<ClientData> get(@PathVariable Long id) throws ApiException {
-        ClientData clientData = clientDto.getClient(id);
-        return ResponseEntity.ok(clientData);
-    }
-
-    @ApiOperation(value = "Get all clients")
-    @GetMapping
-    public ResponseEntity<List<ClientData>> getAll() {
-        List<ClientData> clients = clientDto.getAllClients();
-        return ResponseEntity.ok(clients);
+    public ClientData get(@PathVariable Long id) throws ApiException {
+        return clientDto.getClient(id);
     }
 
     @ApiOperation(value = "Get all clients with pagination")
     @GetMapping("/paginated")
-    public ResponseEntity<Map<String, Object>> getAllPaginated(
+    public List<ClientData> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int pageSize) {
-        Map<String, Object> response = clientDto.getAllClientsPaginated(page, pageSize);
-        return ResponseEntity.ok(response);
+            @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) {
+        return clientDto.getAllClientsPaginated(page, pageSize, httpServletResponse);
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, String>> update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
-        clientDto.updateClient(clientForm, id);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Client updated successfully"));
+    public ClientData update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
+        return clientDto.updateClient(clientForm, id);
     }
 }

@@ -2,7 +2,7 @@ package com.increff.pos.dto;
 
 import com.increff.pos.db.pojo.CustomerPojo;
 import com.increff.pos.model.forms.CustomerForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

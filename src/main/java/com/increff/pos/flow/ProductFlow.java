@@ -4,7 +4,7 @@ import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.forms.ProductForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.service.TsvUploadService;
@@ -27,7 +27,7 @@ public class ProductFlow {
     @Autowired
     private TsvUploadService tsvUploadService;
 
-    public void addProduct(ProductForm productForm) throws ApiException {
+    public ProductData addProduct(ProductForm productForm) throws ApiException {
         ProductPojo p = new ProductPojo();
         p.setName(productForm.getName());
         p.setBarcode(productForm.getBarcode());
@@ -35,13 +35,14 @@ public class ProductFlow {
 
         ClientPojo clientPojo;
         try {
-            clientPojo = clientService.getClientByName(productForm.getClientName());
+            clientPojo = clientService.getCheck(productForm.getClientName());
         } catch (NoResultException e) {
             throw new ApiException("Client not found: " + productForm.getClientName());
         }
 
-        p.setClient_id(clientPojo.getId());
+        p.setClientId(clientPojo.getId());
         productService.addProduct(p);
+        return convert(p);
     }
 
     public void uploadProducts(MultipartFile file) throws IOException, ApiException {
@@ -53,7 +54,7 @@ public class ProductFlow {
         productData.setName(Normalize.normalizeName(productPojo.getName()));
         productData.setBarcode(productPojo.getBarcode());
         productData.setId(productPojo.getId());
-        productData.setClientName(clientService.getClient(productPojo.getClient_id()).getName());
+        productData.setClientName(clientService.getClient(productPojo.getClientId()).getName());
         productData.setPrice(productPojo.getPrice());
         return productData;
     }

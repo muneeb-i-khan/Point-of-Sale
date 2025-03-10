@@ -1,11 +1,9 @@
 package com.increff.pos.dto;
 
-import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
-import com.increff.pos.model.data.ClientData;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.forms.ProductForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.Normalize;
 import com.increff.pos.flow.ProductFlow;
@@ -13,11 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class ProductDto {
@@ -27,8 +24,8 @@ public class ProductDto {
     @Autowired
     private ProductFlow productFlow;
 
-    public void addProduct(ProductForm productForm) throws ApiException {
-        productFlow.addProduct(productForm);
+    public ProductData addProduct(ProductForm productForm) throws ApiException {
+        return productFlow.addProduct(productForm);
     }
 
     public ProductData getProduct(Long id) throws ApiException {
@@ -45,7 +42,7 @@ public class ProductDto {
         return list2;
     }
 
-    public Map<String, Object> getAllProductsPaginated(int page, int pageSize) throws ApiException {
+    public List<ProductData> getAllProductsPaginated(int page, int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
         List<ProductPojo> productPojos = productService.getAllProductsPaginated(page, pageSize);
         Long totalProducts = productService.getProductCount();
 
@@ -53,17 +50,14 @@ public class ProductDto {
         for (ProductPojo p : productPojos) {
             productDataList.add(productFlow.convert(p));
         }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("products", productDataList);
-        response.put("totalProducts", totalProducts);
-        return response;
+        httpServletResponse.setHeader("totalProducts",totalProducts.toString());
+        return productDataList;
     }
 
 
-    public void updateProduct(Long id, ProductForm productForm) throws ApiException {
+    public ProductData updateProduct(Long id, ProductForm productForm) throws ApiException {
         ProductPojo p = convert(productForm);
-        productService.updateProduct(id, p);
+        return productService.updateProduct(id, p);
     }
 
     public void uploadProducts(MultipartFile file) throws IOException, ApiException {
@@ -73,7 +67,7 @@ public class ProductDto {
 
     private ProductPojo convert(ProductForm productForm) {
         ProductPojo p = new ProductPojo();
-        p.setName(Normalize.normalizeName(productForm.getName().trim()));
+        p.setName(Normalize.normalizeName(productForm.getName()));
         p.setBarcode(productForm.getBarcode().trim());
         p.setPrice(productForm.getPrice());
         return p;

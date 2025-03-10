@@ -5,6 +5,7 @@ import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.forms.ProductForm;
 import com.increff.pos.service.*;
+import com.increff.pos.util.ApiException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class ProductFlowTest extends AbstractUnitTest {
         assertNotNull(product);
         assertEquals("Test Product", product.getName());
         assertEquals(100.0, product.getPrice(), 0.01);
-        assertEquals(client.getId(), product.getClient_id());
+        assertEquals(client.getId(), product.getClientId());
     }
 
     @Test(expected = ApiException.class)
@@ -99,7 +100,7 @@ public class ProductFlowTest extends AbstractUnitTest {
         product.setName("Product X");
         product.setBarcode("987654");
         product.setPrice(200.0);
-        product.setClient_id(client.getId());
+        product.setClientId(client.getId());
 
         ProductData productData = productFlow.convert(product);
 

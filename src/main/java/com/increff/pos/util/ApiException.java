@@ -1,6 +1,6 @@
-package com.increff.pos.service;
+package com.increff.pos.util;
 
-public class ApiException extends Exception{
+public class ApiException extends RuntimeException{
     public ApiException(String string) {
         super(string);
     }

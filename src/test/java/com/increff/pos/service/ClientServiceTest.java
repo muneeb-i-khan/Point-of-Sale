@@ -3,6 +3,7 @@ package com.increff.pos.service;
 import static org.junit.Assert.*;
 
 import com.increff.pos.db.pojo.ClientPojo;
+import com.increff.pos.util.ApiException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -27,7 +28,7 @@ public class ClientServiceTest extends AbstractUnitTest {
 
         clientService.addClient(p);
 
-        ClientPojo retrievedClient = clientService.getClientByName("Honda");
+        ClientPojo retrievedClient = clientService.getCheck("Honda");
         assertNotNull(retrievedClient);
         assertEquals("Honda", retrievedClient.getName());
         assertEquals("Car", retrievedClient.getDescription());
@@ -41,7 +42,7 @@ public class ClientServiceTest extends AbstractUnitTest {
 
         clientService.addClient(p);
 
-        ClientPojo savedClient = clientService.getClientByName("Samsung");
+        ClientPojo savedClient = clientService.getCheck("Samsung");
         ClientPojo retrievedClient = clientService.getClient(savedClient.getId());
 
         assertNotNull(retrievedClient);
@@ -78,7 +79,7 @@ public class ClientServiceTest extends AbstractUnitTest {
         p.setName("Apple");
 
         clientService.addClient(p);
-        ClientPojo savedClient = clientService.getClientByName("Apple");
+        ClientPojo savedClient = clientService.getCheck("Apple");
 
         ClientPojo updatePojo = new ClientPojo();
         updatePojo.setName("Apple Inc.");

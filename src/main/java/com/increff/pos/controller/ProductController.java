@@ -3,19 +3,17 @@ package com.increff.pos.controller;
 import com.increff.pos.dto.ProductDto;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.forms.ProductForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Api
 @RestController
@@ -24,44 +22,36 @@ public class ProductController {
 
     @Autowired
     private ProductDto productDto;
+
+    @ApiOperation(value = "Add a product")
     @PostMapping
-    public ResponseEntity<Map<String, String>> addProduct(@Valid @RequestBody ProductForm productForm) throws ApiException {
-        productDto.addProduct(productForm);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Product added successfully"));
+    public ProductData addProduct(@Valid @RequestBody ProductForm productForm) throws ApiException {
+        return productDto.addProduct(productForm);
     }
 
     @ApiOperation(value = "Get a product based on its Id")
     @GetMapping("/{id}")
-    public ResponseEntity<ProductData> getProduct(@PathVariable Long id) throws ApiException {
-        ProductData product = productDto.getProduct(id);
-        return ResponseEntity.ok(product);
+    public ProductData getProduct(@PathVariable Long id) throws ApiException {
+        return productDto.getProduct(id);
     }
 
-    @ApiOperation(value = "Get all products")
-    @GetMapping
-    public ResponseEntity<List<ProductData>> getAll() throws ApiException {
-        List<ProductData> products = productDto.getAllProducts();
-        return ResponseEntity.ok(products);
-    }
-
+    @ApiOperation(value = "Update a product")
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, String>> updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
-        productDto.updateProduct(id, productForm);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Product updated successfully"));
+    public ProductData updateProduct(@PathVariable Long id, @RequestBody ProductForm productForm) throws ApiException {
+       return productDto.updateProduct(id, productForm);
     }
-    
+
     @ApiOperation(value = "Get all products with pagination")
     @GetMapping("/paginated")
-    public ResponseEntity<Map<String, Object>> getAllPaginated(
+    public List<ProductData> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int pageSize) throws ApiException {
-        Map<String, Object> response = productDto.getAllProductsPaginated(page, pageSize);
-        return ResponseEntity.ok(response);
+            @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
+        return productDto.getAllProductsPaginated(page, pageSize, httpServletResponse);
     }
 
+    @ApiOperation(value = "check session")
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, String>> uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
+    public void uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
         productDto.uploadProducts(file);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Product file uploaded successfully"));
     }
 }
