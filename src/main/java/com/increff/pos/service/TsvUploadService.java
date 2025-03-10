@@ -19,6 +19,9 @@ import java.util.List;
 public class TsvUploadService {
 
     @Autowired
+    private TsvParserUtil tsvParserUtil;
+
+    @Autowired
     private ProductService productService;
 
     @Autowired
@@ -28,7 +31,7 @@ public class TsvUploadService {
     private ClientService clientService;
 
     public void uploadProducts(MultipartFile file) throws IOException, ApiException {
-        List<ProductPojo> products = TsvParserUtil.parseTSV(file.getInputStream(),
+        List<ProductPojo> products = tsvParserUtil.parseTSV(file.getInputStream(),
                 new HashSet<>(Arrays.asList("name", "barcode", "price", "clientName")),
                 record -> {
                     ProductPojo p = new ProductPojo();
@@ -51,7 +54,7 @@ public class TsvUploadService {
     }
 
     public void uploadInventory(MultipartFile file) throws IOException, ApiException {
-        List<InventoryPojo> inventoryList = TsvParserUtil.parseTSV(file.getInputStream(),
+        List<InventoryPojo> inventoryList = tsvParserUtil.parseTSV(file.getInputStream(),
                 new HashSet<>(Arrays.asList("barcode", "quantity")),
                 record -> {
                     InventoryPojo inventoryPojo = new InventoryPojo();

@@ -50,4 +50,7 @@ public class ApplicationProperties {
 
     @Value("${time.between.eviction.runs.millis:60000}")
     private long setTimeBetweenEvictionRunsMillis;
+
+    @Value("${tsv.max.lines:5000}")
+    private int maxTsvLines;
 }

@@ -1,8 +1,11 @@
 package com.increff.pos.util;
 
+import com.increff.pos.spring.ApplicationProperties;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,12 +16,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+@Component
 public class TsvParserUtil {
 
-    private static final int MAX_LINES = 5000;
+    @Autowired
+    private ApplicationProperties applicationProperties;
 
-    public static <T> List<T> parseTSV(InputStream inputStream, Set<String> expectedHeaders,
-                                       Function<CSVRecord, T> mapper) throws IOException {
+    public <T> List<T> parseTSV(InputStream inputStream, Set<String> expectedHeaders,
+                                Function<CSVRecord, T> mapper) throws IOException {
         List<T> recordsList = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -36,9 +41,10 @@ public class TsvParserUtil {
             }
 
             int count = 0;
+            int maxLines = applicationProperties.getMaxTsvLines();
             for (CSVRecord record : csvParser) {
-                if (count >= MAX_LINES) {
-                    throw new IOException("File exceeds the maximum allowed limit of " + MAX_LINES + " lines.");
+                if (count >= maxLines) {
+                    throw new IOException("File exceeds the maximum allowed limit of " + maxLines + " lines.");
                 }
                 recordsList.add(mapper.apply(record));
                 count++;
