@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -31,45 +32,75 @@ public class TsvUploadService {
     private ClientService clientService;
 
     public void uploadProducts(MultipartFile file) throws IOException, ApiException {
+        List<ProductPojo> validProducts = new ArrayList<>();
+        List<String> errorMessages = new ArrayList<>();
+
         List<ProductPojo> products = tsvParserUtil.parseTSV(file.getInputStream(),
                 new HashSet<>(Arrays.asList("name", "barcode", "price", "clientName")),
                 record -> {
                     ProductPojo p = new ProductPojo();
-                    p.setName(Normalize.normalizeName(record.get("name")));
-                    p.setBarcode(record.get("barcode"));
-                    p.setPrice(Double.parseDouble(record.get("price")));
-
                     try {
+                        String barcode = record.get("barcode");
+
+                        if (productService.getProductByBarcode(barcode) != null) {
+                            throw new ApiException("Product with barcode '" + barcode + "' already exists.");
+                        }
+
+                        p.setName(Normalize.normalizeName(record.get("name")));
+                        p.setBarcode(barcode);
+                        p.setPrice(Double.parseDouble(record.get("price")));
+
                         ClientPojo cp = clientService.getCheck(record.get("clientName"));
                         p.setClientId(cp.getId());
-                    } catch (ApiException e) {
-                        throw new RuntimeException("Client not found: " + record.get("clientName"));
+
+                        validProducts.add(p);
+                    } catch (Exception e) {
+                        errorMessages.add("Error in record: " + record.toString() + " - " + e.getMessage());
                     }
-                    return p;
+                    return null;
                 });
 
-        for (ProductPojo product : products) {
+        for (ProductPojo product : validProducts) {
             productService.addProduct(product);
+        }
+
+        if (!errorMessages.isEmpty()) {
+            throw new ApiException("Some records failed: " + String.join("; ", errorMessages));
         }
     }
 
     public void uploadInventory(MultipartFile file) throws IOException, ApiException {
+        List<InventoryPojo> validInventories = new ArrayList<>();
+        List<String> errorMessages = new ArrayList<>();
+
         List<InventoryPojo> inventoryList = tsvParserUtil.parseTSV(file.getInputStream(),
                 new HashSet<>(Arrays.asList("barcode", "quantity")),
                 record -> {
-                    InventoryPojo inventoryPojo = new InventoryPojo();
                     try {
-                        ProductPojo productPojo = productService.getProductByBarcode(record.get("barcode"));
+                        String barcode = record.get("barcode");
+
+                        ProductPojo productPojo = productService.getProductByBarcode(barcode);
+                        if (productPojo == null) {
+                            throw new ApiException("Product not found with barcode: " + barcode);
+                        }
+
+                        InventoryPojo inventoryPojo = new InventoryPojo();
                         inventoryPojo.setProdId(productPojo.getId());
-                    } catch (ApiException e) {
-                        throw new RuntimeException("Product not found with barcode: " + record.get("barcode"));
+                        inventoryPojo.setQuantity(Long.parseLong(record.get("quantity")));
+
+                        validInventories.add(inventoryPojo);
+                    } catch (Exception e) {
+                        errorMessages.add("Error in record: " + record.toString() + " - " + e.getMessage());
                     }
-                    inventoryPojo.setQuantity(Long.parseLong(record.get("quantity")));
-                    return inventoryPojo;
+                    return null;
                 });
 
-        for (InventoryPojo inventoryPojo : inventoryList) {
+        for (InventoryPojo inventoryPojo : validInventories) {
             inventoryService.addInventory(inventoryPojo);
+        }
+
+        if (!errorMessages.isEmpty()) {
+            throw new ApiException("Some records failed: " + String.join("; ", errorMessages));
         }
     }
 
