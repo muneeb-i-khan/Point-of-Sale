@@ -17,8 +17,8 @@ import com.increff.pos.util.Constants;
 
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
+
 @Service
-//TODO: make it a flow layer
 public class AuthFlow {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -44,7 +44,6 @@ public class AuthFlow {
         Optional<UserPojo> userOpt = userService.getUserByEmail(email);
         UserPojo user = userOpt.orElseThrow(() -> new ApiException("User not found"));
 
-        //TODO; to create a constants class and move there
         session.setAttribute(constants.USER_ID, user.getId());
         session.setAttribute(constants.ROLE, user.getRole());
         return new UserData(user.getId(), user.getEmail(), user.getRole());
@@ -61,11 +60,9 @@ public class AuthFlow {
     }
 
     public void registerUser(String email, String password) throws ApiException {
-        //TODO: dont call userdao directly instead call userApi
         if (userService.getCheckEmail(email)) {
             throw new ApiException("Email already exists");
         }
-        //TODO: to remove the try catch
         UserPojo newUser = new UserPojo();
         newUser.setEmail(email);
         newUser.setPassword(passwordEncoder.encode(password));
