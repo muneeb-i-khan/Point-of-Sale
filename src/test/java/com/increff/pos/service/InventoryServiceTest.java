@@ -39,7 +39,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
         InventoryPojo retrievedInventory = inventoryService.getInventoryByBarcode("123ABC");
         assertNotNull(retrievedInventory);
         assertEquals(10L, retrievedInventory.getQuantity().longValue());
-        assertEquals("123ABC", productService.getProduct(retrievedInventory.getProdId()).getBarcode());
+        assertEquals("123ABC", productService.getCheck(retrievedInventory.getProdId()).getBarcode());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
         InventoryPojo retrievedInventory = inventoryService.getCheck(savedInventory.getId());
 
         assertNotNull(retrievedInventory);
-        assertEquals("456DEF", productService.getProduct(retrievedInventory.getProdId()).getBarcode());
+        assertEquals("456DEF", productService.getCheck(retrievedInventory.getProdId()).getBarcode());
         assertEquals(20L, retrievedInventory.getQuantity().longValue());
     }
 

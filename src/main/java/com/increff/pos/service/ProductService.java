@@ -41,10 +41,6 @@ public class ProductService {
         return product;
     }
 
-    public ProductPojo getProduct(Long id) throws ApiException {
-        return getCheck(id);
-    }
-
     public List<ProductPojo> getAllProducts() {
         return dao.selectAll();
     }
@@ -68,7 +64,6 @@ public class ProductService {
         return productFlow.convert(ex);
     }
 
-
     public List<ProductPojo> getAllProductsPaginated(int page, int pageSize) {
         return dao.selectAllPaginated(page, pageSize);
     }
@@ -76,7 +71,6 @@ public class ProductService {
     public Long getProductCount() {
         return dao.countProducts();
     }
-
 
     public ProductPojo getCheck(Long id) throws ApiException {
         ProductPojo p = dao.select(id);

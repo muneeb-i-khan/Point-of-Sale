@@ -71,7 +71,7 @@ public class OrderFlow {
     }
 
     public ProductPojo getProduct(Long id) {
-        return productService.getProduct(id);
+        return productService.getCheck(id);
     }
 
     public OrderData convert(OrderPojo orderPojo) throws ApiException {
@@ -96,7 +96,7 @@ public class OrderFlow {
         List<OrderItem> orderItems = new ArrayList<>();
         for (OrderItemPojo itemPojo : orderItemPojos) {
             OrderItem orderItem = new OrderItem();
-            ProductPojo product = productService.getProduct(itemPojo.getProdId());
+            ProductPojo product = productService.getCheck(itemPojo.getProdId());
             if (product == null) {
                 throw new ApiException("Product not found for ID: " + itemPojo.getProdId() + " in order: " + orderPojo.getId());
             }

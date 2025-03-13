@@ -42,7 +42,7 @@ public class InventoryFlow {
     }
 
     public String getBarcode(InventoryPojo inventoryPojo) {
-        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProdId());
+        ProductPojo productPojo = productService.getCheck(inventoryPojo.getProdId());
         return productPojo.getBarcode();
     }
 
@@ -57,7 +57,7 @@ public class InventoryFlow {
     public InventoryData convert(InventoryPojo inventoryPojo) throws ApiException {
         InventoryData inventoryData = new InventoryData();
         inventoryData.setId(inventoryPojo.getId());
-        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProdId());
+        ProductPojo productPojo = productService.getCheck(inventoryPojo.getProdId());
         inventoryData.setBarcode(productPojo.getBarcode());
         inventoryData.setQuantity(inventoryPojo.getQuantity());
         inventoryData.setProdName(productPojo.getName());
