@@ -81,7 +81,6 @@ public class OrderFlow {
 
         OrderData orderData = new OrderData();
         orderData.setId(orderPojo.getId());
-        orderData.setTotalAmount(orderPojo.getTotalAmount());
         orderData.setOrderDate(orderPojo.getOrderDate());
 
         CustomerPojo customer = customerService.getCheck(orderPojo.getId());
@@ -94,6 +93,8 @@ public class OrderFlow {
         }
 
         List<OrderItem> orderItems = new ArrayList<>();
+        double totalAmount = 0.0;
+
         for (OrderItemPojo itemPojo : orderItemPojos) {
             OrderItem orderItem = new OrderItem();
             ProductPojo product = productService.getCheck(itemPojo.getProdId());
@@ -105,10 +106,14 @@ public class OrderFlow {
             orderItem.setProdName(product.getName());
             orderItem.setPrice(product.getPrice());
             orderItem.setSellingPrice(itemPojo.getSellingPrice());
+
+            totalAmount += itemPojo.getSellingPrice() * itemPojo.getQuantity();
+
             orderItems.add(orderItem);
         }
 
         orderData.setItems(orderItems);
+        orderData.setTotalAmount(totalAmount);
         return orderData;
     }
 

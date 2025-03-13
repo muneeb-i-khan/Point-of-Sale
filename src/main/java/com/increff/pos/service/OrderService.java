@@ -40,7 +40,6 @@ public class OrderService {
         orderDao.add(order);
         processOrderItems(order, orderItemPojoList);
         double totalAmt = calculateTotalAmount(orderItemPojoList);
-        order.setTotalAmount(totalAmt);
         updateSalesReport(order, orderItemPojoList, totalAmt);
         return order;
     }
