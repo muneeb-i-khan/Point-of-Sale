@@ -56,7 +56,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
         inventoryService.addInventory(inventory);
         InventoryPojo savedInventory = inventoryService.getInventoryByBarcode("456DEF");
 
-        InventoryPojo retrievedInventory = inventoryService.getInventory(savedInventory.getId());
+        InventoryPojo retrievedInventory = inventoryService.getCheck(savedInventory.getId());
 
         assertNotNull(retrievedInventory);
         assertEquals("456DEF", productService.getProduct(retrievedInventory.getProdId()).getBarcode());
@@ -65,7 +65,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void getInventoryByIdNotFoundTest() throws ApiException {
-        inventoryService.getInventory(999L);
+        inventoryService.getCheck(999L);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
 
         inventoryService.updateInventory(savedInventory.getId(), updatedInventory);
 
-        InventoryPojo retrievedInventory = inventoryService.getInventory(savedInventory.getId());
+        InventoryPojo retrievedInventory = inventoryService.getCheck(savedInventory.getId());
         assertEquals(50L, retrievedInventory.getQuantity().longValue());
     }
 

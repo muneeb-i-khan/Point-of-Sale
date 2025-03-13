@@ -40,7 +40,7 @@ public class InventoryDto {
 
     public InventoryData getInventory(Long id) throws ApiException {
         inventoryService.getCheck(id);
-        InventoryPojo inventoryPojo = inventoryService.getInventory(id);
+        InventoryPojo inventoryPojo = inventoryService.getCheck(id);
         return inventoryFlow.convert(inventoryPojo);
     }
 

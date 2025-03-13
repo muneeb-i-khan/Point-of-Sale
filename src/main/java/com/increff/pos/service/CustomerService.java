@@ -28,10 +28,6 @@ public class CustomerService {
         return dao.selectPhone(number);
     }
 
-    public List<CustomerPojo> getAllCustomers() {
-        return dao.selectAll();
-    }
-
     public void updateCustomer(Long id, CustomerPojo p) throws ApiException {
         CustomerPojo ex = getCheck(id);
         ex.setName(p.getName());

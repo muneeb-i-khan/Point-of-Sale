@@ -33,7 +33,7 @@ public class InventoryFlow {
     public InventoryData getInventory(String barcode) throws ApiException {
         ProductPojo productPojo = productService.getProductByBarcode(barcode);
         inventoryService.getCheck(productPojo.getId());
-        InventoryPojo inventoryPojo = inventoryService.getInventory(productPojo.getId());
+        InventoryPojo inventoryPojo = inventoryService.getCheck(productPojo.getId());
         return convert(inventoryPojo);
     }
 
