@@ -11,98 +11,102 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class TsvUploadService {
 
     @Autowired
     private TsvParserUtil tsvParserUtil;
-
     @Autowired
     private ProductService productService;
-
     @Autowired
     private InventoryService inventoryService;
-
     @Autowired
     private ClientService clientService;
 
-    //TODO: to refactor
     public void uploadProducts(MultipartFile file) throws IOException, ApiException {
         List<ProductPojo> validProducts = new ArrayList<>();
         List<String> errorMessages = new ArrayList<>();
 
-        List<ProductPojo> products = tsvParserUtil.parseTSV(file.getInputStream(),
-                new HashSet<>(Arrays.asList("name", "barcode", "price", "clientName")),
-                record -> {
-                    ProductPojo p = new ProductPojo();
-                    try {
-                        String barcode = record.get("barcode");
-
-                        if (productService.getProductByBarcode(barcode) != null) {
-                            throw new ApiException("Product with barcode '" + barcode + "' already exists.");
-                        }
-
-                        p.setName(Normalize.normalizeName(record.get("name")));
-                        p.setBarcode(barcode);
-                        p.setPrice(Double.parseDouble(record.get("price")));
-
-                        ClientPojo cp = clientService.getCheck(record.get("clientName"));
-                        p.setClientId(cp.getId());
-
-                        validProducts.add(p);
-                    } catch (Exception e) {
-                        errorMessages.add("Error in record: " + record.toString() + " - " + e.getMessage());
-                    }
-                    return null;
-                });
-
-        for (ProductPojo product : validProducts) {
-            productService.addProduct(product);
-        }
-
-        if (!errorMessages.isEmpty()) {
-            throw new ApiException("Some records failed: " + String.join("; ", errorMessages));
-        }
+        parseProducts(file, validProducts, errorMessages);
+        saveValidProducts(validProducts, errorMessages);
     }
 
     public void uploadInventory(MultipartFile file) throws IOException, ApiException {
         List<InventoryPojo> validInventories = new ArrayList<>();
         List<String> errorMessages = new ArrayList<>();
 
-        List<InventoryPojo> inventoryList = tsvParserUtil.parseTSV(file.getInputStream(),
-                new HashSet<>(Arrays.asList("barcode", "quantity")),
+        parseInventory(file, validInventories, errorMessages);
+        saveValidInventories(validInventories, errorMessages);
+    }
+
+    private void parseProducts(MultipartFile file, List<ProductPojo> validProducts, List<String> errorMessages) throws IOException {
+        tsvParserUtil.parseTSV(file.getInputStream(),
+                new HashSet<>(Arrays.asList("name", "barcode", "price", "clientName")),
                 record -> {
                     try {
                         String barcode = record.get("barcode");
-
-                        ProductPojo productPojo = productService.getProductByBarcode(barcode);
-                        if (productPojo == null) {
-                            throw new ApiException("Product not found with barcode: " + barcode);
+                        if (productService.getProductByBarcode(barcode) != null) {
+                            throw new ApiException("Product with barcode '" + barcode + "' already exists.");
                         }
 
-                        InventoryPojo inventoryPojo = new InventoryPojo();
-                        inventoryPojo.setProdId(productPojo.getId());
-                        inventoryPojo.setQuantity(Long.parseLong(record.get("quantity")));
+                        ProductPojo product = new ProductPojo();
+                        product.setName(Normalize.normalizeName(record.get("name")));
+                        product.setBarcode(barcode);
+                        product.setPrice(Double.parseDouble(record.get("price")));
 
-                        validInventories.add(inventoryPojo);
+                        ClientPojo client = clientService.getCheck(record.get("clientName"));
+                        product.setClientId(client.getId());
+
+                        validProducts.add(product);
                     } catch (Exception e) {
                         errorMessages.add("Error in record: " + record.toString() + " - " + e.getMessage());
                     }
                     return null;
                 });
+    }
 
-        for (InventoryPojo inventoryPojo : validInventories) {
-            inventoryService.addInventory(inventoryPojo);
+    private void parseInventory(MultipartFile file, List<InventoryPojo> validInventories, List<String> errorMessages) throws IOException {
+        tsvParserUtil.parseTSV(file.getInputStream(),
+                new HashSet<>(Arrays.asList("barcode", "quantity")),
+                record -> {
+                    try {
+                        String barcode = record.get("barcode");
+                        ProductPojo product = productService.getProductByBarcode(barcode);
+                        if (product == null) {
+                            throw new ApiException("Product not found with barcode: " + barcode);
+                        }
+
+                        InventoryPojo inventory = new InventoryPojo();
+                        inventory.setProdId(product.getId());
+                        inventory.setQuantity(Long.parseLong(record.get("quantity")));
+
+                        validInventories.add(inventory);
+                    } catch (Exception e) {
+                        errorMessages.add("Error in record: " + record.toString() + " - " + e.getMessage());
+                    }
+                    return null;
+                });
+    }
+
+    private void saveValidProducts(List<ProductPojo> validProducts, List<String> errorMessages) throws ApiException {
+        for (ProductPojo product : validProducts) {
+            productService.addProduct(product);
         }
+        handleErrors(errorMessages);
+    }
 
+    private void saveValidInventories(List<InventoryPojo> validInventories, List<String> errorMessages) throws ApiException {
+        for (InventoryPojo inventory : validInventories) {
+            inventoryService.addInventory(inventory);
+        }
+        handleErrors(errorMessages);
+    }
+
+    private void handleErrors(List<String> errorMessages) throws ApiException {
         if (!errorMessages.isEmpty()) {
             throw new ApiException("Some records failed: " + String.join("; ", errorMessages));
         }
     }
-
 }
