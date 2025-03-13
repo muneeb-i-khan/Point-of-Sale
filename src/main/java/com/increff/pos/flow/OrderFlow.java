@@ -87,7 +87,7 @@ public class OrderFlow {
         orderData.setTotalAmount(orderPojo.getTotalAmount());
         orderData.setOrderDate(orderPojo.getOrderDate());
 
-        CustomerPojo customer = customerService.getCustomer(orderPojo.getId());
+        CustomerPojo customer = customerService.getCheck(orderPojo.getId());
         orderData.setCustomerName(customer != null ? customer.getName() : null);
         orderData.setCustomerPhone(customer != null ? customer.getPhone() : null);
 
