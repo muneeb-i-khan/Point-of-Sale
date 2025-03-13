@@ -83,6 +83,10 @@ public class OrderService {
         return generateAndSaveNewInvoice(orderPojo, id);
     }
 
+    public List<OrderItemPojo> getItemsByOrderId(Long id) {
+        return orderItemDao.getItemsByOrderId(id);
+    }
+
     private OrderPojo initializeOrder(CustomerPojo customerPojo) throws ApiException {
         OrderPojo order = new OrderPojo();
         order.setOrderDate(ZonedDateTime.now());

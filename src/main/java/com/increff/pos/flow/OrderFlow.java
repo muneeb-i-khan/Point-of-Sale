@@ -27,9 +27,6 @@ public class OrderFlow {
     private ProductService productService;
 
     @Autowired
-    private OrderItemDao orderItemDao;
-
-    @Autowired
     private CustomerDto customerDto;
 
     @Autowired
@@ -91,7 +88,7 @@ public class OrderFlow {
         orderData.setCustomerName(customer != null ? customer.getName() : null);
         orderData.setCustomerPhone(customer != null ? customer.getPhone() : null);
 
-        List<OrderItemPojo> orderItemPojos = orderItemDao.getItemsByOrderId(orderPojo.getId());
+        List<OrderItemPojo> orderItemPojos = orderService.getItemsByOrderId(orderPojo.getId());
         if (orderItemPojos == null) {
             throw new ApiException("No items found for order ID: " + orderPojo.getId());
         }
@@ -114,6 +111,7 @@ public class OrderFlow {
         orderData.setItems(orderItems);
         return orderData;
     }
+
     private List<OrderItemPojo> convert(List<OrderItemForm> orderItemFormList) throws ApiException {
         List<OrderItemPojo> orderItemPojoList = new ArrayList<>();
 
