@@ -21,6 +21,7 @@ public class DaySaleReportService {
     private DaySaleReportFlow daySaleReportFlow;
 
     @Transactional
+    //TODO: to refactor the code
     public void recordDailySales() {
         ZonedDateTime yesterday = ZonedDateTime.now().minusDays(1);
 
@@ -28,6 +29,7 @@ public class DaySaleReportService {
         int itemSoldCount = daySaleReportFlow.getItemSoldCount(yesterday);
         double revenue = daySaleReportFlow.getRevenue(yesterday);
 
+        //TODO: dont use syste,out, use logging instead
         System.out.println("Generating Report for " + yesterday);
         System.out.println("Orders: " + orderCount + ", Items Sold: " + itemSoldCount + ", Revenue: " + revenue);
 

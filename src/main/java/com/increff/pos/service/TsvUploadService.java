@@ -31,6 +31,7 @@ public class TsvUploadService {
     @Autowired
     private ClientService clientService;
 
+    //TODO: to refactor
     public void uploadProducts(MultipartFile file) throws IOException, ApiException {
         List<ProductPojo> validProducts = new ArrayList<>();
         List<String> errorMessages = new ArrayList<>();

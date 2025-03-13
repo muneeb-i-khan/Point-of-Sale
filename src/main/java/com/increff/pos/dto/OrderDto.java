@@ -48,6 +48,7 @@ public class OrderDto {
     }
 
     public ResponseEntity<byte[]> downloadInvoice(Long id) throws ApiException{
+        //TODO: to convert string to byte here
         return orderService.downloadPdf(id);
     }
 }

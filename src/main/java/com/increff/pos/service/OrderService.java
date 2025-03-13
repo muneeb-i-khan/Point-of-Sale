@@ -116,6 +116,7 @@ public class OrderService {
         return orderDao.countOrders();
     }
 
+    //TODO: to return string
     public ResponseEntity<byte[]> downloadPdf(Long id) throws ApiException {
         OrderPojo orderPojo = getOrderById(id);
         if (orderPojo.getInvoicePath() != null && !orderPojo.getInvoicePath().isEmpty()) {
