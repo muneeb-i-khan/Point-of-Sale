@@ -4,8 +4,12 @@ import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.pojo.*;
 import com.increff.pos.flow.OrderFlow;
+import com.increff.pos.model.data.OrderData;
 import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -75,11 +79,12 @@ public class OrderService {
 
     public ResponseEntity<byte[]> downloadPdf(Long id) throws ApiException {
         OrderPojo orderPojo = getOrderById(id);
-        ResponseEntity<byte[]> existingInvoiceResponse = tryLoadExistingInvoice(orderPojo, id);
+        OrderData orderData = orderFlow.convert(orderPojo);
+        ResponseEntity<byte[]> existingInvoiceResponse = tryLoadExistingInvoice(orderPojo, id, orderData);
         if (existingInvoiceResponse != null) {
             return existingInvoiceResponse;
         }
-        return generateAndSaveNewInvoice(orderPojo, id);
+        return generateAndSaveNewInvoice(orderPojo, id, orderData);
     }
 
     public List<OrderItemPojo> getItemsByOrderId(Long id) {
@@ -154,7 +159,7 @@ public class OrderService {
     }
 
 
-    private ResponseEntity<byte[]> tryLoadExistingInvoice(OrderPojo orderPojo, Long id) throws ApiException {
+    private ResponseEntity<byte[]> tryLoadExistingInvoice(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
         if (orderPojo.getInvoicePath() != null && !orderPojo.getInvoicePath().isEmpty()) {
             File pdfFile = new File(orderPojo.getInvoicePath());
             if (pdfFile.exists()) {
@@ -169,20 +174,31 @@ public class OrderService {
         return null;
     }
 
-    private ResponseEntity<byte[]> generateAndSaveNewInvoice(OrderPojo orderPojo, Long id) throws ApiException {
-        String url = "http://localhost:9001/invoice/api/invoice/" + id;
+    private ResponseEntity<byte[]> generateAndSaveNewInvoice(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
+        String url = "http://localhost:9001/invoice/api/invoice/";
         RestTemplate restTemplate = new RestTemplate();
         try {
-            byte[] pdfBytes = fetchAndDecodeInvoice(url, restTemplate);
+            byte[] pdfBytes = fetchAndDecodeInvoice(url, restTemplate, orderData);
             saveInvoiceFile(pdfBytes, id, orderPojo);
             return buildPdfResponse(pdfBytes, id);
         } catch (Exception e) {
-            throw new ApiException("Failed to download invoice for order ID: " + id);
+            throw new ApiException("Failed to generate invoice for order ID: " + id);
         }
     }
 
-    private byte[] fetchAndDecodeInvoice(String url, RestTemplate restTemplate) throws ApiException {
-        String base64Pdf = restTemplate.getForObject(url, String.class);
+    private byte[] fetchAndDecodeInvoice(String url, RestTemplate restTemplate, OrderData orderData) throws ApiException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<OrderData> request = new HttpEntity<>(orderData, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+        String base64Pdf = response.getBody();
+
+        if (base64Pdf == null) {
+            throw new ApiException("Failed to receive invoice PDF from server");
+        }
+
         return Base64.getDecoder().decode(base64Pdf);
     }
 
@@ -195,7 +211,7 @@ public class OrderService {
     private ResponseEntity<byte[]> buildPdfResponse(byte[] pdfBytes, Long id) {
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=invoice_" + id + ".pdf")
-                .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
     }
 }
