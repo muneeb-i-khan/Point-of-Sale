@@ -45,6 +45,7 @@ public class InventoryFlow {
         ProductPojo productPojo = productService.getProduct(inventoryPojo.getProdId());
         return productPojo.getBarcode();
     }
+
     public InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
         InventoryPojo inventoryPojo = new InventoryPojo();
         ProductPojo productPojo = productService.getProductByBarcode(inventoryForm.getBarcode());
@@ -60,7 +61,7 @@ public class InventoryFlow {
         inventoryData.setBarcode(productPojo.getBarcode());
         inventoryData.setQuantity(inventoryPojo.getQuantity());
         inventoryData.setProdName(productPojo.getName());
-        ClientPojo clientPojo = clientService.getClient(productPojo.getClientId());
+        ClientPojo clientPojo = clientService.getCheck(productPojo.getClientId());
         inventoryData.setClientName(clientPojo.getName());
         return inventoryData;
     }

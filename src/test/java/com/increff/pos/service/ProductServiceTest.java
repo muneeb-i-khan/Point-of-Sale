@@ -41,7 +41,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         ProductPojo retrievedProduct = productService.getProductByBarcode("12345");
         assertNotNull(retrievedProduct);
         assertEquals("Galaxy S21", retrievedProduct.getName());
-        assertEquals("Samsung", clientService.getClient(product.getClientId()).getName());
+        assertEquals("Samsung", clientService.getCheck(product.getClientId()).getName());
     }
 
     @Test

@@ -43,7 +43,7 @@ public class ClientServiceTest extends AbstractUnitTest {
         clientService.addClient(p);
 
         ClientPojo savedClient = clientService.getCheck("Samsung");
-        ClientPojo retrievedClient = clientService.getClient(savedClient.getId());
+        ClientPojo retrievedClient = clientService.getCheck(savedClient.getId());
 
         assertNotNull(retrievedClient);
         assertEquals("Samsung", retrievedClient.getName());
@@ -52,7 +52,7 @@ public class ClientServiceTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void getClientByIdNotFoundTest() throws ApiException {
-        clientService.getClient(999L);
+        clientService.getCheck(999L);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ClientServiceTest extends AbstractUnitTest {
 
         clientService.updateClient(savedClient.getId(), updatePojo);
 
-        ClientPojo updatedClient = clientService.getClient(savedClient.getId());
+        ClientPojo updatedClient = clientService.getCheck(savedClient.getId());
         assertEquals("Apple Inc.", updatedClient.getName());
         assertEquals("Updated Mobile Company", updatedClient.getDescription());
     }
