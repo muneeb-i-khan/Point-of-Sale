@@ -48,7 +48,7 @@ public class InventoryService {
         InventoryPojo ex = getCheck(id);
         ex.setQuantity(p.getQuantity());
         ex.setProdId(p.getProdId());
-        dao.update(p);
+        dao.update(ex);
     }
 
     public InventoryPojo getCheck(Long id) throws ApiException {

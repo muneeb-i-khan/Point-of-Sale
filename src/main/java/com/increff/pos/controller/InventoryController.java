@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class InventoryController {
 
     @ApiOperation(value = "Add Inventory")
     @PostMapping
-    public InventoryData addInventory(@RequestBody InventoryForm inventoryForm) throws ApiException {
+    public InventoryData addInventory(@Valid @RequestBody InventoryForm inventoryForm) throws ApiException {
         return inventoryDto.addInventory(inventoryForm);
     }
 
@@ -50,7 +51,7 @@ public class InventoryController {
 
     @ApiOperation(value = "Update Inventory")
     @PutMapping("/{id}")
-    public InventoryData updateInventory(@PathVariable Long id, @RequestBody InventoryForm inventoryForm) throws ApiException {
+    public InventoryData updateInventory(@PathVariable Long id, @Valid @RequestBody InventoryForm inventoryForm) throws ApiException {
        return  inventoryDto.updateInventory(inventoryForm, id);
     }
 
