@@ -1,8 +1,10 @@
-package com.increff.pos.service;
+package com.increff.pos.flow;
 
 import com.increff.pos.db.dao.UserDao;
 import com.increff.pos.db.pojo.UserPojo;
 import com.increff.pos.model.data.UserData;
+import com.increff.pos.service.AbstractUnitTest;
+import com.increff.pos.service.QaConfig;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.util.RoleAssigner;
 import org.junit.Before;
@@ -23,10 +25,10 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = QaConfig.class)
 @Transactional
 @Rollback
-public class AuthServiceTest extends AbstractUnitTest {
+public class AuthFlowTest extends AbstractUnitTest {
 
     @Autowired
-    private AuthService authService;
+    private AuthFlow authFlow;
 
     @Autowired
     private UserDao userDao;
@@ -50,7 +52,7 @@ public class AuthServiceTest extends AbstractUnitTest {
         user.setRole(RoleAssigner.assignRole("supervisor@increff.com"));
         userDao.save(user);
 
-        UserData result = authService.login("supervisor@increff.com", "password123", session);
+        UserData result = authFlow.login("supervisor@increff.com", "password123", session);
 
         assertNotNull(result);
         assertEquals("supervisor@increff.com", result.getEmail());
@@ -66,7 +68,7 @@ public class AuthServiceTest extends AbstractUnitTest {
         user.setRole(RoleAssigner.assignRole("operator@example.com"));
         userDao.save(user);
 
-        UserData result = authService.login("operator@example.com", "password123", session);
+        UserData result = authFlow.login("operator@example.com", "password123", session);
 
         assertNotNull(result);
         assertEquals("operator@example.com", result.getEmail());
@@ -83,7 +85,7 @@ public class AuthServiceTest extends AbstractUnitTest {
         userDao.save(user);
 
         try {
-            authService.login("test@example.com", "wrongpassword", session);
+            authFlow.login("test@example.com", "wrongpassword", session);
             fail("Expected ApiException for incorrect password");
         } catch (ApiException e) {
             assertEquals("Bad credentials", e.getMessage());
@@ -94,7 +96,7 @@ public class AuthServiceTest extends AbstractUnitTest {
     @Test
     public void testLogin_FailureUserNotFound() {
         try {
-            authService.login("nonexistent@example.com", "password123", session);
+            authFlow.login("nonexistent@example.com", "password123", session);
             fail("Expected ApiException for non-existent user");
         } catch (ApiException e) {
             assertEquals("Bad credentials", e.getMessage());
@@ -110,7 +112,7 @@ public class AuthServiceTest extends AbstractUnitTest {
         userDao.save(user);
         session.setAttribute("userId", user.getId());
 
-        UserData result = authService.getSessionUser(session);
+        UserData result = authFlow.getSessionUser(session);
 
         assertNotNull(result);
         assertEquals("test@example.com", result.getEmail());
@@ -120,7 +122,7 @@ public class AuthServiceTest extends AbstractUnitTest {
     @Test
     public void testGetSessionUser_NoSession() {
         try {
-            authService.getSessionUser(session);
+            authFlow.getSessionUser(session);
             fail("Expected ApiException for no active session");
         } catch (ApiException e) {
             assertEquals("No active session", e.getMessage());
@@ -129,7 +131,7 @@ public class AuthServiceTest extends AbstractUnitTest {
 
     @Test
     public void testRegisterUserSuccess() throws ApiException {
-        authService.registerUser("newuser@example.com", "password123");
+        authFlow.registerUser("newuser@example.com", "password123");
 
         Optional<UserPojo> savedUser = userDao.findByEmail("newuser@example.com");
         assertTrue(savedUser.isPresent());
@@ -145,7 +147,7 @@ public class AuthServiceTest extends AbstractUnitTest {
         userDao.save(user);
 
         try {
-            authService.registerUser("existing@example.com", "password123");
+            authFlow.registerUser("existing@example.com", "password123");
             fail("Expected ApiException for duplicate email");
         } catch (ApiException e) {
             assertEquals("Email already exists", e.getMessage());

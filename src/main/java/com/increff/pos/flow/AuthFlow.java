@@ -1,8 +1,8 @@
-package com.increff.pos.service;
+package com.increff.pos.flow;
 
-import com.increff.pos.db.dao.UserDao;
 import com.increff.pos.db.pojo.UserPojo;
 import com.increff.pos.model.data.UserData;
+import com.increff.pos.service.UserService;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.util.RoleAssigner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +19,15 @@ import javax.servlet.http.HttpSession;
 import java.util.Optional;
 @Service
 //TODO: make it a flow layer
-public class AuthService {
-    @Autowired
-    private UserDao userDao;
-
+public class AuthFlow {
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private Constants constants;
+
+    @Autowired
+    private UserService userService;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -41,7 +41,7 @@ public class AuthService {
             throw new ApiException("Bad credentials");
         }
 
-        Optional<UserPojo> userOpt = userDao.findByEmail(email);
+        Optional<UserPojo> userOpt = userService.getUserByEmail(email);
         UserPojo user = userOpt.orElseThrow(() -> new ApiException("User not found"));
 
         //TODO; to create a constants class and move there
@@ -55,29 +55,21 @@ public class AuthService {
         if (userId == null) {
             throw new ApiException("No active session");
         }
-        Optional<UserPojo> userOpt = userDao.findById(userId);
+        Optional<UserPojo> userOpt = userService.get(userId);
         return userOpt.map(user -> new UserData(user.getId(), user.getEmail(), user.getRole()))
                 .orElseThrow(() -> new ApiException("User not found"));
     }
 
     public void registerUser(String email, String password) throws ApiException {
         //TODO: dont call userdao directly instead call userApi
-        if (userDao.findByEmail(email).isPresent()) {
+        if (userService.getCheckEmail(email)) {
             throw new ApiException("Email already exists");
         }
         //TODO: to remove the try catch
-        try {
-            UserPojo newUser = new UserPojo();
-            newUser.setEmail(email);
-            newUser.setPassword(passwordEncoder.encode(password));
-            newUser.setRole(RoleAssigner.assignRole(email));
-            userDao.save(newUser);
-        } catch (Exception e) {
-            throw new ApiException("Error registering user: " + e.getMessage());
-        }
-    }
-
-    public Optional<UserPojo> getUserByEmail(String email) {
-        return userDao.findByEmail(email);
+        UserPojo newUser = new UserPojo();
+        newUser.setEmail(email);
+        newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setRole(RoleAssigner.assignRole(email));
+        userService.add(newUser);
     }
 }

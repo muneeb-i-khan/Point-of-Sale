@@ -1,7 +1,8 @@
 package com.increff.pos.spring;
 
 import com.increff.pos.db.pojo.UserPojo;
-import com.increff.pos.service.AuthService;
+import com.increff.pos.flow.AuthFlow;
+import com.increff.pos.service.UserService;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -33,16 +33,18 @@ import java.util.Optional;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private AuthService authService;
+    private AuthFlow authFlow;
 
     @Autowired
     private Constants constants;
 
+    @Autowired
+    private UserService userService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(email -> {
-            Optional<UserPojo> userOpt = authService.getUserByEmail(email);
+            Optional<UserPojo> userOpt = userService.getUserByEmail(email);
             if (!userOpt.isPresent()) {
                 throw new UsernameNotFoundException("User not found: " + email);
             }
