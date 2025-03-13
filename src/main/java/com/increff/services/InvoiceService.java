@@ -1,13 +1,10 @@
 package com.increff.services;
 
 import com.increff.models.OrderData;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.increff.models.OrderItem;
 import org.apache.fop.apps.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
@@ -17,19 +14,6 @@ import java.util.Base64;
 
 @Service
 public class InvoiceService {
-    private static final String ORDER_API_URL = "http://localhost:9000/pos/api/order/";
-
-    public OrderData fetchOrderDetails(Long orderId) {
-        RestTemplate restTemplate = new RestTemplate();
-        try {
-            String response = restTemplate.getForObject(ORDER_API_URL + orderId, String.class);
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(response, OrderData.class);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to fetch order details", e);
-        }
-    }
-
     @Transactional
     public String generateInvoicePdf(OrderData orderData) {
         try {
@@ -39,7 +23,7 @@ public class InvoiceService {
             File xslFile = new File("src/main/resources/stylesheet.xsl");
             generateXml(orderData, xmlFile);
 
-            File pdfFile = new File("../POS/src/main/pdf/output" + orderId + ".pdf");
+            File pdfFile = new File("src/main/pdf/output.pdf");
             transformToPdf(xmlFile, xslFile, pdfFile);
 
             return encodePdfToBase64(pdfFile);

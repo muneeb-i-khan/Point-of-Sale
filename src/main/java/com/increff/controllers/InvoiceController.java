@@ -17,9 +17,8 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
-    @GetMapping("/{orderId}")
-    public ResponseEntity<String> generateInvoice(@PathVariable Long orderId) {
-        OrderData orderData = invoiceService.fetchOrderDetails(orderId);
+    @PostMapping("/")
+    public ResponseEntity<String> generateInvoice(@RequestBody OrderData orderData) {
         String pdfBase64 = invoiceService.generateInvoicePdf(orderData);
         return ResponseEntity.ok(pdfBase64);
     }
