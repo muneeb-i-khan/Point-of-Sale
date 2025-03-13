@@ -1,6 +1,7 @@
 package com.increff.pos.controller;
 
 import com.increff.pos.db.pojo.DaySaleReportPojo;
+import com.increff.pos.dto.DaySaleReportDto;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.service.DaySaleReportService;
 import io.swagger.annotations.Api;
@@ -22,6 +23,9 @@ public class DaySaleReportController {
     @Autowired
     private DaySaleReportService daySaleReportService;
 
+    @Autowired
+    private DaySaleReportDto daySaleReportDto;
+
     @ApiOperation(value = "Get all reports")
     @GetMapping("/all")
     public List<DaySaleReportPojo> getAllReports(){
@@ -41,16 +45,7 @@ public class DaySaleReportController {
     public List<DaySaleReportPojo> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
-        List<DaySaleReportPojo> daySaleReportPojos = daySaleReportService.getAllDaySaleReportsPaginated(page, pageSize);
-        Long toalDaySaleReports = daySaleReportService.getDaySaleReportCount();
-
-        List<DaySaleReportPojo> daySaleReportPojoList = new ArrayList<>();
-        for(DaySaleReportPojo p: daySaleReportPojos) {
-            daySaleReportPojoList.add(p);
-        }
-
-        httpServletResponse.setHeader("totalDaySaleReport", toalDaySaleReports.toString());
-        return daySaleReportPojoList;
+        return daySaleReportDto.getAllPaginated(page,pageSize,httpServletResponse);
     }
 
 
