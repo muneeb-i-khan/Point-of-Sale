@@ -2,6 +2,7 @@ package com.increff.pos.controller;
 
 import com.increff.pos.db.pojo.DaySaleReportPojo;
 import com.increff.pos.dto.DaySaleReportDto;
+import com.increff.pos.flow.DaySaleReportFlow;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.service.DaySaleReportService;
 import io.swagger.annotations.Api;
@@ -25,6 +26,9 @@ public class DaySaleReportController {
 
     @Autowired
     private DaySaleReportDto daySaleReportDto;
+
+    @Autowired
+    private DaySaleReportFlow daySaleReportFlow;
 
     @ApiOperation(value = "Get all reports")
     @GetMapping("/all")
@@ -52,6 +56,6 @@ public class DaySaleReportController {
     @ApiOperation(value = "Trigger report generation")
     @PostMapping("/generate")
     public void triggerDailySalesReport() {
-        daySaleReportService.recordDailySales();
+        daySaleReportFlow.recordDailySales();
     }
 }

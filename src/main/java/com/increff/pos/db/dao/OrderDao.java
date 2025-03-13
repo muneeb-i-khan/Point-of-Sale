@@ -18,7 +18,7 @@ public class OrderDao extends AbstractDao {
     private static final String SELECT_COUNT = "SELECT COUNT(p) FROM OrderPojo p";
     private static final String SELECT_DATE = "SELECT COUNT(o) FROM OrderPojo o WHERE o.orderDate = :date";
     private static final String COUNT_ITEMS_SOLD_BY_DATE = "SELECT COALESCE(SUM(oi.quantity), 0) FROM OrderItemPojo oi JOIN OrderPojo o ON oi.orderId = o.id WHERE o.orderDate = :date";
-    private static final String CALCULATE_REVENUE_BY_DATE = "SELECT COALESCE(SUM(p.price * oi.quantity), 0) FROM OrderItemPojo oi JOIN OrderPojo p ON oi.prodId = p.id JOIN OrderPojo o ON oi.orderId = o.id WHERE o.orderDate = :date";
+    private static final String CALCULATE_REVENUE_BY_DATE = "SELECT COALESCE(SUM(oi.sellingPrice * oi.quantity), 0) FROM OrderItemPojo oi JOIN OrderPojo p ON oi.prodId = p.id JOIN OrderPojo o ON oi.orderId = o.id WHERE o.orderDate = :date";
 
 
     public void add(OrderPojo p) {

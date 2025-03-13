@@ -15,19 +15,6 @@ public class DaySaleReportService {
     @Autowired
     private DaySaleReportDao daySaleReportDao;
 
-    @Autowired
-    private DaySaleReportFlow daySaleReportFlow;
-
-    @Transactional
-    public void recordDailySales() {
-        ZonedDateTime yesterday = ZonedDateTime.now().minusDays(1);
-
-        DaySaleReportPojo report = generateReport(yesterday);
-        if (report != null) {
-            saveOrUpdateReport(report);
-        }
-    }
-
     public List<DaySaleReportPojo> getReport(ZonedDateTime start, ZonedDateTime end) {
         return daySaleReportDao.findByDateRange(start, end);
     }
@@ -44,10 +31,7 @@ public class DaySaleReportService {
         return daySaleReportDao.selectAll();
     }
 
-    private DaySaleReportPojo generateReport(ZonedDateTime date) {
-        int orderCount = daySaleReportFlow.getOrderCountByDate(date);
-        int itemSoldCount = daySaleReportFlow.getItemSoldCount(date);
-        double revenue = daySaleReportFlow.getRevenue(date);
+    public DaySaleReportPojo generateReport(ZonedDateTime date, int orderCount, int itemSoldCount, double revenue) {
 
         if (orderCount == 0 && itemSoldCount == 0 && revenue == 0) {
             return null;
@@ -61,7 +45,7 @@ public class DaySaleReportService {
         return report;
     }
 
-    private void saveOrUpdateReport(DaySaleReportPojo report) {
+    public void saveOrUpdateReport(DaySaleReportPojo report) {
         DaySaleReportPojo existingReport = daySaleReportDao.findByDate(report.getDate());
         if (existingReport != null) {
             existingReport.setOrderCount(report.getOrderCount());
