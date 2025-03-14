@@ -24,16 +24,8 @@ public class CustomerService {
         dao.add(p);
     }
 
-    public CustomerPojo getCustomer(Long id) throws ApiException {
-        return getCheck(id);
-    }
-
     private CustomerPojo getPhone(String number) throws ApiException {
         return dao.selectPhone(number);
-    }
-
-    public List<CustomerPojo> getAllCustomers() {
-        return dao.selectAll();
     }
 
     public void updateCustomer(Long id, CustomerPojo p) throws ApiException {

@@ -1,6 +1,8 @@
 package com.increff.pos.controller;
 
 import com.increff.pos.db.pojo.DaySaleReportPojo;
+import com.increff.pos.dto.DaySaleReportDto;
+import com.increff.pos.flow.DaySaleReportFlow;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.service.DaySaleReportService;
 import io.swagger.annotations.Api;
@@ -22,6 +24,12 @@ public class DaySaleReportController {
     @Autowired
     private DaySaleReportService daySaleReportService;
 
+    @Autowired
+    private DaySaleReportDto daySaleReportDto;
+
+    @Autowired
+    private DaySaleReportFlow daySaleReportFlow;
+
     @ApiOperation(value = "Get all reports")
     @GetMapping("/all")
     public List<DaySaleReportPojo> getAllReports(){
@@ -29,34 +37,26 @@ public class DaySaleReportController {
     }
 
     @ApiOperation(value = "Get a report")
-    @GetMapping("/")
+    @GetMapping
     public List<DaySaleReportPojo> getReport(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) ZonedDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) ZonedDateTime endDate) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime endDate) {
         return daySaleReportService.getReport(startDate, endDate);
     }
+
 
     @ApiOperation(value = "Get all day sales report with pagination")
     @GetMapping("/paginated")
     public List<DaySaleReportPojo> getAllPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
-        List<DaySaleReportPojo> daySaleReportPojos = daySaleReportService.getAllDaySaleReportsPaginated(page, pageSize);
-        Long toalDaySaleReports = daySaleReportService.getDaySaleReportCount();
-
-        List<DaySaleReportPojo> daySaleReportPojoList = new ArrayList<>();
-        for(DaySaleReportPojo p: daySaleReportPojos) {
-            daySaleReportPojoList.add(p);
-        }
-
-        httpServletResponse.setHeader("totalDaySaleReport", toalDaySaleReports.toString());
-        return daySaleReportPojoList;
+        return daySaleReportDto.getAllPaginated(page,pageSize,httpServletResponse);
     }
 
 
     @ApiOperation(value = "Trigger report generation")
     @PostMapping("/generate")
     public void triggerDailySalesReport() {
-        daySaleReportService.recordDailySales();
+        daySaleReportFlow.recordDailySales();
     }
 }

@@ -1,20 +1,18 @@
 package com.increff.pos.flow;
 
-import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.pojo.*;
 import com.increff.pos.dto.CustomerDto;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderData.OrderItem;
 import com.increff.pos.model.forms.CustomerForm;
 import com.increff.pos.model.forms.OrderForm.OrderItemForm;
-import com.increff.pos.service.InventoryService;
+import com.increff.pos.service.*;
 import com.increff.pos.util.ApiException;
-import com.increff.pos.service.CustomerService;
-import com.increff.pos.service.OrderService;
-import com.increff.pos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @Component
@@ -27,9 +25,6 @@ public class OrderFlow {
     private ProductService productService;
 
     @Autowired
-    private OrderItemDao orderItemDao;
-
-    @Autowired
     private CustomerDto customerDto;
 
     @Autowired
@@ -38,6 +33,9 @@ public class OrderFlow {
     @Autowired
     private InventoryService inventoryService;
 
+    @Autowired
+    private SalesReportService salesReportService;
+
     public OrderData addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
         if (orderItemFormList == null || orderItemFormList.isEmpty()) {
             throw new ApiException("Order cannot be empty.");
@@ -45,10 +43,9 @@ public class OrderFlow {
         List<OrderItemForm> mergedOrderItems = mergeDuplicateItems(orderItemFormList);
         List<OrderItemPojo> orderItemPojoList = convert(mergedOrderItems);
         CustomerPojo customerPojo = customerDto.convert(customerForm);
-        OrderPojo orderPojo = orderService.createOrder(orderItemPojoList, customerPojo);
+        OrderPojo orderPojo = createOrder(orderItemPojoList, customerPojo);
         return convert(orderPojo);
     }
-
 
     public OrderData getOrder(Long id) throws ApiException {
         OrderPojo orderPojo = orderService.getOrderById(id);
@@ -74,7 +71,35 @@ public class OrderFlow {
     }
 
     public ProductPojo getProduct(Long id) {
-        return productService.getProduct(id);
+        return productService.getCheck(id);
+    }
+
+    public OrderPojo initializeOrder(CustomerPojo customerPojo) throws ApiException {
+        OrderPojo order = new OrderPojo();
+        order.setOrderDate(ZonedDateTime.now());
+        order.setInvoicePath("");
+        addCustomer(customerPojo);
+        order.setCustomerId(customerPojo.getId());
+        return order;
+    }
+
+    public OrderPojo createOrder(List<OrderItemPojo> orderItemPojoList, CustomerPojo customerPojo) throws ApiException {
+        OrderPojo order = initializeOrder(customerPojo);
+        orderService.createOrder(order);
+        processOrderItems(order, orderItemPojoList);
+        double totalAmt = calculateTotalAmount(orderItemPojoList);
+        updateSalesReport(order, orderItemPojoList, totalAmt);
+        return order;
+    }
+
+    public byte[] downloadInvoice(Long id) throws ApiException {
+        OrderPojo orderPojo = orderService.getOrderById(id);
+        OrderData orderData = convert(orderPojo);
+        byte[] existingInvoiceBytes = orderService.tryLoadExistingInvoiceBytes(orderPojo, id, orderData);
+        if (existingInvoiceBytes != null) {
+            return existingInvoiceBytes;
+        }
+        return orderService.generateAndSaveNewInvoiceBytes(orderPojo, id, orderData);
     }
 
     public OrderData convert(OrderPojo orderPojo) throws ApiException {
@@ -84,22 +109,23 @@ public class OrderFlow {
 
         OrderData orderData = new OrderData();
         orderData.setId(orderPojo.getId());
-        orderData.setTotalAmount(orderPojo.getTotalAmount());
         orderData.setOrderDate(orderPojo.getOrderDate());
 
-        CustomerPojo customer = customerService.getCustomer(orderPojo.getId());
+        CustomerPojo customer = customerService.getCheck(orderPojo.getId());
         orderData.setCustomerName(customer != null ? customer.getName() : null);
         orderData.setCustomerPhone(customer != null ? customer.getPhone() : null);
 
-        List<OrderItemPojo> orderItemPojos = orderItemDao.getItemsByOrderId(orderPojo.getId());
+        List<OrderItemPojo> orderItemPojos = orderService.getItemsByOrderId(orderPojo.getId());
         if (orderItemPojos == null) {
             throw new ApiException("No items found for order ID: " + orderPojo.getId());
         }
 
         List<OrderItem> orderItems = new ArrayList<>();
+        double totalAmount = 0.0;
+
         for (OrderItemPojo itemPojo : orderItemPojos) {
             OrderItem orderItem = new OrderItem();
-            ProductPojo product = productService.getProduct(itemPojo.getProdId());
+            ProductPojo product = productService.getCheck(itemPojo.getProdId());
             if (product == null) {
                 throw new ApiException("Product not found for ID: " + itemPojo.getProdId() + " in order: " + orderPojo.getId());
             }
@@ -108,12 +134,66 @@ public class OrderFlow {
             orderItem.setProdName(product.getName());
             orderItem.setPrice(product.getPrice());
             orderItem.setSellingPrice(itemPojo.getSellingPrice());
+
+            totalAmount += itemPojo.getSellingPrice() * itemPojo.getQuantity();
+
             orderItems.add(orderItem);
         }
 
         orderData.setItems(orderItems);
+        orderData.setTotalAmount(totalAmount);
         return orderData;
     }
+
+    private void updateSalesReport(OrderPojo order, List<OrderItemPojo> orderItems, double totalAmount) throws ApiException {
+        Long clientId = getProduct(orderItems.get(0).getProdId()).getClientId();
+        SalesReportPojo report = salesReportService.findByClientAndDate(clientId, order.getOrderDate());
+        long totalItemsSold = orderItems.stream().mapToLong(OrderItemPojo::getQuantity).sum();
+
+        if (report == null) {
+            createNewSalesReport(clientId, order.getOrderDate(), totalItemsSold, totalAmount);
+        } else {
+            updateExistingSalesReport(report, totalItemsSold, totalAmount);
+        }
+    }
+
+    private void createNewSalesReport(Long clientId, ZonedDateTime date, long totalItemsSold, double totalAmount) throws ApiException {
+        SalesReportPojo report = new SalesReportPojo();
+        report.setClientId(clientId);
+        report.setDate(date);
+        report.setItemSold(totalItemsSold);
+        report.setRevenue((long) totalAmount);
+        salesReportService.add(report);
+    }
+
+    private void updateExistingSalesReport(SalesReportPojo report, long totalItemsSold, double totalAmount) throws ApiException {
+        report.setItemSold(report.getItemSold() + totalItemsSold);
+        report.setRevenue(report.getRevenue() + (long) totalAmount);
+        salesReportService.update(report);
+    }
+
+    private double calculateTotalAmount(List<OrderItemPojo> orderItemPojoList) {
+        return orderItemPojoList.stream()
+                .mapToDouble(item -> item.getSellingPrice() * item.getQuantity())
+                .sum();
+    }
+
+    private void updateInventoryForOrderItem(OrderItemPojo orderItem) throws ApiException {
+        ProductPojo productPojo = getProduct(orderItem.getProdId());
+        InventoryPojo inventoryPojo = getInventoryByBarcode(productPojo.getBarcode());
+
+        orderService.validateOrderItemQuantity(orderItem, productPojo, inventoryPojo);
+        inventoryPojo.setQuantity(inventoryPojo.getQuantity() - orderItem.getQuantity());
+    }
+
+    private void processOrderItems(OrderPojo order, List<OrderItemPojo> orderItemPojoList) throws ApiException {
+        for (OrderItemPojo orderItem : orderItemPojoList) {
+            orderItem.setOrderId(order.getId());
+            orderService.createOrderItem(orderItem);
+            updateInventoryForOrderItem(orderItem);
+        }
+    }
+
     private List<OrderItemPojo> convert(List<OrderItemForm> orderItemFormList) throws ApiException {
         List<OrderItemPojo> orderItemPojoList = new ArrayList<>();
 

@@ -1,8 +1,9 @@
 package com.increff.pos.spring;
 
 import com.increff.pos.db.pojo.UserPojo;
-import com.increff.pos.service.AuthService;
+import com.increff.pos.service.UserService;
 import com.increff.pos.util.ApiException;
+import com.increff.pos.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -32,12 +32,15 @@ import java.util.Optional;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private AuthService authService;
+    private Constants constants;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(email -> {
-            Optional<UserPojo> userOpt = authService.getUserByEmail(email);
+            Optional<UserPojo> userOpt = userService.getUserByEmail(email);
             if (!userOpt.isPresent()) {
                 throw new UsernameNotFoundException("User not found: " + email);
             }
@@ -59,10 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/auth/login", "/api/auth/logout", "/api/auth/signup").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/order/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole("OPERATOR", "SUPERVISOR")
-                .antMatchers(HttpMethod.POST, "/api/**").hasRole("SUPERVISOR")
-                .antMatchers(HttpMethod.PUT, "/api/**").hasRole("SUPERVISOR")
-                .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("SUPERVISOR")
+                .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole(constants.OPERATOR, constants.SUPERVISOR)
+                .antMatchers(HttpMethod.POST, "/api/**").hasRole(constants.SUPERVISOR)
+                .antMatchers(HttpMethod.PUT, "/api/**").hasRole(constants.SUPERVISOR)
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
@@ -79,9 +81,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setExposedHeaders(Arrays.asList("totalClients", "totalDaySaleReport", "totalInventories", "totalOrders", "totalProducts", "totalReports"));
+        configuration.setAllowedOrigins(Collections.singletonList(constants.FRONTEND_URL));
+        configuration.setAllowedMethods(constants.ALLOWED_METHODS);
+        configuration.setExposedHeaders(constants.EXPOSED_HEADERS);
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

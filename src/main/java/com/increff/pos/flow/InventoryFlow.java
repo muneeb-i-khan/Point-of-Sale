@@ -9,7 +9,6 @@ import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
-import com.increff.pos.service.TsvUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,23 +27,24 @@ public class InventoryFlow {
     private ClientService clientService;
 
     @Autowired
-    private TsvUploadService tsvUploadService;
+    private TsvUploadFlow tsvUploadFlow;
 
     public InventoryData getInventory(String barcode) throws ApiException {
         ProductPojo productPojo = productService.getProductByBarcode(barcode);
         inventoryService.getCheck(productPojo.getId());
-        InventoryPojo inventoryPojo = inventoryService.getInventory(productPojo.getId());
+        InventoryPojo inventoryPojo = inventoryService.getCheck(productPojo.getId());
         return convert(inventoryPojo);
     }
 
     public void uploadInventory(MultipartFile file) throws IOException, ApiException {
-        tsvUploadService.uploadInventory(file);
+        tsvUploadFlow.uploadInventory(file);
     }
 
     public String getBarcode(InventoryPojo inventoryPojo) {
-        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProdId());
+        ProductPojo productPojo = productService.getCheck(inventoryPojo.getProdId());
         return productPojo.getBarcode();
     }
+
     public InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
         InventoryPojo inventoryPojo = new InventoryPojo();
         ProductPojo productPojo = productService.getProductByBarcode(inventoryForm.getBarcode());
@@ -56,11 +56,11 @@ public class InventoryFlow {
     public InventoryData convert(InventoryPojo inventoryPojo) throws ApiException {
         InventoryData inventoryData = new InventoryData();
         inventoryData.setId(inventoryPojo.getId());
-        ProductPojo productPojo = productService.getProduct(inventoryPojo.getProdId());
+        ProductPojo productPojo = productService.getCheck(inventoryPojo.getProdId());
         inventoryData.setBarcode(productPojo.getBarcode());
         inventoryData.setQuantity(inventoryPojo.getQuantity());
         inventoryData.setProdName(productPojo.getName());
-        ClientPojo clientPojo = clientService.getClient(productPojo.getClientId());
+        ClientPojo clientPojo = clientService.getCheck(productPojo.getClientId());
         inventoryData.setClientName(clientPojo.getName());
         return inventoryData;
     }

@@ -44,7 +44,7 @@ public class ClientController {
 
 
     @PutMapping("/{id}")
-    public ClientData update(@PathVariable Long id, @RequestBody ClientForm clientForm) throws ApiException {
+    public ClientData update(@PathVariable Long id, @Valid @RequestBody ClientForm clientForm) throws ApiException {
         return clientDto.updateClient(clientForm, id);
     }
 }

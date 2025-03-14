@@ -41,7 +41,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         ProductPojo retrievedProduct = productService.getProductByBarcode("12345");
         assertNotNull(retrievedProduct);
         assertEquals("Galaxy S21", retrievedProduct.getName());
-        assertEquals("Samsung", clientService.getClient(product.getClientId()).getName());
+        assertEquals("Samsung", clientService.getCheck(product.getClientId()).getName());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         productService.addProduct(product);
         ProductPojo savedProduct = productService.getProductByBarcode("A123");
 
-        ProductPojo retrievedProduct = productService.getProduct(savedProduct.getId());
+        ProductPojo retrievedProduct = productService.getCheck(savedProduct.getId());
 
         assertNotNull(retrievedProduct);
         assertEquals("iPhone 15", retrievedProduct.getName());
@@ -68,7 +68,7 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void getProductByIdNotFoundTest() throws ApiException {
-        productService.getProduct(999L);
+        productService.getCheck(999L);
     }
 
     @Test
@@ -126,7 +126,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         updatedProduct.setClientId(savedProduct.getClientId());
         productService.updateProduct(savedProduct.getId(), updatedProduct);
 
-        ProductPojo result = productService.getProduct(savedProduct.getId());
+        ProductPojo result = productService.getCheck(savedProduct.getId());
         assertEquals("OnePlus 10", result.getName());
         assertEquals("OP999", result.getBarcode());
         assertEquals(4000.0, result.getPrice(), 0.00001);

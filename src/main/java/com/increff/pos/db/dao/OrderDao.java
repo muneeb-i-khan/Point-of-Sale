@@ -16,9 +16,12 @@ public class OrderDao extends AbstractDao {
     private static final String SELECT_ALL = "SELECT o FROM OrderPojo o";
     private static final String SELECT_BY_ID = "SELECT o FROM OrderPojo o WHERE o.id = :orderId";
     private static final String SELECT_COUNT = "SELECT COUNT(p) FROM OrderPojo p";
-    private static final String SELECT_DATE = "SELECT COUNT(o) FROM OrderPojo o WHERE o.orderDate = :date";
-    private static final String COUNT_ITEMS_SOLD_BY_DATE = "SELECT COALESCE(SUM(oi.quantity), 0) FROM OrderItemPojo oi JOIN OrderPojo o ON oi.orderId = o.id WHERE o.orderDate = :date";
-    private static final String CALCULATE_REVENUE_BY_DATE = "SELECT COALESCE(SUM(p.price * oi.quantity), 0) FROM OrderItemPojo oi JOIN OrderPojo p ON oi.prodId = p.id JOIN OrderPojo o ON oi.orderId = o.id WHERE o.orderDate = :date";
+    private static final String SELECT_DATE = "SELECT COUNT(o) FROM OrderPojo o WHERE o.orderDate >= :startOfDay AND o.orderDate < :endOfDay";
+    private static final String COUNT_ITEMS_SOLD_BY_DATE = "SELECT COALESCE(SUM(oi.quantity), 0) FROM OrderItemPojo oi JOIN OrderPojo o ON oi.orderId = o.id WHERE o.orderDate >= :startOfDay AND o.orderDate < :endOfDay";
+    private static final String CALCULATE_REVENUE_BY_DATE = "SELECT COALESCE(SUM(oi.sellingPrice * oi.quantity), 0) \n" +
+            "FROM OrderItemPojo oi \n" +
+            "JOIN OrderPojo o ON oi.orderId = o.id \n" +
+            "WHERE o.orderDate >= :startOfDay AND o.orderDate < :endOfDay\n";
 
 
     public void add(OrderPojo p) {
@@ -52,20 +55,37 @@ public class OrderDao extends AbstractDao {
     }
 
     public int countOrdersByDate(ZonedDateTime date) {
+        ZonedDateTime startOfDay = date.toLocalDate().atStartOfDay(date.getZone());
+        ZonedDateTime endOfDay = startOfDay.plusDays(1);  // Start of next day
+
         return ((Number) getQuery(SELECT_DATE, Number.class)
-                .setParameter("date", date)
+                .setParameter("startOfDay", startOfDay)
+                .setParameter("endOfDay", endOfDay)
                 .getSingleResult()).intValue();
     }
+
 
     public int countItemsSoldByDate(ZonedDateTime date) {
-        return ((Number) getQuery(COUNT_ITEMS_SOLD_BY_DATE,Number.class)
-                .setParameter("date", date)
+        ZonedDateTime startOfDay = date.toLocalDate().atStartOfDay(date.getZone());
+        ZonedDateTime endOfDay = startOfDay.plusDays(1);
+
+        return ((Number) getQuery(COUNT_ITEMS_SOLD_BY_DATE, Number.class)
+                .setParameter("startOfDay", startOfDay)
+                .setParameter("endOfDay", endOfDay)
                 .getSingleResult()).intValue();
     }
 
+
     public Double calculateRevenueByDate(ZonedDateTime date) {
-        return (Double) getQuery(CALCULATE_REVENUE_BY_DATE, Double.class).setParameter("date",date).getSingleResult();
+        ZonedDateTime startOfDay = date.toLocalDate().atStartOfDay(date.getZone());
+        ZonedDateTime endOfDay = startOfDay.plusDays(1);
+
+        return (Double) getQuery(CALCULATE_REVENUE_BY_DATE, Double.class)
+                .setParameter("startOfDay", startOfDay)
+                .setParameter("endOfDay", endOfDay)
+                .getSingleResult();
     }
+
 
     public void update(OrderPojo order) {
         em.merge(order);

@@ -15,7 +15,6 @@ public class OrderPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private double totalAmount;
     private ZonedDateTime orderDate;
     private Long customerId;
     private String invoicePath;

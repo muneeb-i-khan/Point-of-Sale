@@ -24,8 +24,8 @@ public class SalesReportFlow {
 
     private SalesReportData convert(SalesReportPojo salesReportPojo) throws ApiException {
         SalesReportData salesReportData = new SalesReportData();
-        salesReportData.setClientName(clientService.getClient(salesReportPojo.getClientId()).getName());
-        salesReportData.setDescription(clientService.getClient(salesReportPojo.getClientId()).getDescription());
+        salesReportData.setClientName(clientService.getCheck(salesReportPojo.getClientId()).getName());
+        salesReportData.setDescription(clientService.getCheck(salesReportPojo.getClientId()).getDescription());
         salesReportData.setQuantity(salesReportPojo.getItemSold());
         salesReportData.setRevenue(salesReportPojo.getRevenue());
         return salesReportData;

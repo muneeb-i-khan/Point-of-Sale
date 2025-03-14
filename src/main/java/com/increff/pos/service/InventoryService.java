@@ -36,11 +36,6 @@ public class InventoryService {
         return dao.selectAll();
     }
 
-
-    public InventoryPojo getInventory(Long id) throws ApiException {
-        return getCheck(id);
-    }
-
     public List<InventoryPojo> getAllInventoriesPaginated(int page, int pageSize) {
         return dao.selectAllPaginated(page, pageSize);
     }
@@ -53,9 +48,8 @@ public class InventoryService {
         InventoryPojo ex = getCheck(id);
         ex.setQuantity(p.getQuantity());
         ex.setProdId(p.getProdId());
-        dao.update(p);
+        dao.update(ex);
     }
-
 
     public InventoryPojo getCheck(Long id) throws ApiException {
         try {

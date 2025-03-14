@@ -2,7 +2,7 @@ package com.increff.pos.controller;
 
 import com.increff.pos.model.data.UserData;
 import com.increff.pos.model.forms.UserForm;
-import com.increff.pos.service.AuthService;
+import com.increff.pos.flow.AuthFlow;
 import com.increff.pos.util.ApiException;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +17,22 @@ import javax.validation.Valid;
 public class AuthController {
 
     @Autowired
-    private AuthService authService;
+    private AuthFlow authFlow;
 
     @PostMapping(value = "/login", consumes = "application/x-www-form-urlencoded")
     public UserData login(@ModelAttribute @Valid UserForm loginRequest, HttpSession session) throws ApiException {
-        return authService.login(loginRequest.getEmail(), loginRequest.getPassword(), session);
+        return authFlow.login(loginRequest.getEmail(), loginRequest.getPassword(), session);
     }
 
     @PostMapping(value = "/signup", consumes = "application/x-www-form-urlencoded")
     public void signup(@ModelAttribute @Valid UserForm signupRequest) throws ApiException {
-        authService.registerUser(signupRequest.getEmail(), signupRequest.getPassword());
+        authFlow.registerUser(signupRequest.getEmail(), signupRequest.getPassword());
     }
 
     @ApiOperation(value = "Check session")
     @GetMapping("/check")
     public UserData checkSession(HttpSession session) throws ApiException {
-        return authService.getSessionUser(session);
+        return authFlow.getSessionUser(session);
     }
 
     @ApiOperation(value = "Logout")

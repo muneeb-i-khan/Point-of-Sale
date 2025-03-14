@@ -27,10 +27,6 @@ public class ClientService {
         dao.add(p);
     }
 
-    public ClientPojo getClient(Long id) throws ApiException {
-        return getCheck(id);
-    }
-
     public List<ClientPojo> getAllClients() {
         return dao.selectAll();
     }
