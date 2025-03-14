@@ -3,7 +3,6 @@ package com.increff.pos.service;
 import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.pojo.*;
-import com.increff.pos.flow.OrderFlow;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,19 +32,12 @@ public class OrderService {
     @Autowired
     private OrderDao orderDao;
 
-    @Autowired
-    private SalesReportService salesReportService;
+    public void createOrderItem(OrderItemPojo orderItemPojo) {
+        orderItemDao.add(orderItemPojo);
+    }
 
-    @Autowired
-    private OrderFlow orderFlow;
-
-    public OrderPojo createOrder(List<OrderItemPojo> orderItemPojoList, CustomerPojo customerPojo) throws ApiException {
-        OrderPojo order = initializeOrder(customerPojo);
-        orderDao.add(order);
-        processOrderItems(order, orderItemPojoList);
-        double totalAmt = calculateTotalAmount(orderItemPojoList);
-        updateSalesReport(order, orderItemPojoList, totalAmt);
-        return order;
+    public void createOrder(OrderPojo orderPojo) {
+            orderDao.add(orderPojo);
     }
 
     public List<OrderPojo> getAllOrders() {
@@ -77,46 +69,14 @@ public class OrderService {
         return orderDao.countOrders();
     }
 
-    public ResponseEntity<byte[]> downloadPdf(Long id) throws ApiException {
-        OrderPojo orderPojo = getOrderById(id);
-        OrderData orderData = orderFlow.convert(orderPojo);
-        ResponseEntity<byte[]> existingInvoiceResponse = tryLoadExistingInvoice(orderPojo, id, orderData);
-        if (existingInvoiceResponse != null) {
-            return existingInvoiceResponse;
-        }
-        return generateAndSaveNewInvoice(orderPojo, id, orderData);
-    }
+
 
     public List<OrderItemPojo> getItemsByOrderId(Long id) {
         return orderItemDao.getItemsByOrderId(id);
     }
 
-    private OrderPojo initializeOrder(CustomerPojo customerPojo) throws ApiException {
-        OrderPojo order = new OrderPojo();
-        order.setOrderDate(ZonedDateTime.now());
-        order.setInvoicePath("");
-        orderFlow.addCustomer(customerPojo);
-        order.setCustomerId(customerPojo.getId());
-        return order;
-    }
 
-    private void processOrderItems(OrderPojo order, List<OrderItemPojo> orderItemPojoList) throws ApiException {
-        for (OrderItemPojo orderItem : orderItemPojoList) {
-            orderItem.setOrderId(order.getId());
-            orderItemDao.add(orderItem);
-            updateInventoryForOrderItem(orderItem);
-        }
-    }
-
-    private void updateInventoryForOrderItem(OrderItemPojo orderItem) throws ApiException {
-        ProductPojo productPojo = orderFlow.getProduct(orderItem.getProdId());
-        InventoryPojo inventoryPojo = orderFlow.getInventoryByBarcode(productPojo.getBarcode());
-
-        validateOrderItemQuantity(orderItem, productPojo, inventoryPojo);
-        inventoryPojo.setQuantity(inventoryPojo.getQuantity() - orderItem.getQuantity());
-    }
-
-    private void validateOrderItemQuantity(OrderItemPojo orderItem, ProductPojo productPojo, InventoryPojo inventoryPojo) throws ApiException {
+    public void validateOrderItemQuantity(OrderItemPojo orderItem, ProductPojo productPojo, InventoryPojo inventoryPojo) throws ApiException {
         if (orderItem.getQuantity() <= 0) {
             throw new ApiException("Quantity can't be negative");
         }
@@ -125,41 +85,10 @@ public class OrderService {
         }
     }
 
-    private double calculateTotalAmount(List<OrderItemPojo> orderItemPojoList) {
-        return orderItemPojoList.stream()
-                .mapToDouble(item -> item.getSellingPrice() * item.getQuantity())
-                .sum();
-    }
-
-    private void updateSalesReport(OrderPojo order, List<OrderItemPojo> orderItems, double totalAmount) throws ApiException {
-        Long clientId = orderFlow.getProduct(orderItems.get(0).getProdId()).getClientId();
-        SalesReportPojo report = salesReportService.findByClientAndDate(clientId, order.getOrderDate());
-        long totalItemsSold = orderItems.stream().mapToLong(OrderItemPojo::getQuantity).sum();
-
-        if (report == null) {
-            createNewSalesReport(clientId, order.getOrderDate(), totalItemsSold, totalAmount);
-        } else {
-            updateExistingSalesReport(report, totalItemsSold, totalAmount);
-        }
-    }
-
-    private void createNewSalesReport(Long clientId, ZonedDateTime date, long totalItemsSold, double totalAmount) throws ApiException {
-        SalesReportPojo report = new SalesReportPojo();
-        report.setClientId(clientId);
-        report.setDate(date);
-        report.setItemSold(totalItemsSold);
-        report.setRevenue((long) totalAmount);
-        salesReportService.add(report);
-    }
-
-    private void updateExistingSalesReport(SalesReportPojo report, long totalItemsSold, double totalAmount) throws ApiException {
-        report.setItemSold(report.getItemSold() + totalItemsSold);
-        report.setRevenue(report.getRevenue() + (long) totalAmount);
-        salesReportService.update(report);
-    }
 
 
-    private ResponseEntity<byte[]> tryLoadExistingInvoice(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
+
+    public ResponseEntity<byte[]> tryLoadExistingInvoice(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
         if (orderPojo.getInvoicePath() != null && !orderPojo.getInvoicePath().isEmpty()) {
             File pdfFile = new File(orderPojo.getInvoicePath());
             if (pdfFile.exists()) {
@@ -174,7 +103,7 @@ public class OrderService {
         return null;
     }
 
-    private ResponseEntity<byte[]> generateAndSaveNewInvoice(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
+    public ResponseEntity<byte[]> generateAndSaveNewInvoice(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
         String url = "http://localhost:9001/invoice/api/invoice/";
         RestTemplate restTemplate = new RestTemplate();
         try {
