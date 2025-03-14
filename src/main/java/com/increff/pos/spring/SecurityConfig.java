@@ -81,7 +81,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        //TODO: props file
         configuration.setAllowedOrigins(Collections.singletonList(constants.FRONTEND_URL));
         configuration.setAllowedMethods(constants.ALLOWED_METHODS);
         configuration.setExposedHeaders(constants.EXPOSED_HEADERS);

@@ -1,7 +1,6 @@
 package com.increff.pos.job;
 
 import com.increff.pos.flow.DaySaleReportFlow;
-import com.increff.pos.service.DaySaleReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
