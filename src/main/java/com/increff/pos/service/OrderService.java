@@ -5,6 +5,7 @@ import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.pojo.*;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.util.ApiException;
+import com.increff.pos.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -97,7 +98,7 @@ public class OrderService {
     }
 
     public byte[] generateAndSaveNewInvoiceBytes(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
-        String url = "http://localhost:9001/invoice/api/invoice/";
+        String url = Constants.INVOICE_URL;
         RestTemplate restTemplate = new RestTemplate();
         try {
             byte[] pdfBytes = fetchAndDecodeInvoice(url, restTemplate, orderData);
@@ -125,15 +126,8 @@ public class OrderService {
     }
 
     private void saveInvoiceFile(byte[] pdfBytes, Long id, OrderPojo orderPojo) throws IOException {
-        String filePath = "src/main/pdf/output" + id + ".pdf";
+        String filePath = Constants.PDF_SAVE_PATH + id + ".pdf";
         Files.write(Paths.get(filePath), pdfBytes);
         orderPojo.setInvoicePath(filePath);
     }
-
-//    private byte[] buildPdfResponse(byte[] pdfBytes, Long id) {
-//        return ResponseEntity.ok()
-//                .header("Content-Disposition", "attachment; filename=invoice_" + id + ".pdf")
-//                .contentType(MediaType.APPLICATION_PDF)
-//                .body(pdfBytes);
-//    }
 }

@@ -7,6 +7,8 @@ import java.util.List;
 
 @Component
 public class Constants {
+    public static final String INVOICE_URL = "http://localhost:9001/invoice/api/invoice/";
+    public static final String PDF_SAVE_PATH = "src/main/pdf/output";
     public final String USER_ID = "userId";
     public final String ROLE = "role";
     public final String FRONTEND_URL = "http://localhost:4200";
