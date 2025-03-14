@@ -92,14 +92,14 @@ public class OrderFlow {
         return order;
     }
 
-    public ResponseEntity<byte[]> downloadPdf(Long id) throws ApiException {
+    public byte[] downloadInvoice(Long id) throws ApiException {
         OrderPojo orderPojo = orderService.getOrderById(id);
         OrderData orderData = convert(orderPojo);
-        ResponseEntity<byte[]> existingInvoiceResponse = orderService.tryLoadExistingInvoice(orderPojo, id, orderData);
-        if (existingInvoiceResponse != null) {
-            return existingInvoiceResponse;
+        byte[] existingInvoiceBytes = orderService.tryLoadExistingInvoiceBytes(orderPojo, id, orderData);
+        if (existingInvoiceBytes != null) {
+            return existingInvoiceBytes;
         }
-        return orderService.generateAndSaveNewInvoice(orderPojo, id, orderData);
+        return orderService.generateAndSaveNewInvoiceBytes(orderPojo, id, orderData);
     }
 
     public OrderData convert(OrderPojo orderPojo) throws ApiException {

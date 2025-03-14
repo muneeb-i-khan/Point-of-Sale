@@ -82,13 +82,12 @@ public class OrderService {
         }
     }
 
-    public ResponseEntity<byte[]> tryLoadExistingInvoice(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
+    public byte[] tryLoadExistingInvoiceBytes(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
         if (orderPojo.getInvoicePath() != null && !orderPojo.getInvoicePath().isEmpty()) {
             File pdfFile = new File(orderPojo.getInvoicePath());
             if (pdfFile.exists()) {
                 try {
-                    byte[] pdfBytes = Files.readAllBytes(pdfFile.toPath());
-                    return buildPdfResponse(pdfBytes, id);
+                    return Files.readAllBytes(pdfFile.toPath());
                 } catch (IOException e) {
                     throw new ApiException("Failed to read existing invoice file for order ID: " + id);
                 }
@@ -97,13 +96,13 @@ public class OrderService {
         return null;
     }
 
-    public ResponseEntity<byte[]> generateAndSaveNewInvoice(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
+    public byte[] generateAndSaveNewInvoiceBytes(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
         String url = "http://localhost:9001/invoice/api/invoice/";
         RestTemplate restTemplate = new RestTemplate();
         try {
             byte[] pdfBytes = fetchAndDecodeInvoice(url, restTemplate, orderData);
             saveInvoiceFile(pdfBytes, id, orderPojo);
-            return buildPdfResponse(pdfBytes, id);
+            return pdfBytes;
         } catch (Exception e) {
             throw new ApiException("Failed to generate invoice for order ID: " + id);
         }
@@ -131,10 +130,10 @@ public class OrderService {
         orderPojo.setInvoicePath(filePath);
     }
 
-    private ResponseEntity<byte[]> buildPdfResponse(byte[] pdfBytes, Long id) {
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=invoice_" + id + ".pdf")
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(pdfBytes);
-    }
+//    private byte[] buildPdfResponse(byte[] pdfBytes, Long id) {
+//        return ResponseEntity.ok()
+//                .header("Content-Disposition", "attachment; filename=invoice_" + id + ".pdf")
+//                .contentType(MediaType.APPLICATION_PDF)
+//                .body(pdfBytes);
+//    }
 }
