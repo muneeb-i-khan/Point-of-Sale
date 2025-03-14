@@ -37,12 +37,13 @@ public class DaySaleReportController {
     }
 
     @ApiOperation(value = "Get a report")
-    @GetMapping("/")
+    @GetMapping
     public List<DaySaleReportPojo> getReport(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) ZonedDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) ZonedDateTime endDate) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime endDate) {
         return daySaleReportService.getReport(startDate, endDate);
     }
+
 
     @ApiOperation(value = "Get all day sales report with pagination")
     @GetMapping("/paginated")

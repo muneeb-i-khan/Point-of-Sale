@@ -35,7 +35,7 @@ public class DaySaleReportFlow {
         int orderCount = getOrderCountByDate(yesterday);
         int itemSoldCount = getItemSoldCount(yesterday);
         double revenue = getRevenue(yesterday);
-        DaySaleReportPojo report = daySaleReportService.generateReport(yesterday, orderCount, itemSoldCount, revenue);
+        DaySaleReportPojo report = daySaleReportService.generateReport(yesterday.toLocalDate().atStartOfDay(yesterday.getZone()), orderCount, itemSoldCount, revenue);
         if (report != null) {
             daySaleReportService.saveOrUpdateReport(report);
         }

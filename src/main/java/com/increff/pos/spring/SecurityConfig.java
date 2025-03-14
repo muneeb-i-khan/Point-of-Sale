@@ -1,7 +1,6 @@
 package com.increff.pos.spring;
 
 import com.increff.pos.db.pojo.UserPojo;
-import com.increff.pos.flow.AuthFlow;
 import com.increff.pos.service.UserService;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.util.Constants;
@@ -31,9 +30,6 @@ import java.util.Optional;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private AuthFlow authFlow;
 
     @Autowired
     private Constants constants;
