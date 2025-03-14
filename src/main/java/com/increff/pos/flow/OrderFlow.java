@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -93,54 +92,6 @@ public class OrderFlow {
         return order;
     }
 
-    private void updateSalesReport(OrderPojo order, List<OrderItemPojo> orderItems, double totalAmount) throws ApiException {
-        Long clientId = getProduct(orderItems.get(0).getProdId()).getClientId();
-        SalesReportPojo report = salesReportService.findByClientAndDate(clientId, order.getOrderDate());
-        long totalItemsSold = orderItems.stream().mapToLong(OrderItemPojo::getQuantity).sum();
-
-        if (report == null) {
-            createNewSalesReport(clientId, order.getOrderDate(), totalItemsSold, totalAmount);
-        } else {
-            updateExistingSalesReport(report, totalItemsSold, totalAmount);
-        }
-    }
-
-    private void createNewSalesReport(Long clientId, ZonedDateTime date, long totalItemsSold, double totalAmount) throws ApiException {
-        SalesReportPojo report = new SalesReportPojo();
-        report.setClientId(clientId);
-        report.setDate(date);
-        report.setItemSold(totalItemsSold);
-        report.setRevenue((long) totalAmount);
-        salesReportService.add(report);
-    }
-
-    private void updateExistingSalesReport(SalesReportPojo report, long totalItemsSold, double totalAmount) throws ApiException {
-        report.setItemSold(report.getItemSold() + totalItemsSold);
-        report.setRevenue(report.getRevenue() + (long) totalAmount);
-        salesReportService.update(report);
-    }
-
-    private double calculateTotalAmount(List<OrderItemPojo> orderItemPojoList) {
-        return orderItemPojoList.stream()
-                .mapToDouble(item -> item.getSellingPrice() * item.getQuantity())
-                .sum();
-    }
-    private void updateInventoryForOrderItem(OrderItemPojo orderItem) throws ApiException {
-        ProductPojo productPojo = getProduct(orderItem.getProdId());
-        InventoryPojo inventoryPojo = getInventoryByBarcode(productPojo.getBarcode());
-
-        orderService.validateOrderItemQuantity(orderItem, productPojo, inventoryPojo);
-        inventoryPojo.setQuantity(inventoryPojo.getQuantity() - orderItem.getQuantity());
-    }
-
-    private void processOrderItems(OrderPojo order, List<OrderItemPojo> orderItemPojoList) throws ApiException {
-        for (OrderItemPojo orderItem : orderItemPojoList) {
-            orderItem.setOrderId(order.getId());
-            orderService.createOrderItem(orderItem);
-            updateInventoryForOrderItem(orderItem);
-        }
-    }
-
     public ResponseEntity<byte[]> downloadPdf(Long id) throws ApiException {
         OrderPojo orderPojo = orderService.getOrderById(id);
         OrderData orderData = convert(orderPojo);
@@ -192,6 +143,55 @@ public class OrderFlow {
         orderData.setItems(orderItems);
         orderData.setTotalAmount(totalAmount);
         return orderData;
+    }
+
+    private void updateSalesReport(OrderPojo order, List<OrderItemPojo> orderItems, double totalAmount) throws ApiException {
+        Long clientId = getProduct(orderItems.get(0).getProdId()).getClientId();
+        SalesReportPojo report = salesReportService.findByClientAndDate(clientId, order.getOrderDate());
+        long totalItemsSold = orderItems.stream().mapToLong(OrderItemPojo::getQuantity).sum();
+
+        if (report == null) {
+            createNewSalesReport(clientId, order.getOrderDate(), totalItemsSold, totalAmount);
+        } else {
+            updateExistingSalesReport(report, totalItemsSold, totalAmount);
+        }
+    }
+
+    private void createNewSalesReport(Long clientId, ZonedDateTime date, long totalItemsSold, double totalAmount) throws ApiException {
+        SalesReportPojo report = new SalesReportPojo();
+        report.setClientId(clientId);
+        report.setDate(date);
+        report.setItemSold(totalItemsSold);
+        report.setRevenue((long) totalAmount);
+        salesReportService.add(report);
+    }
+
+    private void updateExistingSalesReport(SalesReportPojo report, long totalItemsSold, double totalAmount) throws ApiException {
+        report.setItemSold(report.getItemSold() + totalItemsSold);
+        report.setRevenue(report.getRevenue() + (long) totalAmount);
+        salesReportService.update(report);
+    }
+
+    private double calculateTotalAmount(List<OrderItemPojo> orderItemPojoList) {
+        return orderItemPojoList.stream()
+                .mapToDouble(item -> item.getSellingPrice() * item.getQuantity())
+                .sum();
+    }
+
+    private void updateInventoryForOrderItem(OrderItemPojo orderItem) throws ApiException {
+        ProductPojo productPojo = getProduct(orderItem.getProdId());
+        InventoryPojo inventoryPojo = getInventoryByBarcode(productPojo.getBarcode());
+
+        orderService.validateOrderItemQuantity(orderItem, productPojo, inventoryPojo);
+        inventoryPojo.setQuantity(inventoryPojo.getQuantity() - orderItem.getQuantity());
+    }
+
+    private void processOrderItems(OrderPojo order, List<OrderItemPojo> orderItemPojoList) throws ApiException {
+        for (OrderItemPojo orderItem : orderItemPojoList) {
+            orderItem.setOrderId(order.getId());
+            orderService.createOrderItem(orderItem);
+            updateInventoryForOrderItem(orderItem);
+        }
     }
 
     private List<OrderItemPojo> convert(List<OrderItemForm> orderItemFormList) throws ApiException {

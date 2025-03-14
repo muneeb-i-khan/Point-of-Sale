@@ -69,12 +69,9 @@ public class OrderService {
         return orderDao.countOrders();
     }
 
-
-
     public List<OrderItemPojo> getItemsByOrderId(Long id) {
         return orderItemDao.getItemsByOrderId(id);
     }
-
 
     public void validateOrderItemQuantity(OrderItemPojo orderItem, ProductPojo productPojo, InventoryPojo inventoryPojo) throws ApiException {
         if (orderItem.getQuantity() <= 0) {
@@ -84,9 +81,6 @@ public class OrderService {
             throw new ApiException("Insufficient stock for product: " + productPojo.getName());
         }
     }
-
-
-
 
     public ResponseEntity<byte[]> tryLoadExistingInvoice(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
         if (orderPojo.getInvoicePath() != null && !orderPojo.getInvoicePath().isEmpty()) {

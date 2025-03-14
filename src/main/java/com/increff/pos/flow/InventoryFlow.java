@@ -9,7 +9,6 @@ import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
-import com.increff.pos.service.TsvUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +27,7 @@ public class InventoryFlow {
     private ClientService clientService;
 
     @Autowired
-    private TsvUploadService tsvUploadService;
+    private TsvUploadFlow tsvUploadFlow;
 
     public InventoryData getInventory(String barcode) throws ApiException {
         ProductPojo productPojo = productService.getProductByBarcode(barcode);
@@ -38,7 +37,7 @@ public class InventoryFlow {
     }
 
     public void uploadInventory(MultipartFile file) throws IOException, ApiException {
-        tsvUploadService.uploadInventory(file);
+        tsvUploadFlow.uploadInventory(file);
     }
 
     public String getBarcode(InventoryPojo inventoryPojo) {

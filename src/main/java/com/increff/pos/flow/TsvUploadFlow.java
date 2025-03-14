@@ -1,8 +1,11 @@
-package com.increff.pos.service;
+package com.increff.pos.flow;
 
 import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
+import com.increff.pos.service.ClientService;
+import com.increff.pos.service.InventoryService;
+import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.util.Normalize;
 import com.increff.pos.util.TsvParserUtil;
@@ -14,7 +17,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-public class TsvUploadService {
+public class TsvUploadFlow {
 
     @Autowired
     private TsvParserUtil tsvParserUtil;
