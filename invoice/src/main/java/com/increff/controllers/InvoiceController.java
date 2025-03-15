@@ -18,8 +18,7 @@ public class InvoiceController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> generateInvoice(@RequestBody OrderData orderData) {
-        String pdfBase64 = invoiceService.generateInvoicePdf(orderData);
-        return ResponseEntity.ok(pdfBase64);
+    public String generateInvoice(@RequestBody OrderData orderData) {
+        return invoiceService.generateInvoicePdf(orderData);
     }
 }
