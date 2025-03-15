@@ -7,5 +7,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ClientData extends ClientForm {
-    private Long        id;
+    private Long id;
 }

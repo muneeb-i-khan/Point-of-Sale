@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InventoryData extends InventoryForm {
-    private Long        id;
-    private Long        prodId;
-    private String      prodName;
-    private String      clientName;
+    private Long id;
+    private Long prodId;
+    private String prodName;
+    private String clientName;
 }
