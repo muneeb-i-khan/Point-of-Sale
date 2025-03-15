@@ -11,11 +11,6 @@ import org.springframework.stereotype.Component;
 public class CustomerDto {
     @Autowired
     private CustomerService customerService;
-    
-    public void addCustomer(CustomerForm customerForm) throws ApiException {
-        CustomerPojo customerPojo = convert(customerForm);
-        customerService.addCustomer(customerPojo);
-    }
 
     public CustomerPojo convert(CustomerForm customerForm) {
         CustomerPojo customerPojo = new CustomerPojo();

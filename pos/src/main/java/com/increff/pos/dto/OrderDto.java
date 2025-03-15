@@ -48,7 +48,6 @@ public class OrderDto {
     }
 
     public byte[] downloadInvoice(Long id) throws ApiException{
-        //TODO: to convert string to byte here
         return orderFlow.downloadInvoice(id);
     }
 }
