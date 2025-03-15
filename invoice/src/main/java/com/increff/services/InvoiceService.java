@@ -2,9 +2,12 @@ package com.increff.services;
 
 import com.increff.models.OrderData;
 import com.increff.models.OrderItem;
+import com.increff.utils.Constants;
 import org.apache.fop.apps.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
@@ -14,16 +17,18 @@ import java.util.Base64;
 
 @Service
 public class InvoiceService {
+
+    @Autowired
+    private Constants constants;
+
     @Transactional
     public String generateInvoicePdf(OrderData orderData) {
         try {
-            Long orderId = orderData.getId();
-
-            File xmlFile = new File("src/main/resources/invoice.xml");
-            File xslFile = new File("src/main/resources/stylesheet.xsl");
+            File xmlFile = new File(constants.XML_PATH);
+            File xslFile = new File(constants.XSL_PATH);
             generateXml(orderData, xmlFile);
 
-            File pdfFile = new File("src/main/pdf/output.pdf");
+            File pdfFile = new File(constants.PDF_OUTPUT_PATH);
             transformToPdf(xmlFile, xslFile, pdfFile);
 
             return encodePdfToBase64(pdfFile);
@@ -32,7 +37,7 @@ public class InvoiceService {
         }
     }
 
-    private void generateXml(OrderData orderData, File xmlFile) throws IOException {
+    private void generateXml(OrderData orderData, File xmlFile) throws Exception {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(xmlFile))) {
             writer.write("<invoice>");
             writer.write("<orderId>" + orderData.getId() + "</orderId>");
@@ -47,11 +52,13 @@ public class InvoiceService {
                 writer.write("<prodName>" + item.getProdName() + "</prodName>");
                 writer.write("<price>" + item.getPrice() + "</price>");
                 writer.write("<quantity>" + item.getQuantity() + "</quantity>");
-                writer.write("<sellingPrice>"+ item.getSellingPrice() + "</sellingPrice>");
+                writer.write("<sellingPrice>" + item.getSellingPrice() + "</sellingPrice>");
                 writer.write("</item>");
             }
             writer.write("</items>");
             writer.write("</invoice>");
+        } catch (Exception e) {
+            throw new Exception("Failed to generate XML");
         }
     }
 
@@ -66,11 +73,13 @@ public class InvoiceService {
             Source src = new StreamSource(xmlFile);
             Result res = new SAXResult(fop.getDefaultHandler());
             transformer.transform(src, res);
+        } catch (Exception e) {
+            throw new Exception("Failed to transform to Pdf");
         }
     }
 
     private String encodePdfToBase64(File pdfFile) throws IOException {
-        byte[] fileContent = java.nio.file.Files.readAllBytes(pdfFile.toPath());
+        byte[] fileContent = Files.readAllBytes(pdfFile.toPath());
         return Base64.getEncoder().encodeToString(fileContent);
     }
 }

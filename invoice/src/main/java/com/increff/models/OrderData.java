@@ -15,7 +15,6 @@ public class OrderData {
     private Long id;
     private String customerName;
     private String customerPhone;
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate orderDate;
     private Double totalAmount;
