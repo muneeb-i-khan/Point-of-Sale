@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Setter
 @Table(name = "inventory")
 public class InventoryPojo extends AbstractPojo {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

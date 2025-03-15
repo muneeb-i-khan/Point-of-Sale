@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 @Setter
 @Table(name = "orders")
 public class OrderPojo extends AbstractPojo {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

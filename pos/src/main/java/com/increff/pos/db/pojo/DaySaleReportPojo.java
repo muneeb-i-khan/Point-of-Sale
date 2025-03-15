@@ -9,21 +9,21 @@ import java.time.ZonedDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "pos_day_sale")
+@Table(name = "posDaySale")
 public class DaySaleReportPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "date", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private ZonedDateTime date;
 
-    @Column(name = "order_count", nullable = false)
+    @Column(nullable = false)
     private int orderCount;
 
-    @Column(name = "item_sold_count", nullable = false)
+    @Column(nullable = false)
     private int itemSoldCount;
 
-    @Column(name = "revenue", nullable = false)
+    @Column(nullable = false)
     private Double revenue;
 }
