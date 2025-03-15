@@ -21,7 +21,7 @@ public class InventoryService {
     private InventoryFlow inventoryFlow;
 
     public void addInventory(InventoryPojo inventoryPojo) throws ApiException {
-        if (inventoryPojo.getQuantity() <= 0) throw new ApiException("Quantity can't be negative or 0!");
+        if (inventoryPojo.getQuantity() < 0) throw new ApiException("Quantity can't be negative");
         String prodBarcode = inventoryFlow.getBarcode(inventoryPojo);
         InventoryPojo existingInventory = dao.selectByBarcode(prodBarcode);
         if (existingInventory != null) {
