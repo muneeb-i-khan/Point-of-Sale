@@ -38,9 +38,6 @@ public class AuthController {
     @ApiOperation(value = "Logout")
     @PostMapping("/logout")
     public void logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
+        authFlow.logout(request);
     }
 }

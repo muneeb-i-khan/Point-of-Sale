@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.increff.pos.util.Constants;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
@@ -68,5 +69,12 @@ public class AuthFlow {
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRole(RoleAssigner.assignRole(email));
         userService.add(newUser);
+    }
+
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
     }
 }
