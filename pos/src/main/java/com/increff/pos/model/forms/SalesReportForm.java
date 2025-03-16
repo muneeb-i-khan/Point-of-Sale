@@ -16,8 +16,8 @@ public class SalesReportForm {
     private String clientName;
     @Size(max = 255, message = "Client Desc can be maximum of size 255")
     private String description;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private ZonedDateTime startDate;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private ZonedDateTime endDate;
 }
