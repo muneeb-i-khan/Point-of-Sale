@@ -52,7 +52,9 @@ public class ProductService {
         if (existingProduct != null && !existingProduct.getId().equals(id)) {
             throw new ApiException("Barcode already exists for another product.");
         }
-
+        if(p.getPrice() < 0) {
+            throw new ApiException("Price can't be negative");
+        }
         ex.setBarcode(p.getBarcode());
         ex.setName(p.getName());
         ex.setPrice(p.getPrice());

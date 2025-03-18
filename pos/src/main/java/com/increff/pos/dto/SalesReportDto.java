@@ -27,6 +27,10 @@ public class SalesReportDto {
         ZonedDateTime startDate = salesReportForm.getStartDate();
         ZonedDateTime endDate = salesReportForm.getEndDate();
 
+        if(startDate.isAfter(endDate)) {
+            throw new ApiException("Start Date can't be after end date");
+        }
+
         List<SalesReportPojo> salesReportPojos = salesReportService.getSalesReport(clientName, description, startDate, endDate);
         return salesReportFlow.convert(salesReportPojos);
     }
