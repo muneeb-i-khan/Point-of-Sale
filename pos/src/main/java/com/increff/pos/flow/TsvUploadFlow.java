@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 @Service
@@ -28,29 +30,35 @@ public class TsvUploadFlow {
     @Autowired
     private ClientService clientService;
 
-    public void uploadProducts(MultipartFile file) throws IOException, ApiException {
+    public void uploadProducts(MultipartFile file, HttpServletResponse response) throws IOException, ApiException {
         List<ProductPojo> validProducts = new ArrayList<>();
-        List<String> errorMessages = new ArrayList<>();
+        List<Map<String, String>> errorRecords = new ArrayList<>();
 
-        parseProducts(file, validProducts, errorMessages);
-        saveValidProducts(validProducts, errorMessages);
+        parseProducts(file, validProducts, errorRecords);
+        saveValidProducts(validProducts, errorRecords, response);
     }
 
-    public void uploadInventory(MultipartFile file) throws IOException, ApiException {
+    public void uploadInventory(MultipartFile file, HttpServletResponse response) throws IOException, ApiException {
         List<InventoryPojo> validInventories = new ArrayList<>();
-        List<String> errorMessages = new ArrayList<>();
+        List<Map<String, String>> errorRecords = new ArrayList<>();
 
-        parseInventory(file, validInventories, errorMessages);
-        saveValidInventories(validInventories, errorMessages);
+        parseInventory(file, validInventories, errorRecords);
+        saveValidInventories(validInventories, errorRecords, response);
     }
 
-    private void parseProducts(MultipartFile file, List<ProductPojo> validProducts, List<String> errorMessages) throws IOException {
+    private void parseProducts(MultipartFile file, List<ProductPojo> validProducts, List<Map<String, String>> errorRecords) throws IOException {
         tsvParserUtil.parseTSV(file.getInputStream(),
                 new HashSet<>(Arrays.asList("name", "barcode", "price", "clientName")),
                 record -> {
+                    Map<String, String> recordMap = new HashMap<>();
+                    recordMap.put("name", record.get("name"));
+                    recordMap.put("barcode", record.get("barcode"));
+                    recordMap.put("price", record.get("price"));
+                    recordMap.put("clientName", record.get("clientName"));
+
                     try {
                         String barcode = record.get("barcode");
-                        if (productService.getProductByBarcode(barcode) != null) {
+                        if (productService.getCheckBarcode(barcode) != null) {
                             throw new ApiException("Product with barcode '" + barcode + "' already exists.");
                         }
 
@@ -64,16 +72,21 @@ public class TsvUploadFlow {
 
                         validProducts.add(product);
                     } catch (Exception e) {
-                        errorMessages.add("Error in record: " + record.toString() + " - " + e.getMessage());
+                        recordMap.put("error", e.getMessage());
+                        errorRecords.add(recordMap);
                     }
                     return null;
                 });
     }
 
-    private void parseInventory(MultipartFile file, List<InventoryPojo> validInventories, List<String> errorMessages) throws IOException {
+    private void parseInventory(MultipartFile file, List<InventoryPojo> validInventories, List<Map<String, String>> errorRecords) throws IOException {
         tsvParserUtil.parseTSV(file.getInputStream(),
                 new HashSet<>(Arrays.asList("barcode", "quantity")),
                 record -> {
+                    Map<String, String> recordMap = new HashMap<>();
+                    recordMap.put("barcode", record.get("barcode"));
+                    recordMap.put("quantity", record.get("quantity"));
+
                     try {
                         String barcode = record.get("barcode");
                         ProductPojo product = productService.getProductByBarcode(barcode);
@@ -87,29 +100,71 @@ public class TsvUploadFlow {
 
                         validInventories.add(inventory);
                     } catch (Exception e) {
-                        errorMessages.add("Error in record: " + record.toString() + " - " + e.getMessage());
+                        recordMap.put("error", e.getMessage());
+                        errorRecords.add(recordMap);
                     }
                     return null;
                 });
     }
 
-    private void saveValidProducts(List<ProductPojo> validProducts, List<String> errorMessages) throws ApiException {
+    private void saveValidProducts(List<ProductPojo> validProducts, List<Map<String, String>> errorRecords, HttpServletResponse response) throws ApiException, IOException {
         for (ProductPojo product : validProducts) {
             productService.addProduct(product);
         }
-        handleErrors(errorMessages);
+
+        if (!errorRecords.isEmpty()) {
+            generateErrorTsv(errorRecords, response);
+            throw new ApiException("Some records failed - check downloaded error.tsv file");
+        }
     }
 
-    private void saveValidInventories(List<InventoryPojo> validInventories, List<String> errorMessages) throws ApiException {
+    private void generateErrorTsv(List<Map<String, String>> errorRecords, HttpServletResponse response) throws IOException {
+        response.setContentType("text/tab-separated-values");
+        response.setHeader("Content-Disposition", "attachment; filename=error.tsv");
+
+        try (PrintWriter writer = response.getWriter()) {
+            writer.write("name\tbarcode\tprice\tclientName\terror\n");
+
+            for (Map<String, String> record : errorRecords) {
+                writer.write(String.format("%s\t%s\t%s\t%s\t%s\n",
+                        escapeTsv(record.get("name")),
+                        escapeTsv(record.get("barcode")),
+                        escapeTsv(record.get("price")),
+                        escapeTsv(record.get("clientName")),
+                        escapeTsv(record.get("error"))));
+            }
+        }
+    }
+
+    private String escapeTsv(String value) {
+        if (value == null) return "";
+        return value.replace("\t", "\\t").replace("\n", "\\n");
+    }
+
+    private void saveValidInventories(List<InventoryPojo> validInventories, List<Map<String, String>> errorRecords, HttpServletResponse response) throws ApiException, IOException {
         for (InventoryPojo inventory : validInventories) {
             inventoryService.addInventory(inventory);
         }
-        handleErrors(errorMessages);
+
+        if (!errorRecords.isEmpty()) {
+            generateInventoryErrorTsv(errorRecords, response);
+            throw new ApiException("Some inventory records failed - check downloaded error.tsv file");
+        }
     }
 
-    private void handleErrors(List<String> errorMessages) throws ApiException {
-        if (!errorMessages.isEmpty()) {
-            throw new ApiException("Some records failed: " + String.join("; ", errorMessages));
+    private void generateInventoryErrorTsv(List<Map<String, String>> errorRecords, HttpServletResponse response) throws IOException {
+        response.setContentType("text/tab-separated-values");
+        response.setHeader("Content-Disposition", "attachment; filename=error.tsv");
+
+        try (PrintWriter writer = response.getWriter()) {
+            writer.write("barcode\tquantity\terror\n");
+
+            for (Map<String, String> record : errorRecords) {
+                writer.write(String.format("%s\t%s\t%s\n",
+                        escapeTsv(record.get("barcode")),
+                        escapeTsv(record.get("quantity")),
+                        escapeTsv(record.get("error"))));
+            }
         }
     }
 }

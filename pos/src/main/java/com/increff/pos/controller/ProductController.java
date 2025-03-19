@@ -51,7 +51,7 @@ public class ProductController {
 
     @ApiOperation(value = "check session")
     @PostMapping("/upload")
-    public void uploadProducts(@RequestParam("file") MultipartFile file) throws ApiException, IOException {
-        productDto.uploadProducts(file);
+    public void uploadProducts(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws ApiException, IOException {
+        productDto.uploadProducts(file, response);
     }
 }

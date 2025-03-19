@@ -70,7 +70,7 @@ public class InventoryDto {
         return inventoryFlow.convert(inventoryPojo);
     }
 
-    public void uploadInventory(MultipartFile file) throws IOException, ApiException {
-        inventoryFlow.uploadInventory(file);
+    public void uploadInventory(MultipartFile file, HttpServletResponse response) throws IOException, ApiException {
+        inventoryFlow.uploadInventory(file, response);
     }
 }

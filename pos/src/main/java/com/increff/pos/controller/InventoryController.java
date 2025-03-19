@@ -57,7 +57,7 @@ public class InventoryController {
 
     @ApiOperation(value = "Upload TSV file")
     @PostMapping("/upload")
-    public void uploadInventory(@RequestParam("file") MultipartFile file) throws IOException, ApiException {
-        inventoryDto.uploadInventory(file);
+    public void uploadInventory(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException, ApiException {
+        inventoryDto.uploadInventory(file, response);
     }
 }

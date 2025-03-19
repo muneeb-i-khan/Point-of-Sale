@@ -60,8 +60,8 @@ public class ProductDto {
         return productService.updateProduct(id, p);
     }
 
-    public void uploadProducts(MultipartFile file) throws IOException, ApiException {
-        productFlow.uploadProducts(file);
+    public void uploadProducts(MultipartFile file, HttpServletResponse response) throws IOException, ApiException {
+        productFlow.uploadProducts(file, response);
     }
 
 

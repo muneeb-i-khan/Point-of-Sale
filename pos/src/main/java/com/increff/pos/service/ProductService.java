@@ -41,6 +41,10 @@ public class ProductService {
         return product;
     }
 
+    public ProductPojo getCheckBarcode(String Barcode) {
+        return dao.selectByBarcode(Barcode);
+    }
+
     public List<ProductPojo> getAllProducts() {
         return dao.selectAll();
     }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
@@ -36,8 +37,8 @@ public class InventoryFlow {
         return convert(inventoryPojo);
     }
 
-    public void uploadInventory(MultipartFile file) throws IOException, ApiException {
-        tsvUploadFlow.uploadInventory(file);
+    public void uploadInventory(MultipartFile file, HttpServletResponse response) throws IOException, ApiException {
+        tsvUploadFlow.uploadInventory(file, response);
     }
 
     public String getBarcode(InventoryPojo inventoryPojo) {
