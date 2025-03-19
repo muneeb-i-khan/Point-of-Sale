@@ -18,7 +18,7 @@ public class DaySaleReportService {
     private DaySaleReportDao daySaleReportDao;
 
     public List<DaySaleReportPojo> getReport(ZonedDateTime start, ZonedDateTime end) {
-        if(start.isAfter(end)) {
+        if(start!=null && end!=null && start.isAfter(end)) {
             throw new ApiException("Start date can't be after end date");
         }
         return daySaleReportDao.findByDateRange(start, end);

@@ -22,17 +22,17 @@ public class SalesReportDto {
     private SalesReportFlow salesReportFlow;
 
     public List<SalesReportData> getSalesReport(SalesReportForm salesReportForm) throws ApiException {
-        String clientName = salesReportForm.getClientName();
-        String description = salesReportForm.getDescription();
-        ZonedDateTime startDate = salesReportForm.getStartDate();
-        ZonedDateTime endDate = salesReportForm.getEndDate();
+            String clientName = salesReportForm.getClientName();
+            String description = salesReportForm.getDescription();
+            ZonedDateTime startDate = salesReportForm.getStartDate();
+            ZonedDateTime endDate = salesReportForm.getEndDate();
 
-        if(startDate.isAfter(endDate)) {
-            throw new ApiException("Start Date can't be after end date");
-        }
+            if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+                throw new ApiException("Start Date can't be after End Date");
+            }
 
-        List<SalesReportPojo> salesReportPojos = salesReportService.getSalesReport(clientName, description, startDate, endDate);
-        return salesReportFlow.convert(salesReportPojos);
+            List<SalesReportPojo> salesReportPojos = salesReportService.getSalesReport(clientName, description, startDate, endDate);
+            return salesReportFlow.convert(salesReportPojos);
     }
 
     public List<SalesReportData> getAllSales() throws ApiException {
