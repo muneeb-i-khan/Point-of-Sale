@@ -12,7 +12,7 @@
 
     <artifactId>pos</artifactId>
     <packaging>war</packaging>
-
+// change
     <name>employee-spring</name>
 
     <properties>

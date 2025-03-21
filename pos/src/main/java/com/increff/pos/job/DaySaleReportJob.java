@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class DaySaleReportJob {
     @Autowired
     private DaySaleReportFlow daySaleReportFlow;
-
+    // TODO: call dto --> hitting api at controller level
     @Scheduled(cron = "0 0 0 * * ?")
     public void generateDailySalesReport() {
         daySaleReportFlow.recordDailySales();

@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "clients")
+// constrains can  be defined here
 public class ClientPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

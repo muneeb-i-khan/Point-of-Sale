@@ -27,6 +27,7 @@ public class InventoryFlow {
     @Autowired
     private ClientService clientService;
 
+    // todo: cant autowire flow in flow
     @Autowired
     private TsvUploadFlow tsvUploadFlow;
 
@@ -49,20 +50,24 @@ public class InventoryFlow {
     public InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
         InventoryPojo inventoryPojo = new InventoryPojo();
         ProductPojo productPojo = productService.getProductByBarcode(inventoryForm.getBarcode());
+
         inventoryPojo.setProdId(productPojo.getId());
         inventoryPojo.setQuantity(inventoryForm.getQuantity());
+
         return inventoryPojo;
     }
 
     public InventoryData convert(InventoryPojo inventoryPojo) throws ApiException {
+        ProductPojo productPojo = productService.getCheck(inventoryPojo.getProdId());
+        ClientPojo clientPojo = clientService.getCheck(productPojo.getClientId());
+
         InventoryData inventoryData = new InventoryData();
         inventoryData.setId(inventoryPojo.getId());
-        ProductPojo productPojo = productService.getCheck(inventoryPojo.getProdId());
         inventoryData.setBarcode(productPojo.getBarcode());
         inventoryData.setQuantity(inventoryPojo.getQuantity());
         inventoryData.setProdName(productPojo.getName());
-        ClientPojo clientPojo = clientService.getCheck(productPojo.getClientId());
         inventoryData.setClientName(clientPojo.getName());
+
         return inventoryData;
     }
 }

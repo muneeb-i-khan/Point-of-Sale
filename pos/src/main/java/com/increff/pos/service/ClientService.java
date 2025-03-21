@@ -18,9 +18,10 @@ public class ClientService {
 
     @Autowired
     private  ClientDao dao;
-
+// TODO: Add a abstract service to check null and not null
     public void addClient(ClientPojo p) throws ApiException {
         ClientPojo existingClient = dao.selectByName(p.getName());
+
         if (existingClient != null) {
             throw new ApiException("Client with name '" + p.getName() + "' already exists.");
         }
@@ -30,14 +31,17 @@ public class ClientService {
     public List<ClientPojo> getAllClients() {
         return dao.selectAll();
     }
+
     public void updateClient(Long id, ClientPojo p) throws ApiException {
         ClientPojo existingClient = getCheck(id);
         checkDuplicateName(id, p.getName());
+
         existingClient.setDescription(p.getDescription());
         existingClient.setName(p.getName());
+        // this is not necessary as it will get
         dao.update(existingClient);
     }
-
+// TODD:  Code should be self-explanatory and properly formatted
     private void checkDuplicateName(Long id, String name) throws ApiException {
         ClientPojo clientWithSameName = dao.selectByName(name);
         if (clientWithSameName != null && !clientWithSameName.getId().equals(id)) {
