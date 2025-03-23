@@ -12,8 +12,7 @@
 
     <artifactId>pos</artifactId>
     <packaging>war</packaging>
-// change
-    <name>employee-spring</name>
+    <name>pos-spring</name>
 
     <properties>
         <jetty.http.port>9000</jetty.http.port>

@@ -26,7 +26,7 @@ public class ProductFlow {
     @Autowired
     private TsvUploadFlow tsvUploadFlow;
 
-    public ProductData addProduct(ProductForm productForm) throws ApiException {
+    public ProductPojo addProduct(ProductForm productForm) throws ApiException {
         ProductPojo p = new ProductPojo();
         p.setName(productForm.getName());
         p.setBarcode(productForm.getBarcode());
@@ -36,20 +36,10 @@ public class ProductFlow {
         clientPojo = clientService.getCheck(productForm.getClientName());
         p.setClientId(clientPojo.getId());
         productService.addProduct(p);
-        return convert(p);
+        return p;
     }
 
     public void uploadProducts(MultipartFile file, HttpServletResponse response) throws IOException, ApiException {
         tsvUploadFlow.uploadProducts(file, response);
-    }
-
-    public ProductData convert(ProductPojo productPojo) throws ApiException{
-        ProductData productData = new ProductData();
-        productData.setName(Normalize.normalizeName(productPojo.getName()));
-        productData.setBarcode(productPojo.getBarcode());
-        productData.setId(productPojo.getId());
-        productData.setClientName(clientService.getCheck(productPojo.getClientId()).getName());
-        productData.setPrice(productPojo.getPrice());
-        return productData;
     }
 }

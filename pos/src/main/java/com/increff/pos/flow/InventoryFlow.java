@@ -31,11 +31,10 @@ public class InventoryFlow {
     @Autowired
     private TsvUploadFlow tsvUploadFlow;
 
-    public InventoryData getInventory(String barcode) throws ApiException {
+    public InventoryPojo getInventory(String barcode) throws ApiException {
         ProductPojo productPojo = productService.getProductByBarcode(barcode);
         inventoryService.getCheck(productPojo.getId());
-        InventoryPojo inventoryPojo = inventoryService.getCheck(productPojo.getId());
-        return convert(inventoryPojo);
+        return inventoryService.getCheck(productPojo.getId());
     }
 
     public void uploadInventory(MultipartFile file, HttpServletResponse response) throws IOException, ApiException {
@@ -45,29 +44,5 @@ public class InventoryFlow {
     public String getBarcode(InventoryPojo inventoryPojo) {
         ProductPojo productPojo = productService.getCheck(inventoryPojo.getProdId());
         return productPojo.getBarcode();
-    }
-
-    public InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
-        InventoryPojo inventoryPojo = new InventoryPojo();
-        ProductPojo productPojo = productService.getProductByBarcode(inventoryForm.getBarcode());
-
-        inventoryPojo.setProdId(productPojo.getId());
-        inventoryPojo.setQuantity(inventoryForm.getQuantity());
-
-        return inventoryPojo;
-    }
-
-    public InventoryData convert(InventoryPojo inventoryPojo) throws ApiException {
-        ProductPojo productPojo = productService.getCheck(inventoryPojo.getProdId());
-        ClientPojo clientPojo = clientService.getCheck(productPojo.getClientId());
-
-        InventoryData inventoryData = new InventoryData();
-        inventoryData.setId(inventoryPojo.getId());
-        inventoryData.setBarcode(productPojo.getBarcode());
-        inventoryData.setQuantity(inventoryPojo.getQuantity());
-        inventoryData.setProdName(productPojo.getName());
-        inventoryData.setClientName(clientPojo.getName());
-
-        return inventoryData;
     }
 }

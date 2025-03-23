@@ -49,7 +49,7 @@ public class ProductService {
         return dao.selectAll();
     }
 
-    public ProductData updateProduct(Long id, ProductPojo p) throws ApiException {
+    public ProductPojo updateProduct(Long id, ProductPojo p) throws ApiException {
         ProductPojo ex = getCheck(id);
         ProductPojo existingProduct = dao.selectByBarcode(p.getBarcode());
 
@@ -67,7 +67,7 @@ public class ProductService {
         }
 
         dao.update(ex);
-        return productFlow.convert(ex);
+        return ex;
     }
 
     public List<ProductPojo> getAllProductsPaginated(int page, int pageSize) {

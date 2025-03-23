@@ -3,6 +3,7 @@ package com.increff.pos.dto;
 import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.forms.ProductForm;
+import com.increff.pos.service.ClientService;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.Normalize;
@@ -22,22 +23,25 @@ public class ProductDto {
     private ProductService productService;
 
     @Autowired
+    private ClientService clientService;
+
+    @Autowired
     private ProductFlow productFlow;
 
     public ProductData addProduct(ProductForm productForm) throws ApiException {
-        return productFlow.addProduct(productForm);
+        return convert(productFlow.addProduct(productForm));
     }
 
     public ProductData getProduct(Long id) throws ApiException {
         ProductPojo productPojo = productService.getCheck(id);
-        return productFlow.convert(productPojo);
+        return convert(productPojo);
     }
 
     public List<ProductData> getAllProducts() throws ApiException {
         List<ProductPojo> list = productService.getAllProducts();
         List<ProductData> list2 = new ArrayList<>();
         for(ProductPojo p : list) {
-            list2.add(productFlow.convert(p));
+            list2.add(convert(p));
         }
         return list2;
     }
@@ -48,7 +52,7 @@ public class ProductDto {
 
         List<ProductData> productDataList = new ArrayList<>();
         for (ProductPojo p : productPojos) {
-            productDataList.add(productFlow.convert(p));
+            productDataList.add(convert(p));
         }
         httpServletResponse.setHeader("totalProducts",totalProducts.toString());
         return productDataList;
@@ -57,7 +61,7 @@ public class ProductDto {
 
     public ProductData updateProduct(Long id, ProductForm productForm) throws ApiException {
         ProductPojo p = convert(productForm);
-        return productService.updateProduct(id, p);
+        return convert(productService.updateProduct(id, p));
     }
 
     public void uploadProducts(MultipartFile file, HttpServletResponse response) throws IOException, ApiException {
@@ -71,5 +75,15 @@ public class ProductDto {
         p.setBarcode(productForm.getBarcode().trim());
         p.setPrice(productForm.getPrice());
         return p;
+    }
+
+    public ProductData convert(ProductPojo productPojo) throws ApiException{
+        ProductData productData = new ProductData();
+        productData.setName(Normalize.normalizeName(productPojo.getName()));
+        productData.setBarcode(productPojo.getBarcode());
+        productData.setId(productPojo.getId());
+        productData.setClientName(clientService.getCheck(productPojo.getClientId()).getName());
+        productData.setPrice(productPojo.getPrice());
+        return productData;
     }
 }

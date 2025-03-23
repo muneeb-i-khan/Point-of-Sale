@@ -1,6 +1,7 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.db.pojo.ClientPojo;
+import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.forms.ProductForm;
 import com.increff.pos.service.*;
@@ -119,4 +120,5 @@ public class ProductDtoTest extends AbstractUnitTest {
 
         productDto.updateProduct(99999L, updateForm);
     }
+
 }
