@@ -53,4 +53,10 @@ public class TsvParserUtil {
 
         return recordsList;
     }
+
+
+    public String escapeTsv(String value) {
+        if (value == null) return "";
+        return value.replace("\t", "\\t").replace("\n", "\\n");
+    }
 }
