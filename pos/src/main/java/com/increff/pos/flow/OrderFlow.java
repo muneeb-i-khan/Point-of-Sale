@@ -86,16 +86,6 @@ public class OrderFlow {
         return order;
     }
 
-    public byte[] downloadInvoice(Long id) throws ApiException {
-        OrderPojo orderPojo = orderService.getOrderById(id);
-        OrderData orderData = convert(orderPojo);
-        byte[] existingInvoiceBytes = orderService.tryLoadExistingInvoiceBytes(orderPojo, id, orderData);
-        if (existingInvoiceBytes != null) {
-            return existingInvoiceBytes;
-        }
-        return orderService.generateAndSaveNewInvoiceBytes(orderPojo, id, orderData);
-    }
-
     // TODO: move to dto
     public OrderData convert(OrderPojo orderPojo) throws ApiException {
         if (orderPojo == null) {
