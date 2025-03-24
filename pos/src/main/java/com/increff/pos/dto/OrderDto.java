@@ -1,5 +1,6 @@
 package com.increff.pos.dto;
 
+import com.increff.pos.db.pojo.CustomerPojo;
 import com.increff.pos.db.pojo.OrderPojo;
 import com.increff.pos.flow.OrderFlow;
 import com.increff.pos.model.data.OrderData;
@@ -23,8 +24,12 @@ public class OrderDto {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private CustomerDto customerDto;
+
     public OrderData addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
-        return orderFlow.addOrder(orderItemFormList, customerForm);
+        CustomerPojo customerPojo = customerDto.convert(customerForm);
+        return orderFlow.addOrder(orderItemFormList, customerPojo);
     }
 
     public List<OrderData> getAllOrders() throws ApiException {

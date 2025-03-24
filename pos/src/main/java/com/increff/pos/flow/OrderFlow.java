@@ -1,15 +1,12 @@
 package com.increff.pos.flow;
 
 import com.increff.pos.db.pojo.*;
-import com.increff.pos.dto.CustomerDto;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderData.OrderItem;
-import com.increff.pos.model.forms.CustomerForm;
 import com.increff.pos.model.forms.OrderForm.OrderItemForm;
 import com.increff.pos.service.*;
 import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
@@ -25,9 +22,6 @@ public class OrderFlow {
     private ProductService productService;
 
     @Autowired
-    private CustomerDto customerDto;
-
-    @Autowired
     private CustomerService customerService;
 
     @Autowired
@@ -36,15 +30,12 @@ public class OrderFlow {
     @Autowired
     private SalesReportService salesReportService;
 
-    public OrderData addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
+    public OrderData addOrder(List<OrderItemForm> orderItemFormList, CustomerPojo customerPojo) throws ApiException {
         if (orderItemFormList == null || orderItemFormList.isEmpty()) {
             throw new ApiException("Order cannot be empty.");
         }
         List<OrderItemForm> mergedOrderItems = mergeDuplicateItems(orderItemFormList);
-
         List<OrderItemPojo> orderItemPojoList = convert(mergedOrderItems);
-        CustomerPojo customerPojo = customerDto.convert(customerForm);
-
         OrderPojo orderPojo = createOrder(orderItemPojoList, customerPojo);
         return convert(orderPojo);
     }
