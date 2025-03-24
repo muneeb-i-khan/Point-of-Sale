@@ -57,6 +57,6 @@ public class DaySaleReportController {
     @ApiOperation(value = "Trigger report generation")
     @PostMapping("/generate")
     public void triggerDailySalesReport() {
-        daySaleReportFlow.recordDailySales();
+        daySaleReportDto.recordDailySales();
     }
 }

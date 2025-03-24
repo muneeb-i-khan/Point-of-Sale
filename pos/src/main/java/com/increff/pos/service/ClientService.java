@@ -40,7 +40,7 @@ public class ClientService {
         existingClient.setName(p.getName());
         dao.update(existingClient);
     }
-// TODD:  Code should be self-explanatory and properly formatted
+
     private void checkDuplicateName(Long id, String name) throws ApiException {
         ClientPojo clientWithSameName = dao.selectByName(name);
         if (clientWithSameName != null && !clientWithSameName.getId().equals(id)) {
@@ -55,7 +55,6 @@ public class ClientService {
     public Long getClientCount() {
         return dao.countClients();
     }
-
 
     public ClientPojo getCheck(String name) throws ApiException {
         ClientPojo client = dao.selectByName(name);
