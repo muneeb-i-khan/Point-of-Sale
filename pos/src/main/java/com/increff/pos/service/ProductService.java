@@ -59,9 +59,11 @@ public class ProductService {
         if(p.getPrice() < 0) {
             throw new ApiException("Price can't be negative");
         }
+
         ex.setBarcode(p.getBarcode());
         ex.setName(p.getName());
         ex.setPrice(p.getPrice());
+
         if (p.getClientId() != null) {
             ex.setClientId(p.getClientId());
         }

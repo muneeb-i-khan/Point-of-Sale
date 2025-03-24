@@ -64,10 +64,12 @@ public class AuthFlow {
         if (userService.getCheckEmail(email)) {
             throw new ApiException("Email already exists");
         }
+
         UserPojo newUser = new UserPojo();
         newUser.setEmail(email);
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRole(RoleAssigner.assignRole(email));
+
         userService.add(newUser);
     }
 

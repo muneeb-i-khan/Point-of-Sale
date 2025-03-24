@@ -46,6 +46,7 @@ public class DaySaleReportService {
         report.setOrderCount(orderCount);
         report.setItemSoldCount(itemSoldCount);
         report.setRevenue(revenue);
+
         return report;
     }
 

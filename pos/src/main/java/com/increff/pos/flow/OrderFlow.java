@@ -41,8 +41,10 @@ public class OrderFlow {
             throw new ApiException("Order cannot be empty.");
         }
         List<OrderItemForm> mergedOrderItems = mergeDuplicateItems(orderItemFormList);
+
         List<OrderItemPojo> orderItemPojoList = convert(mergedOrderItems);
         CustomerPojo customerPojo = customerDto.convert(customerForm);
+
         OrderPojo orderPojo = createOrder(orderItemPojoList, customerPojo);
         return convert(orderPojo);
     }
@@ -80,6 +82,7 @@ public class OrderFlow {
         order.setInvoicePath("");
         addCustomer(customerPojo);
         order.setCustomerId(customerPojo.getId());
+
         return order;
     }
 

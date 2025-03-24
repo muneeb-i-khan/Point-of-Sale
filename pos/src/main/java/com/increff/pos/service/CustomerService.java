@@ -29,8 +29,10 @@ public class CustomerService {
 
     public void updateCustomer(Long id, CustomerPojo p) throws ApiException {
         CustomerPojo ex = getCheck(id);
+
         ex.setName(p.getName());
         ex.setPhone(p.getPhone());
+
         dao.update(ex);
     }
 
