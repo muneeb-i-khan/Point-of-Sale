@@ -9,13 +9,13 @@ import java.time.ZonedDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "posDaySale")
+@Table(name = "posDaySale", uniqueConstraints = @UniqueConstraint(columnNames = "date"))
 public class DaySaleReportPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private ZonedDateTime date;
 
     @Column(nullable = false)

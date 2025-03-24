@@ -9,11 +9,12 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Table(name = "customer", uniqueConstraints = @UniqueConstraint(columnNames = "phone"))
 public class CustomerPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String phone;
 }
