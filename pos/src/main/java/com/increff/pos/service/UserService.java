@@ -4,10 +4,12 @@ import com.increff.pos.db.dao.UserDao;
 import com.increff.pos.db.pojo.UserPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService {
     @Autowired
     private UserDao userDao;

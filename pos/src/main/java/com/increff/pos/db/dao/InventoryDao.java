@@ -33,7 +33,6 @@ public class InventoryDao extends AbstractDao {
     }
 
     public void update(InventoryPojo p) {
-        em.merge(p);
     }
 
     public List<InventoryPojo> selectAllPaginated(int page, int pageSize) {

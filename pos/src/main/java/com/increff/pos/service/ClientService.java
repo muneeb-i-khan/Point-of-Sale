@@ -38,7 +38,6 @@ public class ClientService {
 
         existingClient.setDescription(p.getDescription());
         existingClient.setName(p.getName());
-        // this is not necessary as it will get
         dao.update(existingClient);
     }
 // TODD:  Code should be self-explanatory and properly formatted

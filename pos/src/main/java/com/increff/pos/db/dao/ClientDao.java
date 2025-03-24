@@ -32,7 +32,6 @@ public class ClientDao extends AbstractDao {
     }
 
     public void update(ClientPojo p) {
-        em.merge(p);
     }
 
     public ClientPojo selectByName(String name) {

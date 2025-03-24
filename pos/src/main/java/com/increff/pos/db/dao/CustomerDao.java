@@ -40,8 +40,6 @@ public class CustomerDao extends AbstractDao {
             return null;
         }
     }
-// TODO: not necessary
     public void update(CustomerPojo p) {
-        em.merge(p);
     }
 }

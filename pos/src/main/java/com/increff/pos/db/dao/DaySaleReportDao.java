@@ -50,6 +50,5 @@ public class DaySaleReportDao extends AbstractDao {
     }
 
     public void update(DaySaleReportPojo sale) {
-        em.merge(sale);
     }
 }

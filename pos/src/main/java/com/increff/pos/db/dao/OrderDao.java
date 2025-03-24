@@ -88,6 +88,5 @@ public class OrderDao extends AbstractDao {
 
 
     public void update(OrderPojo order) {
-        em.merge(order);
     }
 }

@@ -21,9 +21,7 @@ public class SalesReportDao extends AbstractDao {
         em.persist(report);
     }
 
-    public void update(SalesReportPojo report) {
-        em.merge(report);
-    }
+    public void update(SalesReportPojo report) {}
 
     public SalesReportPojo findByClientAndDate(Long clientId, ZonedDateTime date) {
         TypedQuery<SalesReportPojo> query = getQuery(FIND_BY_CLIENT_AND_DATE, SalesReportPojo.class);

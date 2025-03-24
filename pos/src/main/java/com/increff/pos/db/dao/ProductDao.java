@@ -34,7 +34,6 @@ public class ProductDao extends AbstractDao {
     }
 
     public void update(ProductPojo p) {
-        em.merge(p);
     }
 
     public ProductPojo selectByBarcode(String barcode) {
