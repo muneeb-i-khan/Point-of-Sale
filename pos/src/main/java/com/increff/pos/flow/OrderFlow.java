@@ -86,7 +86,6 @@ public class OrderFlow {
         return order;
     }
 
-    // TODO: move to dto
     public OrderData convert(OrderPojo orderPojo) throws ApiException {
         if (orderPojo == null) {
             throw new ApiException("Order cannot be null");
@@ -119,7 +118,7 @@ public class OrderFlow {
             orderItem.setProdName(product.getName());
             orderItem.setPrice(product.getPrice());
             orderItem.setSellingPrice(itemPojo.getSellingPrice());
-            // TODO: order details
+
             totalAmount += itemPojo.getSellingPrice() * itemPojo.getQuantity();
 
             orderItems.add(orderItem);

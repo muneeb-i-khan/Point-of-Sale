@@ -3,7 +3,6 @@ package com.increff.pos.service;
 import com.increff.pos.db.dao.ProductDao;
 import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.flow.ProductFlow;
-import com.increff.pos.model.data.ProductData;
 import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
-public class ProductService {
+public class ProductService extends AbstractService {
 
     private final ProductDao dao;
 
@@ -25,24 +24,20 @@ public class ProductService {
     @Autowired
     private ProductFlow productFlow;
 
-    public void addProduct(ProductPojo p) {
+    public void addProduct(ProductPojo p) throws ApiException {
         ProductPojo existingProduct = dao.selectByBarcode(p.getBarcode());
-        if(existingProduct != null) {
-            throw new ApiException("Barcode "+p.getBarcode()+" already exists!");
-        }
+        isNotNull(existingProduct, "Barcode " + p.getBarcode() + " already exists!");
         dao.add(p);
     }
 
     public ProductPojo getProductByBarcode(String barcode) throws ApiException {
         ProductPojo product = dao.selectByBarcode(barcode);
-        if (product == null) {
-            throw new ApiException("Product with the given barcode does not exist: " + barcode);
-        }
+        isNull(product, "Product with the given barcode does not exist: " + barcode);
         return product;
     }
 
-    public ProductPojo getCheckBarcode(String Barcode) {
-        return dao.selectByBarcode(Barcode);
+    public ProductPojo getCheckBarcode(String barcode) {
+        return dao.selectByBarcode(barcode);
     }
 
     public List<ProductPojo> getAllProducts() {
@@ -56,7 +51,7 @@ public class ProductService {
         if (existingProduct != null && !existingProduct.getId().equals(id)) {
             throw new ApiException("Barcode already exists for another product.");
         }
-        if(p.getPrice() < 0) {
+        if (p.getPrice() < 0) {
             throw new ApiException("Price can't be negative");
         }
 
@@ -82,9 +77,7 @@ public class ProductService {
 
     public ProductPojo getCheck(Long id) throws ApiException {
         ProductPojo p = dao.select(id);
-        if (p == null) {
-            throw new ApiException("Product with given ID does not exist, id: " + id);
-        }
+        isNull(p, "Product with given ID does not exist, id: " + id);
         return p;
     }
 }

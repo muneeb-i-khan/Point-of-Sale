@@ -12,7 +12,8 @@ import java.util.List;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
-public class InventoryService {
+public class InventoryService extends AbstractService {
+
     @Autowired
     private InventoryDao dao;
 
@@ -53,9 +54,7 @@ public class InventoryService {
     public InventoryPojo getCheck(Long id) throws ApiException {
         try {
             InventoryPojo inventoryPojo = dao.select(id);
-            if (inventoryPojo == null) {
-                throw new ApiException("Inventory with given ID does not exist, id: " + id);
-            }
+            isNull(inventoryPojo, "Inventory with given ID does not exist, id: " + id);
             return inventoryPojo;
         } catch (javax.persistence.NoResultException e) {
             throw new ApiException("Inventory with given ID does not exist, id: " + id);
@@ -64,10 +63,7 @@ public class InventoryService {
 
     public InventoryPojo getInventoryByBarcode(String barcode) throws ApiException {
         InventoryPojo inventory = dao.selectByBarcode(barcode);
-        if (inventory == null) {
-            throw new ApiException("Inventory not found for barcode: " + barcode);
-        }
+        isNull(inventory, "Inventory not found for barcode: " + barcode);
         return inventory;
     }
-
 }

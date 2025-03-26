@@ -21,6 +21,7 @@ public class ClientDto {
     public ClientData addClient(ClientForm clientForm) {
         ClientPojo clientPojo = convert(clientForm);
         clientService.addClient(clientPojo);
+
         return convert(clientPojo);
     }
 
@@ -32,9 +33,11 @@ public class ClientDto {
     public List<ClientData> getAllClients() {
         List<ClientPojo> list = clientService.getAllClients();
         List<ClientData> list2 = new ArrayList<ClientData>();
+
         for(ClientPojo p : list) {
             list2.add(convert(p));
         }
+
         return list2;
     }
 
@@ -54,18 +57,22 @@ public class ClientDto {
 
     public ClientData updateClient(ClientForm clientForm, Long id) throws ApiException {
         ClientPojo clientPojo = new ClientPojo();
+
         clientPojo.setName(Normalize.normalizeName(clientForm.getName()));
         clientPojo.setDescription(clientForm.getDescription());
         clientService.updateClient(id, clientPojo);
+
         return convert(clientPojo);
     }
 
 
     public ClientData convert(ClientPojo p) {
         ClientData clientData = new ClientData();
+
         clientData.setName(Normalize.normalizeName(p.getName()));
         clientData.setDescription(p.getDescription());
         clientData.setId(p.getId());
+
         return clientData;
     }
 

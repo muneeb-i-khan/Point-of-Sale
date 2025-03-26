@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "client", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
-// constrains can  be defined here
 public class ClientPojo extends AbstractPojo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
