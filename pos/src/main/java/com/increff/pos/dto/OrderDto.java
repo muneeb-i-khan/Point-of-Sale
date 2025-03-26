@@ -1,10 +1,14 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.db.pojo.CustomerPojo;
+import com.increff.pos.db.pojo.OrderItemPojo;
 import com.increff.pos.db.pojo.OrderPojo;
+import com.increff.pos.db.pojo.ProductPojo;
 import com.increff.pos.flow.OrderFlow;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.forms.CustomerForm;
+import com.increff.pos.service.CustomerService;
+import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.model.forms.OrderForm.OrderItemForm;
@@ -22,9 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class OrderDto {
@@ -37,17 +39,33 @@ public class OrderDto {
     @Autowired
     private CustomerDto customerDto;
 
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private ProductService productService;
+
     public OrderData addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
         CustomerPojo customerPojo = customerDto.convert(customerForm);
-        return orderFlow.addOrder(orderItemFormList, customerPojo);
+
+        List<OrderItemForm> mergedOrderItems = mergeDuplicateItems(orderItemFormList);
+        List<OrderItemPojo> orderItemPojoList = convert(mergedOrderItems);
+
+        return convert(orderFlow.addOrder(orderItemPojoList, customerPojo));
     }
 
     public List<OrderData> getAllOrders() throws ApiException {
-        return orderFlow.getAllOrders();
+        List<OrderData> orderDataList = new ArrayList<>();
+
+        for(OrderPojo orderPojo: orderFlow.getAllOrders()) {
+            orderDataList.add(convert(orderPojo));
+        }
+
+        return orderDataList;
     }
 
     public OrderData getOrder(Long id) throws ApiException {
-        return orderFlow.getOrder(id);
+        return convert(orderFlow.getOrder(id));
     }
 
     public List<OrderData> getAllOrdersPaginated(int page, int pageSize, HttpServletResponse httpServletResponse) throws ApiException {
@@ -56,7 +74,7 @@ public class OrderDto {
 
         List<OrderData> orderDataList = new ArrayList<>();
         for (OrderPojo p : orderPojos) {
-            orderDataList.add(orderFlow.convert(p));
+            orderDataList.add(convert(p));
         }
         httpServletResponse.setHeader("totalOrders", totalOrders.toString());
         return orderDataList;
@@ -64,13 +82,98 @@ public class OrderDto {
 
     public byte[] downloadInvoice(Long id) throws ApiException{
         OrderPojo orderPojo = orderService.getOrderById(id);
-        OrderData orderData = orderFlow.convert(orderPojo);
+        OrderData orderData = convert(orderPojo);
         byte[] existingInvoiceBytes = tryLoadExistingInvoiceBytes(orderPojo, id, orderData);
         if (existingInvoiceBytes != null) {
             return existingInvoiceBytes;
         }
         return generateAndSaveNewInvoiceBytes(orderPojo, id, orderData);
     }
+
+    public OrderData convert(OrderPojo orderPojo) throws ApiException {
+        if (orderPojo == null) {
+            throw new ApiException("Order cannot be null");
+        }
+
+        OrderData orderData = new OrderData();
+        orderData.setId(orderPojo.getId());
+        orderData.setOrderDate(orderPojo.getOrderDate());
+
+        CustomerPojo customer = customerService.getCheck(orderPojo.getId());
+        orderData.setCustomerName(customer != null ? customer.getName() : null);
+        orderData.setCustomerPhone(customer != null ? customer.getPhone() : null);
+
+        List<OrderItemPojo> orderItemPojos = orderService.getItemsByOrderId(orderPojo.getId());
+        if (orderItemPojos == null) {
+            throw new ApiException("No items found for order ID: " + orderPojo.getId());
+        }
+
+        List<OrderData.OrderItem> orderItems = new ArrayList<>();
+        double totalAmount = 0.0;
+
+        for (OrderItemPojo itemPojo : orderItemPojos) {
+            OrderData.OrderItem orderItem = new OrderData.OrderItem();
+            ProductPojo product = productService.getCheck(itemPojo.getProdId());
+            if (product == null) {
+                throw new ApiException("Product not found for ID: " + itemPojo.getProdId() + " in order: " + orderPojo.getId());
+            }
+            orderItem.setBarcode(product.getBarcode());
+            orderItem.setQuantity(itemPojo.getQuantity().intValue());
+            orderItem.setProdName(product.getName());
+            orderItem.setPrice(product.getPrice());
+            orderItem.setSellingPrice(itemPojo.getSellingPrice());
+
+            totalAmount += itemPojo.getSellingPrice() * itemPojo.getQuantity();
+
+            orderItems.add(orderItem);
+        }
+
+        orderData.setItems(orderItems);
+        orderData.setTotalAmount(totalAmount);
+        return orderData;
+    }
+
+    private List<OrderItemForm> mergeDuplicateItems(List<OrderItemForm> orderItemForms) {
+        Map<String, OrderItemForm> mergedItems = new HashMap<>();
+
+        for (OrderItemForm item : orderItemForms) {
+            String barcode = item.getBarcode();
+            if (mergedItems.containsKey(barcode)) {
+                OrderItemForm existingItem = mergedItems.get(barcode);
+                existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
+            } else {
+                mergedItems.put(barcode, item);
+            }
+        }
+
+        return new ArrayList<>(mergedItems.values());
+    }
+
+    private List<OrderItemPojo> convert(List<OrderItemForm> orderItemFormList) throws ApiException {
+        List<OrderItemPojo> orderItemPojoList = new ArrayList<>();
+
+        for (OrderItemForm form : orderItemFormList) {
+            ProductPojo product = productService.getProductByBarcode(form.getBarcode());
+
+            if (product == null) {
+                throw new ApiException("Product with barcode " + form.getBarcode() + " not found");
+            }
+
+            OrderItemPojo orderItemPojo = new OrderItemPojo();
+            orderItemPojo.setProdId(product.getId());
+            orderItemPojo.setQuantity(form.getQuantity());
+            if(form.getSellingPrice() <= product.getPrice()) {
+                orderItemPojo.setSellingPrice(form.getSellingPrice());
+            }
+            else {
+                throw new ApiException("Selling price can't be more than Product's MRP");
+            }
+            orderItemPojoList.add(orderItemPojo);
+        }
+
+        return orderItemPojoList;
+    }
+
 
     private byte[] tryLoadExistingInvoiceBytes(OrderPojo orderPojo, Long id, OrderData orderData) throws ApiException {
         if (orderPojo.getInvoicePath() != null && !orderPojo.getInvoicePath().isEmpty()) {

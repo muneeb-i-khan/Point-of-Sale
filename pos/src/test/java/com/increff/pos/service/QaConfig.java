@@ -18,6 +18,4 @@ import com.increff.pos.spring.SpringConfig;
         @PropertySource(value = "classpath:/com/increff/pos/test.properties", ignoreResourceNotFound = true) //
 })
 public class QaConfig {
-
-
 }
