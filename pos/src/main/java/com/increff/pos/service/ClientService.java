@@ -27,17 +27,13 @@ public class ClientService extends AbstractService {
 
     public void updateClient(Long id, ClientPojo p) throws ApiException {
         ClientPojo existingClient = getCheck(id);
+
         checkDuplicateName(id, p.getName());
+
         existingClient.setDescription(p.getDescription());
         existingClient.setName(p.getName());
-        dao.update(existingClient);
-    }
 
-    private void checkDuplicateName(Long id, String name) throws ApiException {
-        ClientPojo clientWithSameName = dao.selectByName(name);
-        if (clientWithSameName != null && !clientWithSameName.getId().equals(id)) {
-            throw new ApiException("Name " + name + " already exists");
-        }
+        dao.update(existingClient);
     }
 
     public List<ClientPojo> getAllClientsPaginated(int page, int pageSize) {
@@ -58,5 +54,13 @@ public class ClientService extends AbstractService {
         ClientPojo p = dao.select(id);
         isNull(p, "Client with given ID does not exist: " + id);
         return p;
+    }
+
+    private void checkDuplicateName(Long id, String name) throws ApiException {
+        ClientPojo clientWithSameName = dao.selectByName(name);
+
+        if (clientWithSameName != null && !clientWithSameName.getId().equals(id)) {
+            throw new ApiException("Name " + name + " already exists");
+        }
     }
 }
