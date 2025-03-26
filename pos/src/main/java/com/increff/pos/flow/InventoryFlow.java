@@ -1,10 +1,8 @@
 package com.increff.pos.flow;
 
-import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.InventoryPojo;
 import com.increff.pos.db.pojo.ProductPojo;
-import com.increff.pos.model.data.InventoryData;
-import com.increff.pos.model.forms.InventoryForm;
+import com.increff.pos.spring.ApplicationProperties;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ClientService;
 import com.increff.pos.service.InventoryService;
@@ -22,6 +20,9 @@ import java.util.*;
 @Component
 public class InventoryFlow {
     @Autowired
+    private ApplicationProperties applicationProperties;
+
+    @Autowired
     private InventoryService inventoryService;
 
     @Autowired
@@ -29,9 +30,6 @@ public class InventoryFlow {
 
     @Autowired
     private ClientService clientService;
-
-    @Autowired
-    private TsvParserUtil tsvParserUtil;
 
     public InventoryPojo getInventory(String barcode) throws ApiException {
         ProductPojo productPojo = productService.getProductByBarcode(barcode);
@@ -48,7 +46,7 @@ public class InventoryFlow {
     }
 
     private void parseInventory(MultipartFile file, List<InventoryPojo> validInventories, List<Map<String, String>> errorRecords) throws IOException {
-        tsvParserUtil.parseTSV(file.getInputStream(),
+        TsvParserUtil.parseTSV(file.getInputStream(),
                 new HashSet<>(Arrays.asList("barcode", "quantity")),
                 record -> {
                     Map<String, String> recordMap = new HashMap<>();
@@ -72,7 +70,7 @@ public class InventoryFlow {
                         errorRecords.add(recordMap);
                     }
                     return null;
-                });
+                },applicationProperties.getMaxTsvLines());
     }
 
     private void saveValidInventories(List<InventoryPojo> validInventories, List<Map<String, String>> errorRecords, HttpServletResponse response) throws ApiException, IOException {
@@ -95,9 +93,9 @@ public class InventoryFlow {
 
             for (Map<String, String> record : errorRecords) {
                 writer.write(String.format("%s\t%s\t%s\n",
-                        tsvParserUtil.escapeTsv(record.get("barcode")),
-                        tsvParserUtil.escapeTsv(record.get("quantity")),
-                        tsvParserUtil.escapeTsv(record.get("error"))));
+                        TsvParserUtil.escapeTsv(record.get("barcode")),
+                        TsvParserUtil.escapeTsv(record.get("quantity")),
+                        TsvParserUtil.escapeTsv(record.get("error"))));
             }
         }
     }

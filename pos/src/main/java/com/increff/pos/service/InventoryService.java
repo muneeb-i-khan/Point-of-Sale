@@ -61,6 +61,10 @@ public class InventoryService extends AbstractService {
         }
     }
 
+    public void setQuantity(InventoryPojo inventoryPojo, Long quantity) {
+        inventoryPojo.setQuantity(quantity);
+    }
+
     public InventoryPojo getInventoryByBarcode(String barcode) throws ApiException {
         InventoryPojo inventory = dao.selectByBarcode(barcode);
         isNull(inventory, "Inventory not found for barcode: " + barcode);

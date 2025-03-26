@@ -19,11 +19,8 @@ import java.util.function.Function;
 @Component
 public class TsvParserUtil {
 
-    @Autowired
-    private ApplicationProperties applicationProperties;
-
-    public <T> List<T> parseTSV(InputStream inputStream, Set<String> expectedHeaders,
-                                Function<CSVRecord, T> mapper) throws IOException , ApiException {
+    public static <T> List<T> parseTSV(InputStream inputStream, Set<String> expectedHeaders,
+                                Function<CSVRecord, T> mapper, int maxLines) throws IOException , ApiException {
         List<T> recordsList = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -41,7 +38,6 @@ public class TsvParserUtil {
             }
 
             int count = 0;
-            int maxLines = applicationProperties.getMaxTsvLines();
             for (CSVRecord record : csvParser) {
                 if (count >= maxLines) {
                     throw new ApiException("File exceeds the maximum allowed limit of " + maxLines + " lines.");
@@ -55,7 +51,7 @@ public class TsvParserUtil {
     }
 
 
-    public String escapeTsv(String value) {
+    public static String escapeTsv(String value) {
         if (value == null) return "";
         return value.replace("\t", "\\t").replace("\n", "\\n");
     }

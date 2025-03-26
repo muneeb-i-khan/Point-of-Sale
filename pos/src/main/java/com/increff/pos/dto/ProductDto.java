@@ -29,7 +29,8 @@ public class ProductDto {
     private ProductFlow productFlow;
 
     public ProductData addProduct(ProductForm productForm) throws ApiException {
-        return convert(productFlow.addProduct(productForm));
+        ProductPojo productPojo = convert(productForm);
+        return convert(productFlow.addProduct(productPojo, productForm.getClientName()));
     }
 
     public ProductData getProduct(Long id) throws ApiException {

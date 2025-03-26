@@ -62,12 +62,4 @@ public class OrderService {
         return orderItemDao.getItemsByOrderId(id);
     }
 
-    public void validateOrderItemQuantity(OrderItemPojo orderItem, ProductPojo productPojo, InventoryPojo inventoryPojo) throws ApiException {
-        if (orderItem.getQuantity() <= 0) {
-            throw new ApiException("Quantity can't be negative");
-        }
-        if (inventoryPojo.getQuantity() < orderItem.getQuantity()) {
-            throw new ApiException("Insufficient stock for product: " + productPojo.getName());
-        }
-    }
 }

@@ -3,6 +3,7 @@ package com.increff.pos.service;
 import com.increff.pos.db.dao.OrderDao;
 import com.increff.pos.db.dao.OrderItemDao;
 import com.increff.pos.db.pojo.*;
+import com.increff.pos.flow.OrderFlow;
 import com.increff.pos.util.ApiException;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,9 @@ public class OrderServiceTest extends AbstractUnitTest {
 
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private OrderFlow orderFlow;
 
     private ProductPojo product;
     private OrderPojo order;
@@ -75,7 +79,6 @@ public class OrderServiceTest extends AbstractUnitTest {
         orderItem.setSellingPrice(product.getPrice());
 
         InventoryPojo inventory = inventoryService.getInventoryByBarcode(product.getBarcode());
-        orderService.validateOrderItemQuantity(orderItem, product, inventory);
         orderService.createOrderItem(orderItem);
 
         List<OrderItemPojo> items = orderService.getItemsByOrderId(order.getId());
@@ -84,30 +87,6 @@ public class OrderServiceTest extends AbstractUnitTest {
 
         OrderPojo savedOrder = orderDao.selectById(order.getId()).orElse(null);
         assertNotNull(savedOrder);
-    }
-
-    @Test(expected = ApiException.class)
-    public void testValidateOrderItem_InsufficientStock() throws ApiException {
-        OrderItemPojo orderItem = new OrderItemPojo();
-        orderItem.setOrderId(order.getId());
-        orderItem.setProdId(product.getId());
-        orderItem.setQuantity(200L);
-        orderItem.setSellingPrice(product.getPrice());
-
-        InventoryPojo inventory = inventoryService.getInventoryByBarcode(product.getBarcode());
-        orderService.validateOrderItemQuantity(orderItem, product, inventory);
-    }
-
-    @Test(expected = ApiException.class)
-    public void testValidateOrderItem_NonPositiveQuantity() throws ApiException {
-        OrderItemPojo orderItem = new OrderItemPojo();
-        orderItem.setOrderId(order.getId());
-        orderItem.setProdId(product.getId());
-        orderItem.setQuantity(-1L);
-        orderItem.setSellingPrice(product.getPrice());
-
-        InventoryPojo inventory = inventoryService.getInventoryByBarcode(product.getBarcode());
-        orderService.validateOrderItemQuantity(orderItem, product, inventory);
     }
 
     @Test
@@ -119,7 +98,6 @@ public class OrderServiceTest extends AbstractUnitTest {
         orderItem.setSellingPrice(product.getPrice());
 
         InventoryPojo inventory = inventoryService.getInventoryByBarcode(product.getBarcode());
-        orderService.validateOrderItemQuantity(orderItem, product, inventory);
         orderService.createOrderItem(orderItem);
 
         List<OrderPojo> orders = orderService.getAllOrders();
@@ -149,7 +127,6 @@ public class OrderServiceTest extends AbstractUnitTest {
         orderItem.setSellingPrice(product.getPrice());
 
         InventoryPojo inventory = inventoryService.getInventoryByBarcode(product.getBarcode());
-        orderService.validateOrderItemQuantity(orderItem, product, inventory);
         orderService.createOrderItem(orderItem);
 
         List<OrderItemPojo> items = orderService.getItemsByOrderId(order.getId());

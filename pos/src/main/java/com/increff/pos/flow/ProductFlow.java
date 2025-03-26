@@ -2,8 +2,7 @@ package com.increff.pos.flow;
 
 import com.increff.pos.db.pojo.ClientPojo;
 import com.increff.pos.db.pojo.ProductPojo;
-import com.increff.pos.model.data.ProductData;
-import com.increff.pos.model.forms.ProductForm;
+import com.increff.pos.spring.ApplicationProperties;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.service.ClientService;
@@ -27,19 +26,14 @@ public class ProductFlow {
     private ClientService clientService;
 
     @Autowired
-    private TsvParserUtil tsvParserUtil;
+    private ApplicationProperties applicationProperties;
 
-    public ProductPojo addProduct(ProductForm productForm) throws ApiException {
-        ProductPojo p = new ProductPojo();
-        p.setName(productForm.getName());
-        p.setBarcode(productForm.getBarcode());
-        p.setPrice(productForm.getPrice());
-
+    public ProductPojo addProduct(ProductPojo productPojo, String clientName) throws ApiException {
         ClientPojo clientPojo;
-        clientPojo = clientService.getCheck(productForm.getClientName());
-        p.setClientId(clientPojo.getId());
-        productService.addProduct(p);
-        return p;
+        clientPojo = clientService.getCheck(clientName);
+        productPojo.setClientId(clientPojo.getId());
+        productService.addProduct(productPojo);
+        return productPojo;
     }
 
     public void uploadProducts(MultipartFile file, HttpServletResponse response) throws IOException, ApiException {
@@ -63,7 +57,7 @@ public class ProductFlow {
 
 
     private void parseProducts(MultipartFile file, List<ProductPojo> validProducts, List<Map<String, String>> errorRecords) throws IOException {
-        tsvParserUtil.parseTSV(file.getInputStream(),
+        TsvParserUtil.parseTSV(file.getInputStream(),
                 new HashSet<>(Arrays.asList("name", "barcode", "price", "clientName")),
                 record -> {
                     Map<String, String> recordMap = new HashMap<>();
@@ -92,7 +86,7 @@ public class ProductFlow {
                         errorRecords.add(recordMap);
                     }
                     return null;
-                });
+                },applicationProperties.getMaxTsvLines());
     }
 
     private void generateErrorTsv(List<Map<String, String>> errorRecords, HttpServletResponse response) throws IOException {
@@ -104,11 +98,11 @@ public class ProductFlow {
 
             for (Map<String, String> record : errorRecords) {
                 writer.write(String.format("%s\t%s\t%s\t%s\t%s\n",
-                        tsvParserUtil.escapeTsv(record.get("name")),
-                        tsvParserUtil.escapeTsv(record.get("barcode")),
-                        tsvParserUtil.escapeTsv(record.get("price")),
-                        tsvParserUtil.escapeTsv(record.get("clientName")),
-                        tsvParserUtil.escapeTsv(record.get("error"))));
+                        TsvParserUtil.escapeTsv(record.get("name")),
+                        TsvParserUtil.escapeTsv(record.get("barcode")),
+                        TsvParserUtil.escapeTsv(record.get("price")),
+                        TsvParserUtil.escapeTsv(record.get("clientName")),
+                        TsvParserUtil.escapeTsv(record.get("error"))));
             }
         }
     }

@@ -44,13 +44,12 @@ public class ProductFlowTest extends AbstractUnitTest {
 
     @Test
     public void testAddProduct_Success() throws ApiException {
-        ProductForm form = new ProductForm();
-        form.setName("Test Product");
-        form.setBarcode("123456");
-        form.setPrice(100.0);
-        form.setClientName(client.getName());
+        ProductPojo pojo = new ProductPojo();
+        pojo.setName("Test Product");
+        pojo.setBarcode("123456");
+        pojo.setPrice(100.0);
 
-        productFlow.addProduct(form);
+        productFlow.addProduct(pojo,"Test Client");
 
         ProductPojo product = productService.getProductByBarcode("123456");
         assertNotNull(product);
@@ -61,13 +60,12 @@ public class ProductFlowTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testAddProduct_ClientNotFound() throws ApiException {
-        ProductForm form = new ProductForm();
-        form.setName("Invalid Product");
-        form.setBarcode("999999");
-        form.setPrice(50.0);
-        form.setClientName("Nonexistent Client");
+        ProductPojo pojo = new ProductPojo();
+        pojo.setName("Invalid Product");
+        pojo.setBarcode("999999");
+        pojo.setPrice(50.0);
 
-        productFlow.addProduct(form);
+        productFlow.addProduct(pojo, "Non Existant Client");
     }
 
 }

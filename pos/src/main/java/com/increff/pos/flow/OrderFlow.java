@@ -121,12 +121,20 @@ public class OrderFlow {
                 .sum();
     }
 
+    private void validateOrderItemQuantity(OrderItemPojo orderItem, ProductPojo productPojo, InventoryPojo inventoryPojo) throws ApiException {
+        if (orderItem.getQuantity() <= 0) {
+            throw new ApiException("Quantity can't be negative");
+        }
+        if (inventoryPojo.getQuantity() < orderItem.getQuantity()) {
+            throw new ApiException("Insufficient stock for product: " + productPojo.getName());
+        }
+    }
     private void updateInventoryForOrderItem(OrderItemPojo orderItem) throws ApiException {
         ProductPojo productPojo = getProduct(orderItem.getProdId());
         InventoryPojo inventoryPojo = getInventoryByBarcode(productPojo.getBarcode());
 
-        orderService.validateOrderItemQuantity(orderItem, productPojo, inventoryPojo);
-        inventoryPojo.setQuantity(inventoryPojo.getQuantity() - orderItem.getQuantity());
+        validateOrderItemQuantity(orderItem, productPojo, inventoryPojo);
+        inventoryService.setQuantity(inventoryPojo,inventoryPojo.getQuantity() - orderItem.getQuantity());
     }
 
     private void processOrderItems(OrderPojo order, List<OrderItemPojo> orderItemPojoList) throws ApiException {
