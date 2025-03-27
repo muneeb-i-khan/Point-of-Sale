@@ -62,4 +62,8 @@ public class OrderService {
         return orderItemDao.getItemsByOrderId(id);
     }
 
+    public Double getTotalAmount(OrderItemPojo orderItemPojo) {
+        return orderItemPojo.getSellingPrice()*orderItemPojo.getQuantity();
+    }
+
 }

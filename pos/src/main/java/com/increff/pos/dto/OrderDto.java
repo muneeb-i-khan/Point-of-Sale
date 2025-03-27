@@ -47,9 +47,7 @@ public class OrderDto {
 
     public OrderData addOrder(List<OrderItemForm> orderItemFormList, CustomerForm customerForm) throws ApiException {
         CustomerPojo customerPojo = customerDto.convert(customerForm);
-
-        List<OrderItemForm> mergedOrderItems = mergeDuplicateItems(orderItemFormList);
-        List<OrderItemPojo> orderItemPojoList = convert(mergedOrderItems);
+        List<OrderItemPojo> orderItemPojoList = convert(orderItemFormList);
 
         return convert(orderFlow.addOrder(orderItemPojoList, customerPojo));
     }
@@ -123,7 +121,7 @@ public class OrderDto {
             orderItem.setPrice(product.getPrice());
             orderItem.setSellingPrice(itemPojo.getSellingPrice());
 
-            totalAmount += itemPojo.getSellingPrice() * itemPojo.getQuantity();
+            totalAmount += orderService.getTotalAmount(itemPojo);
 
             orderItems.add(orderItem);
         }
@@ -131,22 +129,6 @@ public class OrderDto {
         orderData.setItems(orderItems);
         orderData.setTotalAmount(totalAmount);
         return orderData;
-    }
-
-    private List<OrderItemForm> mergeDuplicateItems(List<OrderItemForm> orderItemForms) {
-        Map<String, OrderItemForm> mergedItems = new HashMap<>();
-
-        for (OrderItemForm item : orderItemForms) {
-            String barcode = item.getBarcode();
-            if (mergedItems.containsKey(barcode)) {
-                OrderItemForm existingItem = mergedItems.get(barcode);
-                existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
-            } else {
-                mergedItems.put(barcode, item);
-            }
-        }
-
-        return new ArrayList<>(mergedItems.values());
     }
 
     private List<OrderItemPojo> convert(List<OrderItemForm> orderItemFormList) throws ApiException {
